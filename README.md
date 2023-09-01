@@ -1,34 +1,162 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
 
-## Getting Started
+[Shadcn Tag Input](https://shadcn-tag-input.vercel.app/) is a tag input component implementation of Shadcn's input component. It's customizable, but styled by default (Shadcn's default styling).
 
-First, run the development server:
+## Setup
+
+Run the shadcn-ui init command to setup your project:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+npx shadcn-ui@latest init
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the shadcn-ui add command to add the tag input component to your project:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx shadcn-ui@latest add input
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Copy and paste the folowing code into a new file:
 
-## Learn More
+```jsx
+import React from 'react';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-To learn more about Next.js, take a look at the following resources:
+interface TagInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  placeholder?: string;
+  tags: string[];
+  setTags: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    const { placeholder, tags, setTags, className } = props;
 
-## Deploy on Vercel
+    const [inputValue, setInputValue] = React.useState('');
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const newTag = inputValue.trim();
+            if (newTag && !tags.includes(newTag)) {
+                setTags([...tags, newTag]);
+            }
+            setInputValue('');
+        }
+    };
+
+    const removeTag = (tagToRemove: string) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove));
+    };
+
+    return (
+        <div>
+            <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
+                {tags.map((tag, index) => (
+                    <span key={index} className="transition-all border bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
+                        {tag}
+                        <Button
+                            type="button" 
+                            variant="ghost"
+                            onClick={() => removeTag(tag)}
+                            className={cn("py-1 px-3 h-full hover:bg-transparent")}
+                        >
+                            <X size={14} />
+                        </Button>
+                    </span>
+                ))}
+            </div>
+            <Input
+                ref={inputRef}
+                type="text"
+                placeholder={placeholder}
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className={className}
+            />
+        </div>
+    );
+});
+
+TagInput.displayName = 'TagInput';
+
+export { TagInput };
+
+```
+
+## Usage
+
+```jsx
+import {
+      Form,
+      FormControl,
+      FormDescription,
+      FormField,
+      FormItem,
+      FormLabel,
+      FormMessage,
+    } from "@/components/ui/form"
+    import React from 'react'
+    import { TagInput } from '@/components/tag-input'
+
+    const FormSchema = z.object({
+      topics: z.array(z.string()),
+    })
+
+    const [tags, setTags] = React.useState<string[]>([]);
+
+    const { setValue } = form;
+
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+      toast({
+        title: "You submitted the following values:",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          </pre>
+        ),
+      })
+    }
+
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="topics"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Topics</FormLabel>
+              <FormControl>
+                <TagInput
+                  {...field}
+                  placeholder="Enter a topic"
+                  tags={tags}
+                  className='sm:min-w-[450px]'
+                  setTags={(newTags) => {
+                    setTags(newTags);
+                    setValue("topics", newTags as [string, ...string[]]);
+                  }} 
+                />
+              </FormControl>
+              <FormDescription>
+                These are the topics that you&apos;re interested in.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+```
+
