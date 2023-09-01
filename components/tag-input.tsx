@@ -12,7 +12,7 @@ interface TagInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { placeholder, tags, setTags } = props;
+    const { placeholder, tags, setTags, className } = props;
 
     const [inputValue, setInputValue] = React.useState('');
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -39,7 +39,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
     return (
         <div>
-            <div className={`flex space-x-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
+            <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
                 {tags.map((tag, index) => (
                     <span key={index} className="transition-all border bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
                         {tag}
@@ -61,6 +61,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                className={className}
             />
         </div>
     );
