@@ -16,6 +16,7 @@ import {
 import React from 'react'
 import { TagInput } from '@/components/tag-input'
 import { toast } from "@/components/ui/use-toast"
+import useClipboard from '@/hooks/use-copy'
 
 const FormSchema = z.object({
   topics: z.array(z.string()),
@@ -28,6 +29,7 @@ export default function Home() {
   })
 
   const [tags, setTags] = React.useState<string[]>([]);
+  const { isCopied, copyToClipboard } = useClipboard();
 
   const { setValue } = form;
 
@@ -248,7 +250,28 @@ export default function Home() {
               Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code> init command to setup your project:
             </p>
             <div data-rehype-pretty-code-fragment="">
-              <pre className="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+              <pre className="relative mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+              <Button 
+                  className='absolute top-2 right-2 px-3 hover:bg-white/40'
+                  variant='ghost'
+                  onClick={async() =>{
+                    await copyToClipboard('npx shadcn-ui@latest init');
+                    if(isCopied){
+                        toast({
+                            title: 'Copied to clipboard',
+                            description: 'The command has been copied to your clipboard.',
+                            variant: 'default'
+                        });
+                    }
+                }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
+                    <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </g>
+                  </svg>
+                </Button>
                 <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
                   npx shadcn-ui@latest init
                 </code>
@@ -263,7 +286,28 @@ export default function Home() {
               Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code> add command to add the tag input component to your project:
             </p>
             <div data-rehype-pretty-code-fragment="">
-              <pre className="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+              <pre className="relative mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+              <Button 
+                  className='absolute top-2 right-2 px-3 hover:bg-white/40'
+                  variant='ghost'
+                  onClick={async() =>{
+                    await copyToClipboard('npx shadcn-ui@latest add input');
+                    if(isCopied){
+                        toast({
+                            title: 'Copied to clipboard',
+                            description: 'The command has been copied to your clipboard.',
+                            variant: 'default'
+                        });
+                    }
+                }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
+                    <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </g>
+                  </svg>
+                </Button>
                 <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
                   npx shadcn-ui@latest add input
                 </code>
@@ -279,6 +323,27 @@ export default function Home() {
             </p>
             <div data-rehype-pretty-code-fragment="">
               <pre className="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+                <Button 
+                    className='absolute top-2 right-2 px-3 hover:bg-white/40'
+                    variant='ghost'
+                    onClick={async() =>{
+                      await copyToClipboard(TagInputCodeSnippet);
+                      if(isCopied){
+                          toast({
+                              title: 'Copied to clipboard',
+                              description: 'The command has been copied to your clipboard.',
+                              variant: 'default'
+                          });
+                      }
+                  }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
+                      <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                      </g>
+                    </svg>
+                  </Button>
                 <code 
                   className="relative rounded bg-transparent text-white py-[0.2rem] max-h-[400px] overscroll-y-auto font-mono text-sm px-4"
                 >
@@ -309,8 +374,8 @@ export default function Home() {
                 <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
                 { `import { TagInput } from "@/components/tag-input"`}
                 </code>
-                <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4 max-h-[350px]">
-                {TagInputDemoSnippet.split('\n').map((line, index) => (
+                <code className="relative w-full rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4 max-h-[350px]">
+                  {TagInputDemoSnippet.split('\n').map((line, index) => (
                     <React.Fragment key={index}>
                       {line}
                       <br />
