@@ -364,16 +364,6 @@ export default function Home() {
           <div>
             <div data-rehype-pretty-code-fragment="">
               <pre className="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
-                <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
-                  npx shadcn-ui@latest init
-                </code>
-              </pre>
-            </div> 
-            <div data-rehype-pretty-code-fragment="">
-              <pre className="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
-                <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
-                { `import { TagInput } from "@/components/tag-input"`}
-                </code>
                 <code className="relative w-full rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4 max-h-[350px]">
                   {TagInputDemoSnippet.split('\n').map((line, index) => (
                     <React.Fragment key={index}>
