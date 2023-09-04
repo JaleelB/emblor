@@ -84,13 +84,27 @@ export enum Delimiter {
 type OmittedInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
-  placeholder?: string;
-  tags: string[];
-  setTags: React.Dispatch<React.SetStateAction<string[]>>;
-  enableAutocomplete?: boolean;
-  autocompleteOptions?: string[];
-  maxTags?: number;
+    placeholder?: string;
+    tags: string[];
+    setTags: React.Dispatch<React.SetStateAction<string[]>>;
+    enableAutocomplete?: boolean;
+    autocompleteOptions?: string[];
+    maxTags?: number;
+    minTags?: number;
+    readOnly?: boolean;
+    disabled?: boolean;
+    onTagAdd?: (tag: string) => void;
+    onTagRemove?: (tag: string) => void;
+    allowDuplicates?: boolean;
+    maxLength?: number;
+    validateTag?: (tag: string) => boolean;
     delimiter?: Delimiter;
+    showCount?: boolean;
+    placeholderWhenFull?: string;
+    sortTags?: boolean;
+    delimiterList?: string[];
+    truncate?: number;
+    autocompleteFilter?: (option: string) => boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -105,7 +119,17 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         enableAutocomplete, 
         autocompleteOptions,
         maxTags,
-        delimiter = Delimiter.Comma
+        delimiter = Delimiter.Comma,
+        onTagAdd,
+        onTagRemove,
+        allowDuplicates,
+        showCount,
+        validateTag,
+        placeholderWhenFull = 'Max tags reached',
+        sortTags,
+        delimiterList,
+        truncate,
+        autocompleteFilter,
     } = props;
 
     const [inputValue, setInputValue] = React.useState('');
@@ -117,27 +141,43 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        
-        if (e.key === delimiter || e.key === Delimiter.Enter) {
+        if (delimiterList ? delimiterList.includes(e.key) : e.key === delimiter || e.key === Delimiter.Enter) {
             e.preventDefault();
             const newTag = inputValue.trim();
-            if (newTag && !tags.includes(newTag) && (maxTags === undefined || tags.length < maxTags)) {
+        
+            if (validateTag && !validateTag(newTag)) {
+                return;
+            }
+        
+            if (newTag && (allowDuplicates || !tags.includes(newTag)) && (maxTags === undefined || tags.length < maxTags)) {
                 setTags([...tags, newTag]);
+                onTagAdd?.(newTag);
                 setTagCount((prevTagCount) => prevTagCount + 1);
             }
             setInputValue('');
         }
     };
-
+    
     const removeTag = (tagToRemove: string) => {
         setTags(tags.filter((tag) => tag !== tagToRemove));
+        onTagRemove?.(tagToRemove);
         setTagCount((prevTagCount) => prevTagCount - 1);
     };
+
+    const filteredAutocompleteOptions = autocompleteFilter
+    ? autocompleteOptions?.filter(autocompleteFilter)
+    : autocompleteOptions;
+
+    const displayedTags = sortTags ? [...tags].sort() : tags;
+
+    const truncatedTags = truncate
+        ? displayedTags.map((tag) => (tag.length > truncate ? `${tag.substring(0, truncate)}...` : tag))
+        : displayedTags;
 
     return (
         <div>
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
-                {tags.map((tag, index) => (
+                {truncatedTags.map((tag, index) => (
                     <span 
                     key={index} 
                     className={cn(tagVariants({ variant, size }))}
@@ -156,11 +196,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             </div>
             {enableAutocomplete ? (
                 <Command className='border mt-2 sm:min-w-[450px]'>
-                    <CommandInput placeholder={placeholder} />
+                    <CommandInput placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}  />
                     <CommandList>
                         <CommandEmpty>No results found.</CommandEmpty>
                         <CommandGroup heading="Suggestions">
-                            {autocompleteOptions?.map((option, index) => (
+                            {filteredAutocompleteOptions?.map((option, index) => (
                                 <CommandItem 
                                     key={index}
                                     className='cursor-pointer'
@@ -188,7 +228,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     <Input
                         ref={inputRef}
                         type="text"
-                        placeholder={placeholder}
+                        placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                         value={inputValue}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
@@ -197,7 +237,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                         list={enableAutocomplete ? 'autocomplete-options' : undefined}
                         disabled={maxTags !== undefined && tags.length >= maxTags}
                     />
-                    {maxTags && <div className='flex'>
+                    {showCount && maxTags && <div className='flex'>
                        <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
                     </div>}
                 </>
