@@ -2,9 +2,73 @@ import React from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';                                                    
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface TagInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+const tagVariants = cva(
+  'transition-all border inline-flex items-center text-sm pl-2 rounded-md',
+  {
+    variants: {
+        variant: {
+            default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            primary: 'bg-primary border-primary text-primary-foreground hover:bg-primary/90',
+            destructive: 'bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90',
+        },
+        size: {
+            sm: 'text-xs h-7',
+            md: 'text-sm h-8',
+            lg: 'text-base h-9',
+            xl: 'text-lg h-10',
+        },
+        shape: {
+            default: 'rounded-md',
+            rounded: 'rounded-full',
+            square: 'rounded-none',
+            pill: 'rounded-lg',
+        },
+        borderStyle: {
+            default: 'border-solid',
+            none: 'border-none',
+        },
+        textCase: {
+            uppercase: 'uppercase',
+            lowercase: 'lowercase',
+            capitalize: 'capitalize',
+        },
+        interaction: {
+            clickable: 'cursor-pointer hover:shadow-md',
+            nonClickable: 'cursor-default',
+        },
+        animation: {
+            none: '',
+            fadeIn: 'animate-fadeIn',
+            slideIn: 'animate-slideIn',
+            bounce: 'animate-bounce',
+        },
+        textStyle: {
+            normal: 'font-normal',
+            bold: 'font-bold',
+            italic: 'italic',
+            underline: 'underline',
+            lineThrough: 'line-through',
+        },
+    },
+    defaultVariants: {
+        variant: 'destructive',
+        size: 'md',
+        shape: 'default',
+        borderStyle: 'default',
+        textCase: 'capitalize',
+        interaction: 'nonClickable',
+        animation: 'none',
+        textStyle: 'normal',
+    },
+  }
+);
+
+type OmittedInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>;
+
+export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
   placeholder?: string;
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
@@ -12,7 +76,7 @@ interface TagInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { placeholder, tags, setTags, className } = props;
+    const { placeholder, tags, setTags, variant, size, className } = props;
 
     const [inputValue, setInputValue] = React.useState('');
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -41,7 +105,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         <div>
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
                 {tags.map((tag, index) => (
-                    <span key={index} className="transition-all border bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
+                    <span 
+                    key={index} 
+                    className={cn(tagVariants({ variant, size }))}
+                    >
                         {tag}
                         <Button
                             type="button" 
