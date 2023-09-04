@@ -83,13 +83,25 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
   enableAutocomplete?: boolean;
   autocompleteOptions?: string[];
+  maxTags?: number;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { placeholder, tags, setTags, variant, size, className, enableAutocomplete, autocompleteOptions } = props;
+    const { 
+        placeholder, 
+        tags, 
+        setTags, 
+        variant, 
+        size, 
+        className, 
+        enableAutocomplete, 
+        autocompleteOptions,
+        maxTags 
+    } = props;
 
     const [inputValue, setInputValue] = React.useState('');
+    const [tagCount, setTagCount] = React.useState(tags.length);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,8 +113,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault();
             const newTag = inputValue.trim();
-            if (newTag && !tags.includes(newTag)) {
+            if (newTag && !tags.includes(newTag) && (maxTags === undefined || tags.length < maxTags)) {
                 setTags([...tags, newTag]);
+                setTagCount((prevTagCount) => prevTagCount + 1);
             }
             setInputValue('');
         }
@@ -110,6 +123,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
     const removeTag = (tagToRemove: string) => {
         setTags(tags.filter((tag) => tag !== tagToRemove));
+        setTagCount((prevTagCount) => prevTagCount - 1);
     };
 
     return (
@@ -157,19 +171,28 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                             ))}
                         </CommandGroup>
                     </CommandList>
+                    {maxTags && <div className='flex'>
+                       <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
+                    </div>}
               </Command>
             ): (
-                <Input
-                    ref={inputRef}
-                    type="text"
-                    placeholder={placeholder}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    className={className}
-                    autoComplete={enableAutocomplete ? 'on' : 'off'}
-                    list={enableAutocomplete ? 'autocomplete-options' : undefined}
-                />
+                <>
+                    <Input
+                        ref={inputRef}
+                        type="text"
+                        placeholder={placeholder}
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        className={className}
+                        autoComplete={enableAutocomplete ? 'on' : 'off'}
+                        list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                        disabled={maxTags !== undefined && tags.length >= maxTags}
+                    />
+                    {maxTags && <div className='flex'>
+                       <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
+                    </div>}
+                </>
             )}
         </div>
     );
