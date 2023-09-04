@@ -75,6 +75,12 @@ const tagVariants = cva(
   }
 );
 
+export enum Delimiter {
+    Comma = ',',
+    Enter = 'Enter',
+    Space = ' '
+}
+
 type OmittedInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
@@ -84,6 +90,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   enableAutocomplete?: boolean;
   autocompleteOptions?: string[];
   maxTags?: number;
+    delimiter?: Delimiter;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -97,7 +104,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         className, 
         enableAutocomplete, 
         autocompleteOptions,
-        maxTags 
+        maxTags,
+        delimiter = Delimiter.Comma
     } = props;
 
     const [inputValue, setInputValue] = React.useState('');
@@ -110,7 +118,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         
-        if (e.key === 'Enter' || e.key === ',') {
+        if (e.key === delimiter || e.key === Delimiter.Enter) {
             e.preventDefault();
             const newTag = inputValue.trim();
             if (newTag && !tags.includes(newTag) && (maxTags === undefined || tags.length < maxTags)) {
