@@ -195,34 +195,43 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 ))}
             </div>
             {enableAutocomplete ? (
-                <Command className='border mt-2 sm:min-w-[450px]'>
-                    <CommandInput placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}  />
-                    <CommandList>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandGroup heading="Suggestions">
-                            {filteredAutocompleteOptions?.map((option, index) => (
-                                <CommandItem 
-                                    key={index}
-                                    className='cursor-pointer'
-                                >
-                                    <div
-                                        className='w-full'
-                                        onClick={() => {
-                                            if(!tags.includes(option)){
-                                                setTags([...tags, option])
-                                            }
-                                        }}
+                <>
+                    <Command className='border mt-2 sm:min-w-[450px]'>
+                        <CommandInput 
+                            placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}  
+                            disabled={maxTags !== undefined && tags.length >= maxTags}
+                        />
+                        <CommandList>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup heading="Suggestions">
+                                {filteredAutocompleteOptions?.map((option, index) => (
+                                    <CommandItem 
+                                        key={index}
+                                        className={`${maxTags !== undefined && tags.length >= maxTags ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
-                                        {option}
-                                    </div>
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                    {maxTags && <div className='flex'>
-                       <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
-                    </div>}
-              </Command>
+                                        <div
+                                            className={`w-full ${maxTags !== undefined && tags.length >= maxTags ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                            onClick={() => {
+                                                if (option && (allowDuplicates || !tags.includes(option)) && (maxTags === undefined || tags.length < maxTags)) {
+                                                    setTags([...tags, option]);
+                                                    onTagAdd?.(option);
+                                                    setTagCount((prevTagCount) => prevTagCount + 1);
+                                                }
+                                            }}
+                                        >
+                                            {option}
+                                        </div>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                    {maxTags && 
+                        <div className='flex'>
+                            <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
+                        </div>
+                    }
+                </>
             ): (
                 <>
                     <Input
