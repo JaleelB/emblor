@@ -4,6 +4,15 @@ import { Button } from './ui/button';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';                                                    
 import { cva, type VariantProps } from 'class-variance-authority';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList
+} from "@/components/ui/command"
+  
 
 const tagVariants = cva(
   'transition-all border inline-flex items-center text-sm pl-2 rounded-md',
@@ -54,13 +63,13 @@ const tagVariants = cva(
         },
     },
     defaultVariants: {
-        variant: 'destructive',
+        variant: 'default',
         size: 'md',
         shape: 'default',
         borderStyle: 'default',
         textCase: 'capitalize',
         interaction: 'nonClickable',
-        animation: 'none',
+        animation: 'fadeIn',
         textStyle: 'normal',
     },
   }
@@ -72,11 +81,13 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   placeholder?: string;
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
+  enableAutocomplete?: boolean;
+  autocompleteOptions?: string[];
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { placeholder, tags, setTags, variant, size, className } = props;
+    const { placeholder, tags, setTags, variant, size, className, enableAutocomplete, autocompleteOptions } = props;
 
     const [inputValue, setInputValue] = React.useState('');
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -121,15 +132,45 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     </span>
                 ))}
             </div>
-            <Input
-                ref={inputRef}
-                type="text"
-                placeholder={placeholder}
-                value={inputValue}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                className={className}
-            />
+            {enableAutocomplete ? (
+                <Command className='border mt-2 sm:min-w-[450px]'>
+                    <CommandInput placeholder={placeholder} />
+                    <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Suggestions">
+                            {autocompleteOptions?.map((option, index) => (
+                                <CommandItem 
+                                    key={index}
+                                    className='cursor-pointer'
+                                >
+                                    <div
+                                        className='w-full'
+                                        onClick={() => {
+                                            if(!tags.includes(option)){
+                                                setTags([...tags, option])
+                                            }
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+              </Command>
+            ): (
+                <Input
+                    ref={inputRef}
+                    type="text"
+                    placeholder={placeholder}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    className={className}
+                    autoComplete={enableAutocomplete ? 'on' : 'off'}
+                    list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                />
+            )}
         </div>
     );
 });
