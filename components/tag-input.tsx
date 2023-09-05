@@ -169,7 +169,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 return;
             }
 
-            if (props.minLength && newTag.length < props.minLength) {
+            if (minLength && newTag.length < minLength) {
                 console.warn("Tag is too short");
                 toast({
                     title: "Tag is too short",
@@ -180,7 +180,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             }
         
             // Validate maxLength
-            if (props.maxLength && newTag.length > props.maxLength) {
+            if (maxLength && newTag.length > maxLength) {
                 toast({
                     title: "Tag is too long",
                     description: "Please enter a tag with less characters",
