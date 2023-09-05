@@ -31,7 +31,7 @@ export default function Props(){
     ]
 
     return (
-        <section className="max-w-5xl w-full py-8">
+        <section id="props" className="max-w-5xl w-full py-8">
             <h2 className='font-heading mt-12 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0'>Props</h2>
            <div className="w-full">
                 <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Autocomplete</h3>
