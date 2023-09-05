@@ -167,13 +167,13 @@ export const tagInputProps: propOption[] = [
     option: "enableAutocomplete",
     type: "boolean",
     default: "false",
-    description: "Enable autocomplete feature."
+    description: "Enable autocomplete feature. Must be used with autocompleteOptions."
   },
   {
     option: "autocompleteOptions",
     type: "Array",
     default: "[]",
-    description: "List of options for autocomplete."
+    description: "List of options for autocomplete. Must be used with enableAutocomplete."
   },
   {
     option: "maxTags",
