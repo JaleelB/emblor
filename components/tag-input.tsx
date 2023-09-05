@@ -93,6 +93,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
     minTags?: number;
     readOnly?: boolean;
     disabled?: boolean;
+    shape?: 'default' | 'rounded' | 'square' | 'pill';
     onTagAdd?: (tag: string) => void;
     onTagRemove?: (tag: string) => void;
     allowDuplicates?: boolean;
@@ -115,6 +116,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         setTags, 
         variant, 
         size, 
+        shape,
         className, 
         enableAutocomplete, 
         autocompleteOptions,
