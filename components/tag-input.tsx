@@ -12,6 +12,7 @@ import {
     CommandItem,
     CommandList
 } from "@/components/ui/command"
+import { toast } from './ui/use-toast';
   
 
 const tagVariants = cva(
@@ -96,7 +97,6 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
     onTagAdd?: (tag: string) => void;
     onTagRemove?: (tag: string) => void;
     allowDuplicates?: boolean;
-    maxLength?: number;
     validateTag?: (tag: string) => boolean;
     delimiter?: Delimiter;
     showCount?: boolean;
@@ -104,6 +104,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
     sortTags?: boolean;
     delimiterList?: string[];
     truncate?: number;
+    minLength?: number;
+    maxLength?: number;
     autocompleteFilter?: (option: string) => boolean;
 }
 
@@ -135,12 +137,24 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         textCase,
         interaction, 
         animation, 
-        textStyle 
+        textStyle,
+        minLength,
+        maxLength,
     } = props;
 
     const [inputValue, setInputValue] = React.useState('');
-    const [tagCount, setTagCount] = React.useState(tags.length);
+    const [tagCount, setTagCount] =  React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
+
+    if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
+        console.warn("maxTags and minTags cannot be less than 0");
+        toast({
+            title: "maxTags and minTags cannot be less than 0",
+            description: "Please set maxTags and minTags to a value greater than or equal to 0",
+            variant:"destructive"
+        })
+        return null;
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -152,6 +166,27 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             const newTag = inputValue.trim();
         
             if (validateTag && !validateTag(newTag)) {
+                return;
+            }
+
+            if (props.minLength && newTag.length < props.minLength) {
+                console.warn("Tag is too short");
+                toast({
+                    title: "Tag is too short",
+                    description: "Please enter a tag with more characters",
+                    variant:"destructive"
+                })
+                return;
+            }
+        
+            // Validate maxLength
+            if (props.maxLength && newTag.length > props.maxLength) {
+                toast({
+                    title: "Tag is too long",
+                    description: "Please enter a tag with less characters",
+                    variant:"destructive"
+                })
+                console.warn("Tag is too long");
                 return;
             }
         

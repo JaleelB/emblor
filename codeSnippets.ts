@@ -224,6 +224,12 @@ export const tagInputProps: propOption[] = [
     description: "Maximum length of a tag."
   },
   {
+    option: "minLength",
+    type: "number",
+    default: "null",
+    description: "Maximum length of  tag."
+  },
+  {
     option: "validateTag",
     type: "Function",
     default: "null",
