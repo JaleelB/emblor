@@ -30,7 +30,7 @@ const tagVariants = cva(
             xl: 'text-lg h-10',
         },
         shape: {
-            default: 'rounded-md',
+            default: 'rounded-sm',
             rounded: 'rounded-full',
             square: 'rounded-none',
             pill: 'rounded-lg',
@@ -93,7 +93,6 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
     minTags?: number;
     readOnly?: boolean;
     disabled?: boolean;
-    shape?: 'default' | 'rounded' | 'square' | 'pill';
     onTagAdd?: (tag: string) => void;
     onTagRemove?: (tag: string) => void;
     allowDuplicates?: boolean;
@@ -132,6 +131,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         delimiterList,
         truncate,
         autocompleteFilter,
+        borderStyle,
+        textCase,
+        interaction, 
+        animation, 
+        textStyle 
     } = props;
 
     const [inputValue, setInputValue] = React.useState('');
@@ -181,8 +185,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
                 {truncatedTags.map((tag, index) => (
                     <span 
-                    key={index} 
-                    className={cn(tagVariants({ variant, size }))}
+                        key={index} 
+                        className={cn(tagVariants({ 
+                            variant, size, shape, 
+                            borderStyle, textCase,
+                            interaction, animation, textStyle 
+                        }))}
                     >
                         {tag}
                         <Button
