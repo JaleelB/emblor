@@ -10,12 +10,16 @@ import { cn } from "@/lib/utils";
 
 export default function Variants(){
 
-    const [tags, setTags] = React.useState<string[]>([
-        "Sports",
-        "Travel",
-        "Programming",
-        "Gaming",
-    ]);
+    const tags = ["Sports","Travel","Programming","Gaming"];
+    const [variantTags, setVariantTags] = React.useState<string[]>(tags);
+    const [sizeTags, setSizeTags] = React.useState<string[]>(tags);
+    const [shapeTags, setShapeTags] = React.useState<string[]>(tags);
+    const [borderTags, setBorderTags] = React.useState<string[]>(tags); 
+    const [textCaseTags, setTextCaseTags] = React.useState<string[]>(tags);
+    const [interactionTags, setInteractionTags] = React.useState<string[]>(tags);
+    const [animationTags, setAnimationTags] = React.useState<string[]>(tags);
+    const [textStyleTags, setTextStyleTags] = React.useState<string[]>(tags);
+
 
     return (
         <section id="variants" className="max-w-5xl w-full py-8">
@@ -32,32 +36,32 @@ export default function Variants(){
                     <TabsContent value="default">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={variantTags}
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setVariantTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="primary">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={variantTags}
                             variant="primary"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setVariantTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="destructive">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={variantTags}
                             variant="destructive"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setVariantTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -76,44 +80,44 @@ export default function Variants(){
                     <TabsContent value="small">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={sizeTags}
                             size="sm"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setSizeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="medium">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={sizeTags}
                             size="md"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setSizeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="large">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={sizeTags}
                             size="lg"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setSizeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="x-large">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={sizeTags}
                             size="xl"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setSizeTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -132,44 +136,44 @@ export default function Variants(){
                     <TabsContent value="default">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={shapeTags}
                             shape="default"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setShapeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="square">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={shapeTags}
                             shape="square"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setShapeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="rounded">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={shapeTags}
                             shape="rounded"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setShapeTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="pill">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={shapeTags}
                             shape="pill"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setShapeTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -186,22 +190,22 @@ export default function Variants(){
                     <TabsContent value="default">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={borderTags}
                             borderStyle="default"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setBorderTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="none">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={borderTags}
                             borderStyle="none"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setBorderTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -219,33 +223,33 @@ export default function Variants(){
                     <TabsContent value="capitalize">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textCaseTags}
                             textCase="capitalize"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextCaseTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="uppercase">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textCaseTags}
                             textCase="uppercase"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextCaseTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="lowercase">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textCaseTags}
                             textCase="lowercase"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextCaseTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -262,22 +266,22 @@ export default function Variants(){
                     <TabsContent value="clickable">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={interactionTags}
                             interaction="clickable"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setInteractionTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="non-clickable">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={interactionTags}
                             interaction="nonClickable"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setInteractionTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -296,44 +300,44 @@ export default function Variants(){
                     <TabsContent value="none">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={animationTags}
                             animation="none"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAnimationTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="bounce">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={animationTags}
                             animation="bounce"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAnimationTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="fade-in">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={animationTags}
                             animation="fadeIn"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAnimationTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="slide-in">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={animationTags}
                             animation="slideIn"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAnimationTags(newTags);
                             }} 
                         />
                     </TabsContent>
@@ -353,55 +357,55 @@ export default function Variants(){
                     <TabsContent value="normal">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textStyleTags}
                             textStyle="normal"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextStyleTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="bold">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textStyleTags}
                             textStyle="bold"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextStyleTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="italic">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textStyleTags}
                             textStyle="italic"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextStyleTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="underline">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textStyleTags}
                             textStyle="underline"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextStyleTags(newTags);
                             }} 
                         />
                     </TabsContent>
                     <TabsContent value="line-through">
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={textStyleTags}
                             textStyle="lineThrough"
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTextStyleTags(newTags);
                             }} 
                         />
                     </TabsContent>

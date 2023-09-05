@@ -16,14 +16,14 @@ import { cn } from "@/lib/utils";
 
 export default function Props(){
     
-    const [tags, setTags] = React.useState<string[]>([]);
+    const tags = ["Sports", "Travel", "Programming", "Gaming", "Music"];
+    const [autocompleteTags, setAutocompleteTags] = React.useState<string[]>(tags);
+    const [maxTags, setMaxTags] = React.useState<string[]>(tags);
+    const [truncateTags, setTruncateTags] = React.useState<string[]>(tags);
+    const [allowDuplicatesTags, setAllowDuplicatesTags] = React.useState<string[]>(tags);
 
     const autoCompleteOptions = [
-        "Sports",
-        "Travel",
-        "Programming",
-        "Gaming",
-        "Music",
+       ...tags,
         "Art",
         "Food",
         "Movies",
@@ -43,19 +43,19 @@ export default function Props(){
                         <Label htmlFor="">Topics</Label>
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={autocompleteTags}
                             enableAutocomplete
                             autocompleteOptions={autoCompleteOptions}
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAutocompleteTags(newTags);
                             }} 
                         />
                     </div>
                 </div>
            </div>
            <div className="w-full">
-                <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Max length</h3>
+                <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Max tags</h3>
                 <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
                     Set the maximum number of tags that can be added.
                 </p>
@@ -64,12 +64,12 @@ export default function Props(){
                         <Label htmlFor="">Topics</Label>
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={maxTags}
                             maxTags={5}
                             showCount
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setMaxTags(newTags);
                             }} 
                         />
                     </div>
@@ -85,11 +85,11 @@ export default function Props(){
                         <Label htmlFor="">Topics</Label>
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={truncateTags}
                             truncate={4}
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setTruncateTags(newTags);
                             }} 
                         />
                     </div>
@@ -105,11 +105,11 @@ export default function Props(){
                         <Label htmlFor="">Topics</Label>
                         <TagInput
                             placeholder="Enter a topic"
-                            tags={tags}
+                            tags={allowDuplicatesTags}
                             allowDuplicates
                             className='sm:min-w-[450px]'
                             setTags={(newTags) => {
-                                setTags(newTags);
+                                setAllowDuplicatesTags(newTags);
                             }} 
                         />
                     </div>
