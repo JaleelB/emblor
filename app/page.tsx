@@ -1,5 +1,6 @@
 "use client"
 import Hero from "@/components/sections/hero";
+import Props from "@/components/sections/props";
 import Setup from "@/components/sections/setup";
 import Usage from "@/components/sections/usage";
 import Variants from "@/components/sections/variants";
@@ -14,7 +15,8 @@ export default function Home() {
         <Hero/>
         <Setup/>
         <Usage/> 
-        <Variants/>       
+        <Variants/>
+        <Props/>       
       </main>
       <footer className='py-6 md:px-8 md:py-0 border-t'>
         <div className="container max-w-5xl flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
