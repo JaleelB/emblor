@@ -5,20 +5,25 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import React from "react";
-import { TagInput } from "../tag-input";
+import { Tag, TagInput } from "../tag-input";
 import { cn } from "@/lib/utils";
+import { v4 as uuid } from 'uuid';
 
 export default function Variants(){
 
-    const tags = ["Sports","Travel","Programming","Gaming"];
-    const [variantTags, setVariantTags] = React.useState<string[]>(tags);
-    const [sizeTags, setSizeTags] = React.useState<string[]>(tags);
-    const [shapeTags, setShapeTags] = React.useState<string[]>(tags);
-    const [borderTags, setBorderTags] = React.useState<string[]>(tags); 
-    const [textCaseTags, setTextCaseTags] = React.useState<string[]>(tags);
-    const [interactionTags, setInteractionTags] = React.useState<string[]>(tags);
-    const [animationTags, setAnimationTags] = React.useState<string[]>(tags);
-    const [textStyleTags, setTextStyleTags] = React.useState<string[]>(tags);
+    const tags: Tag[] = [
+        {id: uuid(), text: "Sports"},   
+        {id: uuid(), text: "Travel"},
+        {id: uuid(), text: "Programming"},
+    ];
+    const [variantTags, setVariantTags] = React.useState<Tag[]>(tags);
+    const [sizeTags, setSizeTags] = React.useState<Tag[]>(tags);
+    const [shapeTags, setShapeTags] = React.useState<Tag[]>(tags);
+    const [borderTags, setBorderTags] = React.useState<Tag[]>(tags); 
+    const [textCaseTags, setTextCaseTags] = React.useState<Tag[]>(tags);
+    const [interactionTags, setInteractionTags] = React.useState<Tag[]>(tags);
+    const [animationTags, setAnimationTags] = React.useState<Tag[]>(tags);
+    const [textStyleTags, setTextStyleTags] = React.useState<Tag[]>(tags);
 
 
     return (
@@ -31,7 +36,7 @@ export default function Variants(){
                     <TabsList className={cn("mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start")}>
                         <TabsTrigger value="default">Default</TabsTrigger>
                         <TabsTrigger value="primary">Primary</TabsTrigger>
-                        <TabsTrigger value="destructive">Primary</TabsTrigger>
+                        <TabsTrigger value="destructive">Destructive</TabsTrigger>
                     </TabsList>
                     <TabsContent value="default">
                         <TagInput

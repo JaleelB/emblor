@@ -13,6 +13,7 @@ import {
     CommandList
 } from "@/components/ui/command"
 import { toast } from './ui/use-toast';
+import { v4 as uuid } from 'uuid';
   
 
 const tagVariants = cva(
@@ -82,14 +83,19 @@ export enum Delimiter {
     Space = ' '
 }
 
-type OmittedInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>;
+type OmittedInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'>;
+
+export type Tag = {
+    id: string;
+    text: string;
+}
 
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
     placeholder?: string;
-    tags: string[];
-    setTags: React.Dispatch<React.SetStateAction<string[]>>;
+    tags: Tag[];
+    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;  
     enableAutocomplete?: boolean;
-    autocompleteOptions?: string[];
+    autocompleteOptions?: Tag[];
     maxTags?: number;
     minTags?: number;
     readOnly?: boolean;
@@ -106,6 +112,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
     truncate?: number;
     minLength?: number;
     maxLength?: number;
+    value?: string | number | readonly string[] | { id: string; text: string }[];
     autocompleteFilter?: (option: string) => boolean;
 }
 
@@ -163,13 +170,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (delimiterList ? delimiterList.includes(e.key) : e.key === delimiter || e.key === Delimiter.Enter) {
             e.preventDefault();
-            const newTag = inputValue.trim();
+            const newTagText = inputValue.trim();
         
-            if (validateTag && !validateTag(newTag)) {
+            if (validateTag && !validateTag(newTagText)) {
                 return;
             }
 
-            if (minLength && newTag.length < minLength) {
+            if (minLength && newTagText.length < minLength) {
                 console.warn("Tag is too short");
                 toast({
                     title: "Tag is too short",
@@ -180,7 +187,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             }
         
             // Validate maxLength
-            if (maxLength && newTag.length > maxLength) {
+            if (maxLength && newTagText.length > maxLength) {
                 toast({
                     title: "Tag is too long",
                     description: "Please enter a tag with less characters",
@@ -190,48 +197,53 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 return;
             }
         
-            if (newTag && (allowDuplicates || !tags.includes(newTag)) && (maxTags === undefined || tags.length < maxTags)) {
-                setTags([...tags, newTag]);
-                onTagAdd?.(newTag);
+            const newTagId = uuid(); 
+
+            if (newTagText && (allowDuplicates || !tags.some(tag => tag.text === newTagText)) && (maxTags === undefined || tags.length < maxTags)) {
+                setTags([...tags, { id: newTagId, text: newTagText }]); 
+                onTagAdd?.(newTagText);
                 setTagCount((prevTagCount) => prevTagCount + 1);
             }
             setInputValue('');
         }
     };
     
-    const removeTag = (tagToRemove: string) => {
-        setTags(tags.filter((tag) => tag !== tagToRemove));
-        onTagRemove?.(tagToRemove);
+    const removeTag = (idToRemove: string) => {
+        setTags(tags.filter((tag) => tag.id !== idToRemove));
+        onTagRemove?.(tags.find(tag => tag.id === idToRemove)?.text || '');
         setTagCount((prevTagCount) => prevTagCount - 1);
     };
 
     const filteredAutocompleteOptions = autocompleteFilter
-    ? autocompleteOptions?.filter(autocompleteFilter)
-    : autocompleteOptions;
+        ? autocompleteOptions?.filter(option => autocompleteFilter(option.text))
+        : autocompleteOptions;
 
     const displayedTags = sortTags ? [...tags].sort() : tags;
 
     const truncatedTags = truncate
-        ? displayedTags.map((tag) => (tag.length > truncate ? `${tag.substring(0, truncate)}...` : tag))
-        : displayedTags;
+    ? tags.map((tag) => ({
+        id: tag.id,
+        text: tag.text?.length > truncate ? `${tag.text.substring(0, truncate)}...` : tag.text
+      }))
+    : displayedTags;
 
     return (
         <div>
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
-                {truncatedTags.map((tag, index) => (
+                {truncatedTags.map((tagObj) => (
                     <span 
-                        key={index} 
+                        key={tagObj.id} 
                         className={cn(tagVariants({ 
                             variant, size, shape, 
                             borderStyle, textCase,
                             interaction, animation, textStyle 
                         }))}
                     >
-                        {tag}
+                        {tagObj.text}
                         <Button
                             type="button" 
                             variant="ghost"
-                            onClick={() => removeTag(tag)}
+                            onClick={() => removeTag(tagObj.id)}
                             className={cn("py-1 px-3 h-full hover:bg-transparent")}
                         >
                             <X size={14} />
@@ -249,22 +261,22 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup heading="Suggestions">
-                                {filteredAutocompleteOptions?.map((option, index) => (
+                                {filteredAutocompleteOptions?.map((optionObj) => (
                                     <CommandItem 
-                                        key={index}
+                                        key={uuid()}
                                         className={`${maxTags !== undefined && tags.length >= maxTags ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
                                         <div
                                             className={`w-full ${maxTags !== undefined && tags.length >= maxTags ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                             onClick={() => {
-                                                if (option && (allowDuplicates || !tags.includes(option)) && (maxTags === undefined || tags.length < maxTags)) {
-                                                    setTags([...tags, option]);
-                                                    onTagAdd?.(option);
+                                                if (optionObj.text && (allowDuplicates || !tags.some(tag => tag.text === optionObj.text)) && (maxTags === undefined || tags.length < maxTags)) {
+                                                    setTags([...tags, optionObj]);
+                                                    onTagAdd?.(optionObj.text);
                                                     setTagCount((prevTagCount) => prevTagCount + 1);
                                                 }
                                             }}
                                         >
-                                            {option}
+                                            {optionObj.text}
                                         </div>
                                     </CommandItem>
                                 ))}

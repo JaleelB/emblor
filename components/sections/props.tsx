@@ -1,10 +1,9 @@
 import React from "react";
-import { TagInput } from "../tag-input";
+import { Tag, TagInput } from "../tag-input";
 import { Label } from "../ui/label";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -12,22 +11,27 @@ import {
 } from "@/components/ui/table"
 import { propOption, tagInputProps } from "@/codeSnippets";
 import { cn } from "@/lib/utils";
+import { v4 as uuid } from 'uuid';
   
 
 export default function Props(){
     
-    const tags = ["Sports", "Travel", "Programming", "Gaming", "Music"];
-    const [autocompleteTags, setAutocompleteTags] = React.useState<string[]>(tags);
-    const [maxTags, setMaxTags] = React.useState<string[]>(tags);
-    const [truncateTags, setTruncateTags] = React.useState<string[]>(tags);
-    const [allowDuplicatesTags, setAllowDuplicatesTags] = React.useState<string[]>(tags);
+    const tags: Tag[] = [
+        {id: uuid(), text: "Sports"}, 
+        {id: uuid(), text: "Programming"},
+        {id: uuid(), text: "Travel"},
+    ];
+    const [autocompleteTags, setAutocompleteTags] = React.useState<Tag[]>([]);
+    const [maxTags, setMaxTags] = React.useState<Tag[]>([]);
+    const [truncateTags, setTruncateTags] = React.useState<Tag[]>(tags);
+    const [allowDuplicatesTags, setAllowDuplicatesTags] = React.useState<Tag[]>([]);
 
     const autoCompleteOptions = [
        ...tags,
-        "Art",
-        "Food",
-        "Movies",
-        "TV",
+        {id: uuid(), text: "Food"},
+        {id: uuid(), text: "Movies"},
+        {id: uuid(), text: "Art"},
+        {id: uuid(), text: "Books"},
     ]
 
     return (

@@ -7,7 +7,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { TagInput } from '@/components/tag-input'
+import { Tag, TagInput } from '@/components/tag-input'
 import Link from 'next/link'
 import { Button, buttonVariants } from "@/components/ui/button"
 import { z } from "zod"
@@ -17,8 +17,11 @@ import React from "react"
 import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
-    topics: z.array(z.string()),
-})
+    topics: z.array(z.object({
+        id: z.string(),
+        text: z.string()
+    })),
+});
   
 export default function Hero(){
 
@@ -26,7 +29,7 @@ export default function Hero(){
         resolver: zodResolver(FormSchema)
     })
 
-    const [tags, setTags] = React.useState<string[]>([]);
+    const [tags, setTags] = React.useState<Tag[]>([]);
 
     const { setValue } = form;
 
@@ -81,7 +84,7 @@ export default function Hero(){
                                                 className='sm:min-w-[450px]'
                                                 setTags={(newTags) => {
                                                     setTags(newTags);
-                                                    setValue("topics", newTags as [string, ...string[]]);
+                                                    setValue("topics", newTags as [Tag, ...Tag[]]);
                                                 }} 
                                             />
                                         </FormControl>

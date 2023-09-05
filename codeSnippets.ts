@@ -153,14 +153,14 @@ export const tagInputProps: propOption[] = [
   },
   {
     option: "tags",
-    type: "Array",
+    type: "Array<{ id: string, text: string }>",
     default: "[]",
     description: "An array of tags that are displayed as pre-selected."
   },
   {
     option: "setTags",
-    type: "React.Dispatch<React.SetStateAction<string[]>>",
-    default: "null",
+    type: "React.Dispatch<React.SetStateAction<{ id: string, text: string }[]>>",
+    default: "[]",
     description: "Function to set the state of tags."
   },
   {
@@ -171,7 +171,7 @@ export const tagInputProps: propOption[] = [
   },
   {
     option: "autocompleteOptions",
-    type: "Array",
+    type: "Array<{ id: string, text: string }>",
     default: "[]",
     description: "List of options for autocomplete. Must be used with enableAutocomplete."
   },
