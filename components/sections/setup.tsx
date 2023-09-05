@@ -11,7 +11,7 @@ export default function Setup(){
     return (
         <section className="max-w-5xl w-full py-8">
           <h2 className='font-heading mt-12 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0'>Setup</h2>
-          <div>
+          <div className="w-full">
             <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Install Shadcn via CLI</h3>
             <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
               Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code> init command to setup your project:
@@ -45,7 +45,7 @@ export default function Setup(){
               </pre>
             </div> 
           </div>
-          <div>
+          <div className="w-full">
             <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>
               Install Shadcn&apos;s input component:
             </h3>
@@ -81,7 +81,7 @@ export default function Setup(){
               </pre>
             </div> 
           </div>
-          <div>
+          <div className="w-full">
             <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>
               Create a new tag input component:
             </h3>
