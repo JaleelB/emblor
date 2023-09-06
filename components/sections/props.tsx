@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { propOption, tagInputProps } from "@/codeSnippets";
+import { propOption, tagInputProps } from "@/utils/utils";
 import { cn } from "@/lib/utils";
 import { v4 as uuid } from 'uuid';
   
