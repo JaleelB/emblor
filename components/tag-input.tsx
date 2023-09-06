@@ -228,7 +228,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     : displayedTags;
 
     return (
-        <div>
+        <div className='w-full'>
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
                 {truncatedTags.map((tagObj) => (
                     <span 

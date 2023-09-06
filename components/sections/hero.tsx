@@ -76,7 +76,7 @@ export default function Hero(){
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col items-start">
                                         <FormLabel className="text-left">Topics</FormLabel>
-                                        <FormControl>
+                                        <FormControl className="w-full">
                                             <TagInput
                                                 {...field}
                                                 placeholder="Enter a topic"
@@ -88,7 +88,7 @@ export default function Hero(){
                                                 }} 
                                             />
                                         </FormControl>
-                                        <FormDescription>
+                                        <FormDescription className="text-left">
                                             These are the topics that you&apos;re interested in.
                                         </FormDescription>
                                         <FormMessage />
