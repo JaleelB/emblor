@@ -8,15 +8,6 @@ import { Copy } from "lucide-react";
 export default function Usage(){
 
     const { isCopied, copyToClipboard } = useClipboard();
-    // const [tagInputCodeDemo, setTagInputCodeDemo] = React.useState('');
-
-    // React.useEffect(() => {
-    //   const fetchCode = async () => {
-    //     const code = await getTagInputDemoCode();
-    //     setTagInputCodeDemo(code.code.tagInputDemoCode);
-    //   };
-    //   fetchCode();
-    // }, []);
     
     return (
         <section id="usage" className="max-w-5xl w-full py-8">
