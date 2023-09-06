@@ -2,21 +2,21 @@ import useClipboard from "@/hooks/use-copy";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import React from "react";
-import { getTagInputDemoCode } from "@/app/code-snippets";
+import { tagInputDemoCode } from "@/app/code-snippets";
 import { Copy } from "lucide-react";
 
 export default function Usage(){
 
     const { isCopied, copyToClipboard } = useClipboard();
-    const [tagInputCodeDemo, setTagInputCodeDemo] = React.useState('');
+    // const [tagInputCodeDemo, setTagInputCodeDemo] = React.useState('');
 
-    React.useEffect(() => {
-      const fetchCode = async () => {
-        const code = await getTagInputDemoCode();
-        setTagInputCodeDemo(code.code.tagInputDemoCode);
-      };
-      fetchCode();
-    }, []);
+    // React.useEffect(() => {
+    //   const fetchCode = async () => {
+    //     const code = await getTagInputDemoCode();
+    //     setTagInputCodeDemo(code.code.tagInputDemoCode);
+    //   };
+    //   fetchCode();
+    // }, []);
     
     return (
         <section id="usage" className="max-w-5xl w-full py-8">
@@ -27,7 +27,7 @@ export default function Usage(){
                         className='absolute z-40 top-2 right-2 px-3 hover:bg-white/40'
                         variant='ghost'
                         onClick={async() =>{
-                            await copyToClipboard(tagInputCodeDemo);
+                            await copyToClipboard(tagInputDemoCode);
                             if(isCopied){
                                 toast({
                                     title: 'Copied to clipboard',
@@ -42,7 +42,7 @@ export default function Usage(){
                     <pre className="relative mb-4 mt-6 max-h-[650px] overflow-y-auto rounded-lg border bg-zinc-950 p-8 dark:bg-zinc-900">
                         
                         <code className="relative w-full rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4 max-h-[350px]">
-                            {tagInputCodeDemo.split('\n').map((line: string, index: number) => (
+                            {tagInputDemoCode.split('\n').map((line: string, index: number) => (
                                 <React.Fragment key={index}>
                                     {line}
                                     <br />

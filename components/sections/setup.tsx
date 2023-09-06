@@ -2,22 +2,22 @@ import useClipboard from "@/hooks/use-copy";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import React from "react";
-import { getTagInputCode } from "@/app/code-snippets";
+import { tagInputCode } from "@/app/code-snippets";
 import { Check, Copy } from "lucide-react";
 
 
 export default function Setup(){
 
     const { isCopied, copyToClipboard } = useClipboard();
-    const [tagInputCode, setTagInputCode] = React.useState('');
+    // const [tagInputCode, setTagInputCode] = React.useState('');
 
-    React.useEffect(() => {
-      const fetchCode = async () => {
-        const code = await getTagInputCode();
-        setTagInputCode(code.code.tagInputCode);
-      };
-      fetchCode();
-    }, []);
+    // React.useEffect(() => {
+    //   const fetchCode = async () => {
+    //     const code = await getTagInputCode();
+    //     setTagInputCode(code.code.tagInputCode);
+    //   };
+    //   fetchCode();
+    // }, []);
 
     return (
         <section id="setup" className="max-w-5xl w-full py-8">
