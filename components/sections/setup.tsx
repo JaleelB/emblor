@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import React from "react";
 import { getTagInputCode } from "@/app/code-snippets";
+import { Check, Copy } from "lucide-react";
 
 
 export default function Setup(){
@@ -42,12 +43,7 @@ export default function Setup(){
                     }
                 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
-                    <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
-                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                    </g>
-                  </svg>
+                  <Copy className="text-white/70 h-4 w-4"/>
                 </Button>
                 <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
                   npx shadcn-ui@latest init
@@ -63,33 +59,30 @@ export default function Setup(){
               Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code> add command to add the necessary shadcn components to your project:
             </p>
             <div data-rehype-pretty-code-fragment="">
-              <pre className="relative mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 dark:bg-zinc-900">
+              <pre className="relative mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 py-4 px-2 dark:bg-zinc-900">
               <Button 
-                  className='absolute top-2 right-2 px-3 hover:bg-white/40'
+                  className='absolute top-2 right-2 px-3 hover:bg-white/40 cursor-pointer'
                   variant='ghost'
                   onClick={async() =>{
                     await copyToClipboard('npx shadcn-ui@latest add input');
                     if(isCopied){
-                        toast({
-                            title: 'Copied to clipboard',
-                            description: 'The command has been copied to your clipboard.',
-                            variant: 'default'
-                        });
+                      toast({
+                          title: 'Copied to clipboard',
+                          description: 'The command has been copied to your clipboard.',
+                          variant: 'default'
+                      });
                     }
                 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
-                    <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
-                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                    </g>
-                  </svg>
+                  <Copy className="text-white/70 h-4 w-4"/>
                 </Button>
                 <code className="relative rounded bg-transparent text-white py-[0.2rem] font-mono text-sm px-4">
-                  npx shadcn-ui@latest add input
-                  npx shadcn-ui@latest add button
-                  npx shadcn-ui@latest add command
-                  npx shadcn-ui@latest add toast
+                  {`npx shadcn-ui@latest add input\n npx shadcn-ui@latest add button\n npx shadcn-ui@latest add command\n npx shadcn-ui@latest add toast`.split('\n').map((line: string, index:number) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
                 </code>
               </pre>
             </div> 
@@ -116,12 +109,7 @@ export default function Setup(){
                       }
                   }}
               >
-                      <svg xmlns="http://www.w3.org/2000/svg" className='h-4 w-4' viewBox="0 0 24 24">
-                          <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
-                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
-                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                          </g>
-                      </svg>
+                <Copy className="text-white/70 h-4 w-4"/>
               </Button>
               <pre className="relative mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 p-4 dark:bg-zinc-900">
                 <code 

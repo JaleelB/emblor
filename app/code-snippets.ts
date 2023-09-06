@@ -22,5 +22,5 @@ export async function getTagInputDemoCode() {
         tagInputDemoCode,
       },
     };
-  }
+}
 
