@@ -100,7 +100,7 @@ export default function Props(){
                 </div>
            </div>
            <div className="w-full">
-                <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Allow dupplicate tags</h3>
+                <h3 className='font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight'>Allow duplicate tags</h3>
                 <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
                     Allow duplicate tags to be added to the tag input.
                 </p>
