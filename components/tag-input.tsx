@@ -118,7 +118,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { 
+    const {
+        id,
         placeholder, 
         tags, 
         setTags, 
@@ -293,6 +294,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 <>
                     <Input
                         ref={inputRef}
+                        id={id}
                         type="text"
                         placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                         value={inputValue}
