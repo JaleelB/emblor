@@ -160,4 +160,22 @@ export const tagInputProps: propOption[] = [
     description:
       "A callback function that is used to render custom tag elements. This function receives a tag object as an argument and should return a React element representing the custom-rendered tag.",
   },
+  {
+    option: "onFocus",
+    type: "Function",
+    default: "null",
+    description: "Function to be called when the input field gains focus.",
+  },
+  {
+    option: "onBlur",
+    type: "Function",
+    default: "null",
+    description: "Function to be called when the input field loses focus.",
+  },
+  {
+    option: "",
+    type: "",
+    default: "",
+    description: "",
+  },
 ];

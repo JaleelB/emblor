@@ -123,6 +123,8 @@ export interface TagInputProps
   direction?: "row" | "column";
   onInputChange?: (value: string) => void;
   customTagRenderer?: (tag: Tag) => React.ReactNode;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -160,6 +162,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       direction = "row",
       onInputChange,
       customTagRenderer,
+      onFocus,
+      onBlur,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -269,36 +273,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             { "mb-3": tags.length !== 0 }
           )}
         >
-          {/* {truncatedTags.map((tagObj) => (
-            <span
-              key={tagObj.id}
-              className={cn(
-                tagVariants({
-                  variant,
-                  size,
-                  shape,
-                  borderStyle,
-                  textCase,
-                  interaction,
-                  animation,
-                  textStyle,
-                }),
-                {
-                  "justify-between": direction === "column",
-                }
-              )}
-            >
-              {tagObj.text}
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => removeTag(tagObj.id)}
-                className={cn("py-1 px-3 h-full hover:bg-transparent")}
-              >
-                <X size={14} />
-              </Button>
-            </span>
-          ))} */}
           {truncatedTags.map((tagObj) =>
             customTagRenderer ? (
               customTagRenderer(tagObj)
@@ -341,6 +315,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                     : placeholder
                 }
                 disabled={maxTags !== undefined && tags.length >= maxTags}
+                onFocus={onFocus}
+                onBlur={onBlur}
               />
               <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
@@ -404,6 +380,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              onFocus={onFocus}
+              onBlur={onBlur}
               className={className}
               autoComplete={enableAutocomplete ? "on" : "off"}
               list={enableAutocomplete ? "autocomplete-options" : undefined}
