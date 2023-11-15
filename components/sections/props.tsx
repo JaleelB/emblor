@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { propOption, tagInputProps } from "@/utils/utils";
 import { cn } from "@/lib/utils";
 import { v4 as uuid } from "uuid";
+import { CheckCircle } from "lucide-react";
 
 export default function Props() {
   const tags: Tag[] = [
@@ -27,6 +28,7 @@ export default function Props() {
     []
   );
   const [directionTags, setDirectionTags] = React.useState<Tag[]>(tags);
+  const [customRenderTags, setCustomRenderTags] = React.useState<Tag[]>(tags);
 
   const autoCompleteOptions = [
     ...tags,
@@ -35,6 +37,19 @@ export default function Props() {
     { id: uuid(), text: "Art" },
     { id: uuid(), text: "Books" },
   ];
+
+  const renderCustomTag = (tag: Tag) => {
+    return (
+      <div
+        key={tag.id}
+        className={`flex items-center gap-2 p-2 rounded bg-blue-500
+        }`}
+      >
+        <CheckCircle size={16} className="text-white" />
+        <span className="text-white text-sm mr-2">{tag.text}</span>
+      </div>
+    );
+  };
 
   return (
     <section id="props" className="max-w-5xl w-full py-8">
@@ -59,6 +74,29 @@ export default function Props() {
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
                 setAutocompleteTags(newTags);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-full">
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
+          Custom tag render
+        </h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+          Replace the standard tag appearance with your own custom-designed
+          tags.
+        </p>
+        <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
+          <div className="space-y-2">
+            <Label htmlFor="">Topics</Label>
+            <TagInput
+              placeholder="Enter a topic"
+              tags={customRenderTags}
+              customTagRenderer={renderCustomTag}
+              className="sm:min-w-[450px]"
+              setTags={(newTags) => {
+                setCustomRenderTags(newTags);
               }}
             />
           </div>

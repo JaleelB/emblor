@@ -153,4 +153,11 @@ export const tagInputProps: propOption[] = [
     description:
       "A callback function that is called whenever the input value changes.",
   },
+  {
+    option: "customTagRenderer",
+    type: "Function",
+    default: "null",
+    description:
+      "A callback function that is used to render custom tag elements. This function receives a tag object as an argument and should return a React element representing the custom-rendered tag.",
+  },
 ];

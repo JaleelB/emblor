@@ -122,6 +122,7 @@ export interface TagInputProps
   autocompleteFilter?: (option: string) => boolean;
   direction?: "row" | "column";
   onInputChange?: (value: string) => void;
+  customTagRenderer?: (tag: Tag) => React.ReactNode;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -158,6 +159,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       maxLength,
       direction = "row",
       onInputChange,
+      customTagRenderer,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -181,7 +183,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setInputValue(newValue);
-      props.onInputChange?.(newValue);
+      onInputChange?.(newValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -267,7 +269,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             { "mb-3": tags.length !== 0 }
           )}
         >
-          {truncatedTags.map((tagObj) => (
+          {/* {truncatedTags.map((tagObj) => (
             <span
               key={tagObj.id}
               className={cn(
@@ -296,7 +298,38 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 <X size={14} />
               </Button>
             </span>
-          ))}
+          ))} */}
+          {truncatedTags.map((tagObj) =>
+            customTagRenderer ? (
+              customTagRenderer(tagObj)
+            ) : (
+              <span
+                key={tagObj.id}
+                className={cn(
+                  tagVariants({
+                    variant,
+                    size,
+                    shape,
+                    borderStyle,
+                    textCase,
+                    interaction,
+                    animation,
+                    textStyle,
+                  })
+                )}
+              >
+                {tagObj.text}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => removeTag(tagObj.id)}
+                  className={cn("py-1 px-3 h-full hover:bg-transparent")}
+                >
+                  <X size={14} />
+                </Button>
+              </span>
+            )
+          )}
         </div>
         {enableAutocomplete ? (
           <>
