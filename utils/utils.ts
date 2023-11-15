@@ -173,9 +173,9 @@ export const tagInputProps: propOption[] = [
     description: "Function to be called when the input field loses focus.",
   },
   {
-    option: "",
-    type: "",
-    default: "",
-    description: "",
+    option: "onTagClick",
+    type: "Function",
+    default: "null",
+    description: "A callback function to be called when a tag is clicked",
   },
 ];

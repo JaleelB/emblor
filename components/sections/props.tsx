@@ -192,7 +192,7 @@ export default function Props() {
               <TagInput
                 placeholder="Enter a topic"
                 tags={directionTags}
-                size="sm"
+                size="md"
                 className="sm:min-w-[450px]"
                 setTags={(newTags) => {
                   setDirectionTags(newTags);

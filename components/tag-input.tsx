@@ -125,6 +125,7 @@ export interface TagInputProps
   customTagRenderer?: (tag: Tag) => React.ReactNode;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onTagClick?: (tag: Tag) => void;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -164,6 +165,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       customTagRenderer,
       onFocus,
       onBlur,
+      onTagClick,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -289,8 +291,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                     interaction,
                     animation,
                     textStyle,
-                  })
+                  }),
+                  {
+                    "justify-between": direction === "column",
+                  }
                 )}
+                onClick={() => onTagClick?.(tagObj)}
               >
                 {tagObj.text}
                 <Button
