@@ -39,7 +39,7 @@ import React from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';                                                    
+import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
     Command,
@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/command"
 import { toast } from './ui/use-toast';
 import { v4 as uuid } from 'uuid';
-  
+
 
 const tagVariants = cva(
   'transition-all border inline-flex items-center text-sm pl-2 rounded-md',
@@ -130,7 +130,7 @@ export type Tag = {
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
     placeholder?: string;
     tags: Tag[];
-    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;  
+    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
     enableAutocomplete?: boolean;
     autocompleteOptions?: Tag[];
     maxTags?: number;
@@ -155,15 +155,15 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
 
-    const { 
-        placeholder, 
-        tags, 
-        setTags, 
-        variant, 
-        size, 
+    const {
+        placeholder,
+        tags,
+        setTags,
+        variant,
+        size,
         shape,
-        className, 
-        enableAutocomplete, 
+        className,
+        enableAutocomplete,
         autocompleteOptions,
         maxTags,
         delimiter = Delimiter.Comma,
@@ -179,8 +179,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         autocompleteFilter,
         borderStyle,
         textCase,
-        interaction, 
-        animation, 
+        interaction,
+        animation,
         textStyle,
         minLength,
         maxLength,
@@ -208,7 +208,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         if (delimiterList ? delimiterList.includes(e.key) : e.key === delimiter || e.key === Delimiter.Enter) {
             e.preventDefault();
             const newTagText = inputValue.trim();
-        
+
             if (validateTag && !validateTag(newTagText)) {
                 return;
             }
@@ -222,7 +222,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 })
                 return;
             }
-        
+
             // Validate maxLength
             if (maxLength && newTagText.length > maxLength) {
                 toast({
@@ -233,18 +233,18 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 console.warn("Tag is too long");
                 return;
             }
-        
-            const newTagId = uuid(); 
+
+            const newTagId = uuid();
 
             if (newTagText && (allowDuplicates || !tags.some(tag => tag.text === newTagText)) && (maxTags === undefined || tags.length < maxTags)) {
-                setTags([...tags, { id: newTagId, text: newTagText }]); 
+                setTags([...tags, { id: newTagId, text: newTagText }]);
                 onTagAdd?.(newTagText);
                 setTagCount((prevTagCount) => prevTagCount + 1);
             }
             setInputValue('');
         }
     };
-    
+
     const removeTag = (idToRemove: string) => {
         setTags(tags.filter((tag) => tag.id !== idToRemove));
         onTagRemove?.(tags.find(tag => tag.id === idToRemove)?.text || '');
@@ -268,17 +268,17 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         <div>
             <div className={`flex flex-wrap gap-2 rounded-md ${tags.length !== 0 && 'mb-3'}`}>
                 {truncatedTags.map((tagObj) => (
-                    <span 
-                        key={tagObj.id} 
-                        className={cn(tagVariants({ 
-                            variant, size, shape, 
+                    <span
+                        key={tagObj.id}
+                        className={cn(tagVariants({
+                            variant, size, shape,
                             borderStyle, textCase,
-                            interaction, animation, textStyle 
+                            interaction, animation, textStyle
                         }))}
                     >
                         {tagObj.text}
                         <Button
-                            type="button" 
+                            type="button"
                             variant="ghost"
                             onClick={() => removeTag(tagObj.id)}
                             className={cn("py-1 px-3 h-full hover:bg-transparent")}
@@ -291,15 +291,15 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             {enableAutocomplete ? (
                 <>
                     <Command className='border mt-2 sm:min-w-[450px]'>
-                        <CommandInput 
-                            placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}  
+                        <CommandInput
+                            placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                             disabled={maxTags !== undefined && tags.length >= maxTags}
                         />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup heading="Suggestions">
                                 {filteredAutocompleteOptions?.map((optionObj) => (
-                                    <CommandItem 
+                                    <CommandItem
                                         key={uuid()}
                                         className={`${maxTags !== undefined && tags.length >= maxTags ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
@@ -320,7 +320,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                             </CommandGroup>
                         </CommandList>
                     </Command>
-                    {maxTags && 
+                    {maxTags &&
                         <div className='flex'>
                             <span className='text-muted-foreground text-sm mt-1 ml-auto'>{`${tagCount}`}/{`${maxTags}`}</span>
                         </div>
@@ -383,7 +383,7 @@ const FormSchema = z.object({
       text: z.string()
   })),
 });
-  
+
 export default function Hero(){
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -411,13 +411,13 @@ export default function Hero(){
             <h1 className='scroll-m-20 text-4xl font-bold tracking-tight'>Shadcn Tag Input</h1>
             <p className='text-muted-foreground max-w-[450px]'>An implementation of a Tag Input component built on top of Shadcn UI&apos;s input component.</p>
             <div className='flex gap-2 mt-1'>
-                <Link 
+                <Link
                     href="#try"
                     className={`${buttonVariants({ variant: "default", size: "lg" })} min-w-[150px] shadow-sm`}
                 >
                     Try it out
                 </Link>
-                <Link 
+                <Link
                     href="https://github.com/JaleelB/shadcn-tag-input"
                     className={`${buttonVariants({ variant: "secondary", size: "lg" })} shadow-sm`}
                 >
@@ -446,7 +446,7 @@ export default function Hero(){
                                             setTags={(newTags) => {
                                                 setTags(newTags);
                                                 setValue("topics", newTags as [Tag, ...Tag[]]);
-                                            }} 
+                                            }}
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -474,6 +474,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Variant
 
 #### Default
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -484,6 +485,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Primary
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -494,6 +496,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Destructive
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -506,6 +509,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Size
 
 #### Small (sm)
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -516,6 +520,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Medium (md)
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -526,6 +531,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Large (lg)
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -536,6 +542,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Extra Large (xl)
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -548,6 +555,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Shape
 
 #### Default
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -558,6 +566,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Rounded
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -568,6 +577,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Square
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -578,6 +588,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Pill
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -590,6 +601,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Border Style
 
 #### Default
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -600,6 +612,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### None
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -612,6 +625,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Text Case
 
 #### Uppercase
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -622,6 +636,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Lowercase
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -632,6 +647,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Capitalize
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -644,6 +660,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Interaction
 
 #### Clickable
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -654,6 +671,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Non-Clickable
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -666,6 +684,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Animation
 
 #### None
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -676,6 +695,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Fade In
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -686,6 +706,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Slide In
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -696,6 +717,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Bounce
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -708,6 +730,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ### Text Style
 
 #### Normal
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -718,6 +741,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Bold
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -728,6 +752,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Italic
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -738,6 +763,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Underline
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -748,6 +774,7 @@ This section describes the various variants you can use with the `TagInput` comp
 ```
 
 #### Line Through
+
 ```jsx
 <TagInput
   placeholder="Enter a topic"
@@ -757,31 +784,35 @@ This section describes the various variants you can use with the `TagInput` comp
 />
 ```
 
-
 ## Props
-| Option               | Type                                      | Default | Description                                                    |
-|----------------------|-------------------------------------------|---------|----------------------------------------------------------------|
-| placeholder          | string                                    | `""`    | Placeholder text for the input.                                 |
-| tags                 | Array<{ id: string, text: string }>                                     | `[]`    | An array of tags that are displayed as pre-selected.           |
-| setTags              | React.Dispatch<React.SetStateAction<{ id: string, text: string }[]>> | `null`  | Function to set the state of tags.                              |
-| enableAutocomplete    | boolean                                   | `false` | Enable autocomplete feature. Must be used with autocompleteOptions. |
-| autocompleteOptions   | Array<{ id: string, text: string }>                                     | `[]`    | List of options for autocomplete. Must be used with enableAutocomplete. |
-| maxTags              | number                                    | `null`  | Maximum number of tags allowed.                                 |
-| minTags              | number                                    | `null`  | Minimum number of tags required.                                |
-| readOnly             | boolean                                   | `false` | Make the input read-only.                                       |
-| disabled             | boolean                                   | `false` | Disable the input.                                             |
-| onTagAdd             | Function                                  | `null`  | Callback function when a tag is added.                          |
-| onTagRemove          | Function                                  | `null`  | Callback function when a tag is removed.                        |
-| allowDuplicates      | boolean                                   | `false` | Allow duplicate tags.                                           |
-| maxLength            | number                                    | `null`  | Maximum length of a tag.                                        |
-| minLength            | number                                    | `null`  | Maximum length of a tag.                                        |
-| validateTag          | Function                                  | `null`  | Function to validate a tag.                                     |
-| delimiter            | Delimiter                                 | `null`  | Character used to separate tags.                                |
-| showCount            | boolean                                   | `false` | Show the count of tags.                                         |
-| placeholderWhenFull  | string                                    | `""`    | Placeholder text when tag limit is reached.                     |
-| sortTags            | boolean                                   | `false` | Sort tags alphabetically.                                       |
-| delimiterList        | Array                                     | `[]`    | List of characters that can be used as delimiters.              |
-| truncate             | number                                    | `null`  | Truncate tag text to a certain length.                           |
-| autocompleteFilter   | Function                                  | `null`  | Function to filter autocomplete options.                         |
 
-
+| Option              | Type                                                                 | Default | Description                                                                                                                                                                                |
+| ------------------- | -------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| placeholder         | string                                                               | `""`    | Placeholder text for the input.                                                                                                                                                            |
+| tags                | Array<{ id: string, text: string }>                                  | `[]`    | An array of tags that are displayed as pre-selected.                                                                                                                                       |
+| setTags             | React.Dispatch<React.SetStateAction<{ id: string, text: string }[]>> | `null`  | Function to set the state of tags.                                                                                                                                                         |
+| enableAutocomplete  | boolean                                                              | `false` | Enable autocomplete feature. Must be used with autocompleteOptions.                                                                                                                        |
+| autocompleteOptions | Array<{ id: string, text: string }>                                  | `[]`    | List of options for autocomplete. Must be used with enableAutocomplete.                                                                                                                    |
+| maxTags             | number                                                               | `null`  | Maximum number of tags allowed.                                                                                                                                                            |
+| minTags             | number                                                               | `null`  | Minimum number of tags required.                                                                                                                                                           |
+| readOnly            | boolean                                                              | `false` | Make the input read-only.                                                                                                                                                                  |
+| disabled            | boolean                                                              | `false` | Disable the input.                                                                                                                                                                         |
+| onTagAdd            | Function                                                             | `null`  | Callback function when a tag is added.                                                                                                                                                     |
+| onTagRemove         | Function                                                             | `null`  | Callback function when a tag is removed.                                                                                                                                                   |
+| allowDuplicates     | boolean                                                              | `false` | Allow duplicate tags.                                                                                                                                                                      |
+| maxLength           | number                                                               | `null`  | Maximum length of a tag.                                                                                                                                                                   |
+| minLength           | number                                                               | `null`  | Maximum length of a tag.                                                                                                                                                                   |
+| validateTag         | Function                                                             | `null`  | Function to validate a tag.                                                                                                                                                                |
+| delimiter           | Delimiter                                                            | `null`  | Character used to separate tags.                                                                                                                                                           |
+| showCount           | boolean                                                              | `false` | Show the count of tags.                                                                                                                                                                    |
+| placeholderWhenFull | string                                                               | `""`    | Placeholder text when tag limit is reached.                                                                                                                                                |
+| sortTags            | boolean                                                              | `false` | Sort tags alphabetically.                                                                                                                                                                  |
+| delimiterList       | Array                                                                | `[]`    | List of characters that can be used as delimiters.                                                                                                                                         |
+| truncate            | number                                                               | `null`  | Truncate tag text to a certain length.                                                                                                                                                     |
+| autocompleteFilter  | Function                                                             | `null`  | Function to filter autocomplete options.                                                                                                                                                   |
+| direction           | string                                                               | `row`   | FLayout direction of the tag inputs.                                                                                                                                                       |
+| onInputChange       | Function                                                             | `null`  | A callback function that is called whenever the input value changes.                                                                                                                       |
+| customTagRenderer   | Function                                                             | `null`  | A callback function that is used to render custom tag elements. This function receives a tag object as an argument and should return a React element representing the custom-rendered tag. |
+| onFocus             | Function                                                             | `null`  | Function to be called when the input field gains focus.                                                                                                                                    |
+| onBlur              | Function                                                             | `null`  | Function to be called when the input field loses focus.                                                                                                                                    |
+| onTagClick          | Function                                                             | `null`  | A callback function to be called when a tag is clicked                                                                                                                                     |
