@@ -302,7 +302,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => removeTag(tagObj.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event from bubbling up to the tag span
+                    removeTag(tagObj.id);
+                  }}
                   className={cn("py-1 px-3 h-full hover:bg-transparent")}
                 >
                   <X size={14} />
