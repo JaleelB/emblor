@@ -121,6 +121,7 @@ export interface TagInputProps
   value?: string | number | readonly string[] | { id: string; text: string }[];
   autocompleteFilter?: (option: string) => boolean;
   direction?: "row" | "column";
+  onInputChange?: (value: string) => void;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -156,6 +157,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       minLength,
       maxLength,
       direction = "row",
+      onInputChange,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -177,7 +179,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
+      const newValue = e.target.value;
+      setInputValue(newValue);
+      props.onInputChange?.(newValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

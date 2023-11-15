@@ -146,4 +146,11 @@ export const tagInputProps: propOption[] = [
     default: "row",
     description: "Layout direction of the tag inputs.",
   },
+  {
+    option: "onInputChange",
+    type: "Function",
+    default: "null",
+    description:
+      "A callback function that is called whenever the input value changes.",
+  },
 ];
