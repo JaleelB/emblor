@@ -31,7 +31,7 @@ function CodeBlock({
     <Highlight theme={themeToggle()} code={value} language="tsx">
       {({ style, tokens, getLineProps, getTokenProps }) => (
         <pre
-          style={style}
+          style={{ ...style, maxHeight: "500px", overflowY: "auto" }}
           className={cn(
             `relative h-full w-full whitespace-pre-wrap rounded-lg p-4 text-sm
           } `,
