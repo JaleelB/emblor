@@ -1,14 +1,15 @@
-import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { siteConfig } from './site-config';
-import { Analytics } from '@vercel/analytics/react';
+import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { siteConfig } from "./site-config";
+import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "@/components/theme-provider";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Shadcn Tag Input',
+  title: "Shadcn Tag Input",
   description: `A tag input component implementation of Shadcn's input component`,
   keywords: [
     "shadcn",
@@ -23,11 +24,11 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "jaleelb",
+      name: "Jaleel Bennett",
       url: "https://jaleelbennett.com",
     },
   ],
-  creator: "jaleelb",
+  creator: "Jaleel Bennett",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
@@ -46,20 +47,27 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     creator: "@jal_eelll",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
-        <Analytics/>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+        <Analytics />
         <Toaster />
       </body>
     </html>
-  )
+  );
 }

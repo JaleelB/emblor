@@ -19,7 +19,7 @@ export default function Setup() {
           </code>{" "}
           init command to setup your project:
         </p>
-        <CodeBlock value={"npx shadcn-ui@latest init"} />
+        <CodeBlock value={"npx shadcn-ui@latest init"} className="mt-2" />
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
@@ -34,6 +34,7 @@ export default function Setup() {
         </p>
         <div data-rehype-pretty-code-fragment="">
           <CodeBlock
+            className="mt-2"
             value={`npx shadcn-ui@latest add input\nnpx shadcn-ui@latest add button\nnpx shadcn-ui@latest add command\nnpx shadcn-ui@latest add toast`}
           />
         </div>
@@ -45,7 +46,7 @@ export default function Setup() {
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Copy and paste the folowing code into a new file:
         </p>
-        <CodeBlock value={tagInputCode} className="relative w-full" />
+        <CodeBlock value={tagInputCode} className="relative w-full mt-2" />
       </div>
     </section>
   );
