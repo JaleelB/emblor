@@ -71,9 +71,9 @@ const tagVariants = cva(
       },
       shape: {
         default: "rounded-sm",
-        rounded: "rounded-full",
+        rounded: "rounded-lg",
         square: "rounded-none",
-        pill: "rounded-lg",
+        pill: "rounded-full",
       },
       borderStyle: {
         default: "border-solid",
@@ -669,7 +669,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="rounded-full"
+  className="rounded-lg"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -691,7 +691,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="rounded-lg"
+  className="rounded-full"
   setTags={(newTags) => setTags(newTags)}
 />
 ```

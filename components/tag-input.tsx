@@ -34,9 +34,9 @@ const tagVariants = cva(
       },
       shape: {
         default: "rounded-sm",
-        rounded: "rounded-full",
+        rounded: "rounded-lg",
         square: "rounded-none",
-        pill: "rounded-lg",
+        pill: "rounded-full",
       },
       borderStyle: {
         default: "border-solid",
