@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/command";
 import { toast } from "./ui/use-toast";
 import { v4 as uuid } from "uuid";
-import { on } from "events";
 
 const tagVariants = cva(
   "transition-all border inline-flex items-center text-sm pl-2 rounded-md",

@@ -71,9 +71,9 @@ const tagVariants = cva(
       },
       shape: {
         default: "rounded-sm",
-        rounded: "rounded-full",
+        rounded: "rounded-lg",
         square: "rounded-none",
-        pill: "rounded-lg",
+        pill: "rounded-full",
       },
       borderStyle: {
         default: "border-solid",
@@ -163,6 +163,7 @@ export interface TagInputProps
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
+  draggable?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -203,11 +204,16 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onFocus,
       onBlur,
       onTagClick,
+      draggable = false,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
     const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
+    const [dragOverTagId, setDragOverTagId] = React.useState<string | null>(
+      null
+    );
 
     if (
       (maxTags !== undefined && maxTags < 0) ||
@@ -284,6 +290,30 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       setTagCount((prevTagCount) => prevTagCount - 1);
     };
 
+    const handleDragStart = (id: string) => {
+      setDraggedTagId(id);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault(); // Necessary to allow dropping
+    };
+
+    const handleDrop = (id: string) => {
+      if (draggedTagId === null) return;
+
+      const draggedTagIndex = tags.findIndex((tag) => tag.id === draggedTagId);
+      const dropTargetIndex = tags.findIndex((tag) => tag.id === id);
+
+      if (draggedTagIndex === dropTargetIndex) return;
+
+      const newTags = [...tags];
+      const [reorderedTag] = newTags.splice(draggedTagIndex, 1);
+      newTags.splice(dropTargetIndex, 0, reorderedTag);
+
+      setTags(newTags);
+      setDraggedTagId(null);
+    };
+
     const filteredAutocompleteOptions = autocompleteFilter
       ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
       : autocompleteOptions;
@@ -318,6 +348,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             ) : (
               <span
                 key={tagObj.id}
+                draggable={draggable}
+                onDragStart={() => handleDragStart(tagObj.id)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(tagObj.id)}
                 className={cn(
                   tagVariants({
                     variant,
@@ -331,6 +365,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                   }),
                   {
                     "justify-between": direction === "column",
+                    "cursor-pointer": draggable,
                   }
                 )}
                 onClick={() => onTagClick?.(tagObj)}
