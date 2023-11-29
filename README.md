@@ -71,9 +71,9 @@ const tagVariants = cva(
       },
       shape: {
         default: "rounded-sm",
-        rounded: "rounded-lg",
+        rounded: "rounded-full",
         square: "rounded-none",
-        pill: "rounded-full",
+        pill: "rounded-lg",
       },
       borderStyle: {
         default: "border-solid",
@@ -588,7 +588,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="bg-primary border-primary text-primary-foreground hover:bg-primary/90"
+  variant="primary"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -599,7 +599,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90"
+  variant="destructive"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -612,7 +612,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="text-xs h-7"
+  size="sm"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -623,7 +623,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="text-sm h-8"
+  size="md"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -634,7 +634,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="text-base h-9"
+  size="lg"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -645,7 +645,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="text-lg h-10"
+  size="xl"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -669,7 +669,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="rounded-lg"
+  shape="rounded"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -680,7 +680,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="rounded-none"
+  shape="square"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -691,7 +691,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="rounded-full"
+  shape="pill"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -704,7 +704,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="border-solid"
+  borderStyle="default"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -715,7 +715,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="border-none"
+  borderStyle="none"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -728,7 +728,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="uppercase"
+  textCase="uppercase"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -739,7 +739,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="lowercase"
+  textCase="lowercase"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -750,7 +750,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="capitalize"
+  textCase="uppercase"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -763,7 +763,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="cursor-pointer hover:shadow-md"
+  interaction="clickable"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -774,7 +774,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="cursor-default"
+  interaction="nonClickable"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -787,7 +787,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className=""
+  animation="none"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -798,7 +798,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="animate-fadeIn"
+  animation="fadeIn"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -809,7 +809,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="animate-slideIn"
+  animation="slideIn"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -820,7 +820,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="animate-bounce"
+  animation="bounce"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -833,7 +833,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="font-normal"
+  textStyle="normal"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -844,7 +844,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="font-bold"
+  textStyle="bold"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -855,7 +855,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="italic"
+  textStyle="italic"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
@@ -877,7 +877,7 @@ This section describes the various variants you can use with the `TagInput` comp
 <TagInput
   placeholder="Enter a topic"
   tags={tags}
-  className="line-through"
+  textStyle="lineThrough"
   setTags={(newTags) => setTags(newTags)}
 />
 ```
