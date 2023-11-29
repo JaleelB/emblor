@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/command";
 import { toast } from "./ui/use-toast";
 import { v4 as uuid } from "uuid";
+import { on } from "events";
 
 const tagVariants = cva(
   "transition-all border inline-flex items-center text-sm pl-2 rounded-md",
@@ -126,6 +127,7 @@ export interface TagInputProps
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
+  draggable?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -166,11 +168,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onFocus,
       onBlur,
       onTagClick,
+      draggable = false,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
     const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
 
     if (
       (maxTags !== undefined && maxTags < 0) ||
@@ -247,6 +251,30 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       setTagCount((prevTagCount) => prevTagCount - 1);
     };
 
+    const handleDragStart = (id: string) => {
+      setDraggedTagId(id);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault(); // Necessary to allow dropping
+    };
+
+    const handleDrop = (id: string) => {
+      if (draggedTagId === null) return;
+
+      const draggedTagIndex = tags.findIndex((tag) => tag.id === draggedTagId);
+      const dropTargetIndex = tags.findIndex((tag) => tag.id === id);
+
+      if (draggedTagIndex === dropTargetIndex) return;
+
+      const newTags = [...tags];
+      const [reorderedTag] = newTags.splice(draggedTagIndex, 1);
+      newTags.splice(dropTargetIndex, 0, reorderedTag);
+
+      setTags(newTags);
+      setDraggedTagId(null);
+    };
+
     const filteredAutocompleteOptions = autocompleteFilter
       ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
       : autocompleteOptions;
@@ -281,6 +309,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             ) : (
               <span
                 key={tagObj.id}
+                draggable={draggable}
+                onDragStart={() => handleDragStart(tagObj.id)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(tagObj.id)}
                 className={cn(
                   tagVariants({
                     variant,
