@@ -178,4 +178,10 @@ export const tagInputProps: propOption[] = [
     default: "null",
     description: "A callback function to be called when a tag is clicked",
   },
+  {
+    option: "draggable",
+    type: "boolean",
+    default: "false",
+    description: "Enable drag and drop functionality.",
+  },
 ];
