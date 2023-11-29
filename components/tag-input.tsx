@@ -175,6 +175,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
+    const [dragOverTagId, setDragOverTagId] = React.useState<string | null>(
+      null
+    );
 
     if (
       (maxTags !== undefined && maxTags < 0) ||
@@ -326,6 +329,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                   }),
                   {
                     "justify-between": direction === "column",
+                    "cursor-pointer": draggable,
                   }
                 )}
                 onClick={() => onTagClick?.(tagObj)}
