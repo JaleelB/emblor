@@ -184,4 +184,10 @@ export const tagInputProps: propOption[] = [
     default: "false",
     description: "Enable drag and drop functionality.",
   },
+  {
+    option: "inputFieldPosition",
+    type: "string",
+    default: "bottom",
+    description: "Position of the input field in relation to the tags",
+  },
 ];

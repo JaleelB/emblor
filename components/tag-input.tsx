@@ -78,6 +78,19 @@ const tagVariants = cva(
   }
 );
 
+const tagInputVariants = cva("border rounded-md flex flex-wrap gap-2", {
+  variants: {
+    inputFieldPostion: {
+      bottom: "border-secondary",
+      top: "border-primary",
+      inline: "border-destructive",
+    },
+  },
+  defaultVariants: {
+    inputFieldPostion: "bottom",
+  },
+});
+
 export enum Delimiter {
   Comma = ",",
   Enter = "Enter",
@@ -127,6 +140,7 @@ export interface TagInputProps
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
   draggable?: boolean;
+  inputFieldPostion?: "bottom" | "top" | "inline";
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -168,15 +182,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onBlur,
       onTagClick,
       draggable = false,
+      inputFieldPostion = "bottom",
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
     const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
-    const [dragOverTagId, setDragOverTagId] = React.useState<string | null>(
-      null
-    );
 
     if (
       (maxTags !== undefined && maxTags < 0) ||
@@ -294,15 +306,23 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       : displayedTags;
 
     return (
-      <div className="w-full">
+      <div
+        className={`w-full flex gap-3 ${
+          inputFieldPostion === "bottom"
+            ? "flex-col"
+            : inputFieldPostion === "top"
+            ? "flex-col-reverse"
+            : "flex-row"
+        }`}
+      >
         <div
           className={cn(
             "rounded-md",
             {
               "flex flex-wrap gap-2": direction === "row",
               "flex flex-col gap-2": direction === "column",
-            },
-            { "mb-3": tags.length !== 0 }
+            }
+            // { "mb-3": tags.length !== 0 }
           )}
         >
           {truncatedTags.map((tagObj) =>
@@ -350,7 +370,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           )}
         </div>
         {enableAutocomplete ? (
-          <>
+          <div className="w-full">
             <Command className="border mt-2 sm:min-w-[450px]">
               <CommandInput
                 placeholder={
@@ -409,9 +429,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 </span>
               </div>
             )}
-          </>
+          </div>
         ) : (
-          <>
+          <div className="w-full">
             <Input
               ref={inputRef}
               id={id}
@@ -438,7 +458,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 </span>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     );

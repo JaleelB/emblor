@@ -31,6 +31,8 @@ export default function Props() {
   const [customRenderTags, setCustomRenderTags] = React.useState<Tag[]>(tags);
   const [allowDraggableTags, setAllowDraggableTags] =
     React.useState<Tag[]>(tags);
+  const [inputFieldPositionTags, setInputFieldPositionTags] =
+    React.useState<Tag[]>(tags);
 
   const autoCompleteOptions = [
     ...tags,
@@ -192,6 +194,66 @@ export default function Props() {
               }}
             />
           </div>
+        </div>
+      </div>
+      <div className="w-full">
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
+          Input field position
+        </h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+          Change the position of the input field to be inline or stacked in
+          relation to the tags.
+        </p>
+        <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
+          <Tabs defaultValue="bottom" className="w-full mt-4">
+            <TabsList
+              className={cn(
+                "mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start"
+              )}
+            >
+              <TabsTrigger value="bottom">Bottom</TabsTrigger>
+              <TabsTrigger value="top">Top</TabsTrigger>
+              <TabsTrigger value="inline">Inline</TabsTrigger>
+            </TabsList>
+            <TabsContent value="bottom" className="space-y-2">
+              <Label htmlFor="">Topics</Label>
+              <TagInput
+                placeholder="Enter a topic"
+                tags={inputFieldPositionTags}
+                size="md"
+                className="sm:min-w-[450px]"
+                setTags={(newTags) => {
+                  setInputFieldPositionTags(newTags);
+                }}
+              />
+            </TabsContent>
+            <TabsContent value="top" className="space-y-2">
+              <Label htmlFor="">Topics</Label>
+              <TagInput
+                placeholder="Enter a topic"
+                tags={directionTags}
+                size="md"
+                inputFieldPostion="top"
+                className="sm:min-w-[450px]"
+                setTags={(newTags) => {
+                  setDirectionTags(newTags);
+                }}
+              />
+            </TabsContent>
+            <TabsContent value="inline" className="space-y-2">
+              <Label htmlFor="">Topics</Label>
+              <TagInput
+                placeholder="Enter a topic"
+                tags={inputFieldPositionTags}
+                size="md"
+                inputFieldPostion="inline"
+                className="sm:min-w-[450px]"
+                setTags={(newTags) => {
+                  setInputFieldPositionTags(newTags);
+                }}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
       <div className="w-full">
