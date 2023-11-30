@@ -143,6 +143,7 @@ export interface TagInputProps
   inputFieldPostion?: "bottom" | "top" | "inline";
   clearAll?: boolean;
   onClearAll?: () => void;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -187,6 +188,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       inputFieldPostion = "bottom",
       clearAll = false,
       onClearAll,
+      inputProps = {},
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -454,6 +456,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               onKeyDown={handleKeyDown}
               onFocus={onFocus}
               onBlur={onBlur}
+              {...inputProps}
               className={className}
               autoComplete={enableAutocomplete ? "on" : "off"}
               list={enableAutocomplete ? "autocomplete-options" : undefined}

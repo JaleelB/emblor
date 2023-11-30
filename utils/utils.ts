@@ -190,4 +190,24 @@ export const tagInputProps: propOption[] = [
     default: "bottom",
     description: "Position of the input field in relation to the tags",
   },
+  {
+    option: "clearAll",
+    type: "boolean",
+    default: "false",
+    description: "Show a button to clear all tags.",
+  },
+  {
+    option: "onClearAll",
+    type: "Function",
+    default: "null",
+    description:
+      "A callback function to be called when the clear all button is clicked.",
+  },
+  {
+    option: "inputProps",
+    type: "Object",
+    default: "{}",
+    description:
+      "Additional props to be passed to the input field (for example autocomplete, disabled etc).",
+  },
 ];
