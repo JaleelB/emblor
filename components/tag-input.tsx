@@ -141,6 +141,8 @@ export interface TagInputProps
   onTagClick?: (tag: Tag) => void;
   draggable?: boolean;
   inputFieldPostion?: "bottom" | "top" | "inline";
+  clearAll?: boolean;
+  onClearAll?: () => void;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -183,6 +185,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onTagClick,
       draggable = false,
       inputFieldPostion = "bottom",
+      clearAll = false,
+      onClearAll,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -287,6 +291,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
 
       setTags(newTags);
       setDraggedTagId(null);
+    };
+
+    const handleClearAll = () => {
+      onClearAll?.();
     };
 
     const filteredAutocompleteOptions = autocompleteFilter
@@ -459,6 +467,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               </div>
             )}
           </div>
+        )}
+        {clearAll && (
+          <Button type="button" onClick={handleClearAll} className="mt-2">
+            Clear All
+          </Button>
         )}
       </div>
     );
