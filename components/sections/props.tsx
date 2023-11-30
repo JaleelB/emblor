@@ -31,6 +31,7 @@ export default function Props() {
   const [customRenderTags, setCustomRenderTags] = React.useState<Tag[]>(tags);
   const [allowDraggableTags, setAllowDraggableTags] =
     React.useState<Tag[]>(tags);
+  const [clearAllTags, setClearAllTags] = React.useState<Tag[]>(tags);
   const [inputFieldPositionTags, setInputFieldPositionTags] =
     React.useState<Tag[]>(tags);
 
@@ -169,6 +170,31 @@ export default function Props() {
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
                 setTruncateTags(newTags);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-full">
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
+          Clear all tags
+        </h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+          Clear all tags from the tag input.
+        </p>
+        <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
+          <div className="space-y-2">
+            <Label htmlFor="">Topics</Label>
+            <TagInput
+              placeholder="Enter a topic"
+              tags={clearAllTags}
+              clearAll
+              onClearAll={() => {
+                setClearAllTags([]);
+              }}
+              className="sm:min-w-[450px]"
+              setTags={(newTags) => {
+                setClearAllTags(newTags);
               }}
             />
           </div>
