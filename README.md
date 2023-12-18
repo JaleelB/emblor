@@ -34,7 +34,7 @@ npx shadcn-ui@latest add toast
 
 Copy and paste the folowing code into a new file:
 
-```jsx
+```tsx
 import React from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -425,8 +425,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                     ? placeholderWhenFull
                     : placeholder
                 }
+                ref={inputRef}
+                value={inputValue}
                 disabled={maxTags !== undefined && tags.length >= maxTags}
                 onFocus={onFocus}
+                onChangeCapture={handleInputChange}
+                onKeyDown={handleKeyDown}
                 onBlur={onBlur}
               />
               <CommandList>

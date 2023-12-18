@@ -388,8 +388,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                     ? placeholderWhenFull
                     : placeholder
                 }
+                ref={inputRef}
+                value={inputValue}
                 disabled={maxTags !== undefined && tags.length >= maxTags}
                 onFocus={onFocus}
+                onChangeCapture={handleInputChange}
+                onKeyDown={handleKeyDown}
                 onBlur={onBlur}
               />
               <CommandList>
