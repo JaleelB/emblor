@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Tag, TagInput } from "@/components/tag-input";
+import { Tag, TagInput } from "@/components/tag/tag-input";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { z } from "zod";
@@ -97,6 +97,7 @@ export default function Hero() {
                           placeholder="Enter a topic"
                           tags={tags}
                           className="sm:min-w-[450px]"
+                          usePopoverForTags
                           setTags={(newTags) => {
                             setTags(newTags);
                             setValue("topics", newTags as [Tag, ...Tag[]]);

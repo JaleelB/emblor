@@ -1,5 +1,5 @@
 import React from "react";
-import { Tag, TagInput } from "../tag-input";
+import { Tag, TagInput } from "../tag/tag-input";
 import { Label } from "../ui/label";
 import {
   Table,
