@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Tag, TagInput } from "@/components/tag-input";
+import { Tag, TagInput } from "@/components/tag/tag-input";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { z } from "zod";

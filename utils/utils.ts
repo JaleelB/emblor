@@ -210,4 +210,10 @@ export const tagInputProps: propOption[] = [
     description:
       "Additional props to be passed to the input field (for example autocomplete, disabled etc).",
   },
+  {
+    option: "usePopoverForTags",
+    type: "boolean",
+    default: "false",
+    description: "Use a popover to display tags instead of inline.",
+  },
 ];

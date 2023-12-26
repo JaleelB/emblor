@@ -1,5 +1,5 @@
 import React from "react";
-import { Tag, TagInput } from "../tag-input";
+import { Tag, TagInput } from "../tag/tag-input";
 import { Label } from "../ui/label";
 import {
   Table,
@@ -34,6 +34,7 @@ export default function Props() {
   const [clearAllTags, setClearAllTags] = React.useState<Tag[]>(tags);
   const [inputFieldPositionTags, setInputFieldPositionTags] =
     React.useState<Tag[]>(tags);
+  const [usePopoverTags, setUsePopoverTags] = React.useState<Tag[]>(tags);
 
   const autoCompleteOptions = [
     ...tags,
@@ -69,7 +70,7 @@ export default function Props() {
           Enable or disable the autocomplete feature for the tag input.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2 max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
@@ -154,6 +155,29 @@ export default function Props() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
+          Tag Popover
+        </h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+          Allows users to view all entered tags in a popover overlay, offering
+          easier management of tags.
+        </p>
+        <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
+          <div className="space-y-2">
+            <Label htmlFor="">Topics</Label>
+            <TagInput
+              placeholder="Enter a topic"
+              tags={autoCompleteOptions}
+              usePopoverForTags
+              className="sm:min-w-[450px]"
+              setTags={(newTags) => {
+                setUsePopoverTags(newTags);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-full">
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
           Truncate
         </h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
@@ -208,7 +232,7 @@ export default function Props() {
           Allow duplicate tags to be added to the tag input.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-1">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
