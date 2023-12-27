@@ -5,11 +5,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import CodeBlock from "../code-block";
-import { allSnippets } from "contentlayer/generated";
-import { Snippet } from "../snippet";
+import CodeBlock from "../../../components/code-block";
+import { Snippet as SnippetType, allSnippets } from "contentlayer/generated";
+import { Snippet } from "../../../components/snippet";
 
-const snippets = allSnippets.sort((a, b) => a.order - b.order);
+const snippets: SnippetType[] = allSnippets.sort((a, b) => a.order - b.order);
 
 export default function Setup() {
   return (

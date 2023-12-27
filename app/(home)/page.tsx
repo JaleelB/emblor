@@ -1,9 +1,9 @@
 "use client";
 import { ModeToggle } from "@/components/mode-toggle";
-import Hero from "@/components/sections/hero";
-import Props from "@/components/sections/props";
-import Setup from "@/components/sections/setup";
-import Variants from "@/components/sections/variants";
+import Hero from "@/app/(home)/sections/hero";
+import Props from "@/app/(home)/sections/props";
+import Setup from "@/app/(home)/sections/setup";
+import Variants from "@/app/(home)/sections/variants";
 import React from "react";
 
 export default function Home() {
