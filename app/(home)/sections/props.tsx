@@ -21,6 +21,15 @@ export default function Props() {
     { id: uuid(), text: "Programming" },
     { id: uuid(), text: "Travel" },
   ];
+
+  const autoCompleteOptions = [
+    ...tags,
+    { id: uuid(), text: "Food" },
+    { id: uuid(), text: "Movies" },
+    { id: uuid(), text: "Art" },
+    { id: uuid(), text: "Books" },
+  ];
+
   const [autocompleteTags, setAutocompleteTags] = React.useState<Tag[]>([]);
   const [maxTags, setMaxTags] = React.useState<Tag[]>([]);
   const [truncateTags, setTruncateTags] = React.useState<Tag[]>(tags);
@@ -34,15 +43,7 @@ export default function Props() {
   const [clearAllTags, setClearAllTags] = React.useState<Tag[]>(tags);
   const [inputFieldPositionTags, setInputFieldPositionTags] =
     React.useState<Tag[]>(tags);
-  const [usePopoverTags, setUsePopoverTags] = React.useState<Tag[]>(tags);
-
-  const autoCompleteOptions = [
-    ...tags,
-    { id: uuid(), text: "Food" },
-    { id: uuid(), text: "Movies" },
-    { id: uuid(), text: "Art" },
-    { id: uuid(), text: "Books" },
-  ];
+  const [usePopoverTags, setUsePopoverTags] = React.useState<Tag[]>([]);
 
   const renderCustomTag = (tag: Tag) => {
     return (
@@ -166,7 +167,7 @@ export default function Props() {
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
-              tags={autoCompleteOptions}
+              tags={usePopoverTags}
               usePopoverForTags
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
