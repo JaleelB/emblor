@@ -1,6 +1,15 @@
 import React from "react";
-import { tagInputCode } from "@/app/code-snippets";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import CodeBlock from "../code-block";
+import { allSnippets } from "contentlayer/generated";
+import { Snippet } from "../snippet";
+
+const snippets = allSnippets.sort((a, b) => a.order - b.order);
 
 export default function Setup() {
   return (
@@ -35,18 +44,56 @@ export default function Setup() {
         <div data-rehype-pretty-code-fragment="">
           <CodeBlock
             className="mt-2"
-            value={`npx shadcn-ui@latest add input\nnpx shadcn-ui@latest add button\nnpx shadcn-ui@latest add command\nnpx shadcn-ui@latest add toast`}
+            value={`npx shadcn-ui@latest add input\nnpx shadcn-ui@latest add button\nnpx shadcn-ui@latest add command\nnpx shadcn-ui@latest add toast\nnpx shadcn-ui@latest add popover`}
           />
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Create a new tag input component:
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight pb-2">
+          To use the tag input component:
         </h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Copy and paste the folowing code into a new file:
-        </p>
-        <CodeBlock value={tagInputCode} className="relative w-full mt-2" />
+        <ul className="list-decimal list-outside ml-5 marker:text-muted-foreground space-y-3 text-sm">
+          {snippets.map((snippet) =>
+            !snippet.file.includes("demo") ? (
+              <li key={snippet.file}>
+                Copy & paste{" "}
+                <a
+                  href={`#${snippet.file}`}
+                  className="font-mono underline hover:no-underline"
+                >
+                  {snippet.file}
+                </a>
+              </li>
+            ) : (
+              <li key={snippet.file}>
+                Define your <code>TagInput</code> component e.g.{" "}
+                <a
+                  href={`#${snippet.file}`}
+                  className="font-mono underline hover:no-underline"
+                >
+                  {snippet.file}
+                </a>
+              </li>
+            )
+          )}
+        </ul>
+        <div className="mt-10 flex flex-col">
+          <h3 className="font-heading mt-12 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0">
+            Snippets
+          </h3>
+          <Accordion type="single" collapsible>
+            {snippets.map((snippet) => (
+              <AccordionItem key={snippet.slug} value={snippet.file}>
+                <AccordionTrigger id={snippet.file}>
+                  <code>{snippet.file}</code>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Snippet snippet={snippet} />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
       </div>
     </section>
   );

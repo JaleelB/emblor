@@ -10,7 +10,7 @@ import { v4 as uuid } from "uuid";
 import { TagPopover } from "./tag-popover";
 import { TagList } from "./tag-list";
 import { tagVariants } from "./tag";
-import { Autocomplete } from "./auto-complete";
+import { Autocomplete } from "./autocomplete";
 
 export enum Delimiter {
   Comma = ",",
