@@ -1,10 +1,9 @@
 "use client";
 import { ModeToggle } from "@/components/mode-toggle";
-import Hero from "@/components/sections/hero";
-import Props from "@/components/sections/props";
-import Setup from "@/components/sections/setup";
-import Usage from "@/components/sections/usage";
-import Variants from "@/components/sections/variants";
+import Hero from "@/app/(home)/sections/hero";
+import Props from "@/app/(home)/sections/props";
+import Setup from "@/app/(home)/sections/setup";
+import Variants from "@/app/(home)/sections/variants";
 import React from "react";
 
 export default function Home() {
@@ -15,7 +14,6 @@ export default function Home() {
         <main className="w-full flex min-h-screen flex-col items-center justify-between scroll-smooth">
           <Hero />
           <Setup />
-          <Usage />
           <Variants />
           <Props />
         </main>

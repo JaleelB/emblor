@@ -1,6 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Highlight, themes } from "prism-react-renderer";
-import { useTheme } from "next-themes";
 import CopyButton from "./copy-button";
 
 function CodeBlock({
@@ -17,40 +15,19 @@ function CodeBlock({
   noMask?: boolean;
 }) {
   value = value || "";
-  const { theme } = useTheme();
-
-  const themeToggle = () => {
-    if (theme?.includes("dark")) {
-      return themes.nightOwl;
-    } else {
-      return themes.oneDark;
-    }
-  };
 
   return (
-    <Highlight theme={themeToggle()} code={value} language="tsx">
-      {({ style, tokens, getLineProps, getTokenProps }) => (
-        <pre
-          style={{ ...style, maxHeight: "500px", overflowY: "auto" }}
-          className={cn(
-            `relative h-full w-full whitespace-pre-wrap rounded-lg p-4 text-sm
+    <pre
+      style={{ maxHeight: "500px", overflowY: "auto" }}
+      className={cn(
+        `relative h-full w-full whitespace-pre-wrap rounded-lg p-4 text-sm border text-white/75 bg-zinc-950 dark:bg-zinc-900
           } `,
-            className
-          )}
-        >
-          <CopyButton value={value} copyable={copyable} />
-
-          {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line })}>
-              <span className="mr-6">{i + 1}</span>
-              {line.map((token, key) => (
-                <span key={key} {...getTokenProps({ token })} />
-              ))}
-            </div>
-          ))}
-        </pre>
+        className
       )}
-    </Highlight>
+    >
+      <CopyButton value={value} copyable={copyable} />
+      {value}
+    </pre>
   );
 }
 
