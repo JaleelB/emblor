@@ -1,6 +1,6 @@
 https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
 
-[Shadcn Tag Input](https://shadcn-tag-input.vercel.app/) is a tag input component implementation of Shadcn's input component. It's customizable, but styled by default (Shadcn's default styling).
+[Shadcn Tag Input](https://shadcn-tag-input.vercel.app/) is a tag input component built as part of the Shadcn design system. It offers a blend of customization and out-of-the-box styling, adhering to Shadcn's sleek and modern design principles.
 
 ## Why
 
@@ -10,7 +10,7 @@ I needed a tagging component for a project. I looked around for any tagging comp
 
 Here's a sample implementation that initializes the component with a list of initial tags and suggestions list. Apart from this, there are multiple events, handlers for which need to be set.
 
-```jsx
+```tsx
 import {
     Form,
     FormControl,
