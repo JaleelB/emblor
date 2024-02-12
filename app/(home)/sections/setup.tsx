@@ -32,7 +32,7 @@ export default function Setup() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Install necessary Shadcn components:
+          Install the necessary Shadcn components:
         </h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Run the{" "}
@@ -46,6 +46,18 @@ export default function Setup() {
             className="mt-2"
             value={`npx shadcn-ui@latest add input\nnpx shadcn-ui@latest add button\nnpx shadcn-ui@latest add command\nnpx shadcn-ui@latest add toast\nnpx shadcn-ui@latest add popover`}
           />
+        </div>
+        <div className="w-full">
+          <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
+            Install the necessary dependencies:
+          </h3>
+          <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+            Run the following command to install the necessary dependencies for
+            the tag input component:
+          </p>
+          <div data-rehype-pretty-code-fragment="">
+            <CodeBlock className="mt-2" value={`pnpm i uuid react-easy-sort`} />
+          </div>
         </div>
       </div>
       <div className="w-full">
