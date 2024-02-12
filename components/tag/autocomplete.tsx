@@ -28,7 +28,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   children,
 }) => {
   return (
-    <Command className="border">
+    <Command className="border min-w-[400px]">
       {children}
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
@@ -36,6 +36,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           {autocompleteOptions.map((option) => (
             <CommandItem key={option.id}>
               <div
+                className="w-full"
                 onClick={() => {
                   if (maxTags && tags.length >= maxTags) return;
                   if (
