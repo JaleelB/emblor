@@ -77,9 +77,6 @@ export type TagProps = {
   interaction: TagInputProps["interaction"];
   animation: TagInputProps["animation"];
   textStyle: TagInputProps["textStyle"];
-  handleDragStart: (id: string) => void;
-  handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  handleDrop: (id: string) => void;
   onRemoveTag: (id: string) => void;
 } & Pick<TagInputProps, "direction" | "onTagClick" | "draggable">;
 
@@ -87,9 +84,6 @@ export const Tag: React.FC<TagProps> = ({
   tagObj,
   direction,
   draggable,
-  handleDragStart,
-  handleDragOver,
-  handleDrop,
   onTagClick,
   onRemoveTag,
   variant,
@@ -105,9 +99,6 @@ export const Tag: React.FC<TagProps> = ({
     <span
       key={tagObj.id}
       draggable={draggable}
-      onDragStart={() => handleDragStart(tagObj.id)}
-      onDragOver={handleDragOver}
-      onDrop={() => handleDrop(tagObj.id)}
       className={cn(
         tagVariants({
           variant,

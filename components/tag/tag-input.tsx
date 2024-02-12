@@ -194,28 +194,14 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       setTagCount((prevTagCount) => prevTagCount - 1);
     };
 
-    const handleDragStart = (id: string) => {
-      setDraggedTagId(id);
-    };
+    const onSortEnd = (oldIndex: number, newIndex: number) => {
+      setTags((currentTags) => {
+        const newTags = [...currentTags];
+        const [removedTag] = newTags.splice(oldIndex, 1);
+        newTags.splice(newIndex, 0, removedTag);
 
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault(); // Necessary to allow dropping
-    };
-
-    const handleDrop = (id: string) => {
-      if (draggedTagId === null) return;
-
-      const draggedTagIndex = tags.findIndex((tag) => tag.id === draggedTagId);
-      const dropTargetIndex = tags.findIndex((tag) => tag.id === id);
-
-      if (draggedTagIndex === dropTargetIndex) return;
-
-      const newTags = [...tags];
-      const [reorderedTag] = newTags.splice(draggedTagIndex, 1);
-      newTags.splice(dropTargetIndex, 0, reorderedTag);
-
-      setTags(newTags);
-      setDraggedTagId(null);
+        return newTags;
+      });
     };
 
     const handleClearAll = () => {
@@ -262,9 +248,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             textStyle={textStyle}
             onTagClick={onTagClick}
             draggable={draggable}
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDrop={handleDrop}
+            onSortEnd={onSortEnd}
             onRemoveTag={removeTag}
             direction={direction}
           />
@@ -309,9 +293,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                   textStyle={textStyle}
                   onTagClick={onTagClick}
                   draggable={draggable}
-                  handleDragStart={handleDragStart}
-                  handleDragOver={handleDragOver}
-                  handleDrop={handleDrop}
+                  onSortEnd={onSortEnd}
                   onRemoveTag={removeTag}
                   direction={direction}
                 >
@@ -371,9 +353,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 textStyle={textStyle}
                 onTagClick={onTagClick}
                 draggable={draggable}
-                handleDragStart={handleDragStart}
-                handleDragOver={handleDragOver}
-                handleDrop={handleDrop}
+                onSortEnd={onSortEnd}
                 onRemoveTag={removeTag}
                 direction={direction}
               >
