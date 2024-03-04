@@ -173,6 +173,13 @@ export const tagInputProps: propOption[] = [
     description: "Function to be called when the input field loses focus.",
   },
   {
+    option: "restrictTagsToAutocompleteOptions",
+    type: "boolean",
+    default: "false",
+    description:
+      "Only allow tags that are present in the autocomplete options.",
+  },
+  {
     option: "onTagClick",
     type: "Function",
     default: "null",
