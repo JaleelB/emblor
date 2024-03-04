@@ -66,6 +66,7 @@ export interface TagInputProps
   clearAll?: boolean;
   onClearAll?: () => void;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  restrictTagsToAutocompleteOptions?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
@@ -112,6 +113,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onClearAll,
       usePopoverForTags = false,
       inputProps = {},
+      restrictTagsToAutocompleteOptions,
     } = props;
 
     const [inputValue, setInputValue] = React.useState("");
@@ -147,6 +149,19 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       ) {
         e.preventDefault();
         const newTagText = inputValue.trim();
+
+        // Check if the tag is in the autocomplete options if restrictTagsToAutocomplete is true
+        if (
+          restrictTagsToAutocompleteOptions &&
+          !autocompleteOptions?.some((option) => option.text === newTagText)
+        ) {
+          toast({
+            title: "Invalid Tag",
+            description: "Please select a tag from the autocomplete options.",
+            variant: "destructive",
+          });
+          return;
+        }
 
         if (validateTag && !validateTag(newTagText)) {
           return;

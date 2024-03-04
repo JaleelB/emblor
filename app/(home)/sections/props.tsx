@@ -77,6 +77,7 @@ export default function Props() {
               placeholder="Enter a topic"
               tags={autocompleteTags}
               enableAutocomplete
+              restrictTagsToAutocompleteOptions
               autocompleteOptions={autoCompleteOptions}
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
