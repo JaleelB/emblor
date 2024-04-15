@@ -185,7 +185,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           return;
         }
 
-        const newTagId = const newTagId = crypto
+        const newTagId = crypto
             .getRandomValues(new Uint32Array(1))[0]
             .toString()
 
