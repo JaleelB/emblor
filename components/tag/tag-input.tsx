@@ -6,7 +6,6 @@ import { Button } from "../ui/button";
 import { type VariantProps } from "class-variance-authority";
 import { CommandInput } from "@/components/ui/command";
 import { toast } from "../ui/use-toast";
-import { v4 as uuid } from "uuid";
 import { TagPopover } from "./tag-popover";
 import { TagList } from "./tag-list";
 import { tagVariants } from "./tag";
@@ -15,7 +14,6 @@ import { Autocomplete } from "./autocomplete";
 export enum Delimiter {
   Comma = ",",
   Enter = "Enter",
-  Space = " ",
 }
 
 type OmittedInputProps = Omit<
@@ -62,7 +60,7 @@ export interface TagInputProps
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
   draggable?: boolean;
-  inputFieldPostion?: "bottom" | "top" | "inline";
+  inputFieldPosition?: "bottom" | "top" | "inline";
   clearAll?: boolean;
   onClearAll?: () => void;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
@@ -108,7 +106,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onBlur,
       onTagClick,
       draggable = false,
-      inputFieldPostion = "bottom",
+      inputFieldPosition = "bottom",
       clearAll = false,
       onClearAll,
       usePopoverForTags = false,
@@ -119,7 +117,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const [inputValue, setInputValue] = React.useState("");
     const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
 
     if (
       (maxTags !== undefined && maxTags < 0) ||
@@ -188,7 +185,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           return;
         }
 
-        const newTagId = uuid();
+        const newTagId = const newTagId = crypto
+            .getRandomValues(new Uint32Array(1))[0]
+            .toString()
+
 
         if (
           newTagText &&
@@ -242,9 +242,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     return (
       <div
         className={`w-full flex gap-3 ${
-          inputFieldPostion === "bottom"
+          inputFieldPosition === "bottom"
             ? "flex-col"
-            : inputFieldPostion === "top"
+            : inputFieldPosition === "top"
             ? "flex-col-reverse"
             : "flex-row"
         }`}
