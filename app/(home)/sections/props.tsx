@@ -285,7 +285,7 @@ export default function Props() {
                 placeholder="Enter a topic"
                 tags={directionTags}
                 size="md"
-                inputFieldPostion="top"
+                inputFieldPosition="top"
                 className="sm:min-w-[450px]"
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
@@ -298,7 +298,7 @@ export default function Props() {
                 placeholder="Enter a topic"
                 tags={inputFieldPositionTags}
                 size="md"
-                inputFieldPostion="inline"
+                inputFieldPosition="inline"
                 className="sm:min-w-[450px]"
                 setTags={(newTags) => {
                   setInputFieldPositionTags(newTags);
