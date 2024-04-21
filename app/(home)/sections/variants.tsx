@@ -1,8 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import { Tag, TagInput } from "../../../components/tag/tag-input";
-import { cn } from "@/lib/utils";
-import { v4 as uuid } from "uuid";
+import { cn, uuid } from "@/lib/utils";
 
 export default function Variants() {
   const tags: Tag[] = [

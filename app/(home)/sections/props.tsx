@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { propOption, tagInputProps } from "@/utils/utils";
-import { cn } from "@/lib/utils";
-import { v4 as uuid } from "uuid";
+import { cn, uuid } from "@/lib/utils";
 import { CheckCircle } from "lucide-react";
 
 export default function Props() {

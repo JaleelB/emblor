@@ -27,7 +27,6 @@
     "@types/react": "18.2.21",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "18.2.7",
-    "@types/uuid": "^9.0.7",
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
@@ -54,7 +53,6 @@
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
-    "uuid": "^9.0.1",
     "vfile": "6.0.1",
     "vfile-message": "4.0.2",
     "zod": "^3.22.4"
