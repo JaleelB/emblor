@@ -56,7 +56,7 @@ export default function Setup() {
             the tag input component:
           </p>
           <div data-rehype-pretty-code-fragment="">
-            <CodeBlock className="mt-2" value={`pnpm i uuid react-easy-sort`} />
+            <CodeBlock className="mt-2" value={`pnpm i react-easy-sort`} />
           </div>
         </div>
       </div>
