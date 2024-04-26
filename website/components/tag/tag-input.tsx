@@ -186,9 +186,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         }
 
         const newTagId = crypto
-            .getRandomValues(new Uint32Array(1))[0]
-            .toString()
-
+          .getRandomValues(new Uint32Array(1))[0]
+          .toString();
 
         if (
           newTagText &&
