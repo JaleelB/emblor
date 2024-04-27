@@ -38,8 +38,8 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Contentlayer build
-        run: pnpm contentlayer build
+      # - name: Contentlayer build
+      #   run: pnpm contentlayer build
 
       - name: Run typecheck
         run: pnpm run typecheck
