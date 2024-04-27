@@ -39,12 +39,13 @@
     "radix ui",
     "react tag input"
   ],
-  "author": "Jaleel Bennett <jaleelcodes@gmailcom>",
+  "author": "Jaleel Bennett <jaleelcodes@gmail.com>",
   "license": "MIT",
   "homepage": "https://emblor.jaleelbennett.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JaleelB/emblor"
+    "url": "https://github.com/JaleelB/emblor",
+    "directory": "packages/emblor"
   },
   "bugs": {
     "url": "https://github.com/JaleelB/emblor/issues"

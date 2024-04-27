@@ -1,14 +1,26 @@
 https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
 
-[Shadcn Tag Input](https://shadcn-tag-input.vercel.app/) is a tag input component built as part of the Shadcn design system. It offers a blend of customization and out-of-the-box styling, adhering to Shadcn's sleek and modern design principles.
+[Emblor](https://emblor.jaleelbennett.com/) is a fully-featured tag input component designed for seamless integration into any project — styled your way or ready to adopt the sleek aesthetics of Shadcn's design system
 
-## Why
+## Features
 
-I needed a tagging component for a project. I looked around for any tagging components that used Shadcn's design system, but I couldn't find any. So, I decided to make one myself. I hope you find it useful!
+- **Customizable**: Emblor is unstyled by default, allowing you to easily style it to fit your design system.
+- **Accessible**: Emblor is built with accessibility in mind, ensuring that it is usable by everyone.
+- **Easy to use**: Emblor provides a simple and easy to use API that allows you to quickly integrate a tag input component into your project.
+
+## Installation
+
+To install Emblor, run the command:
+
+```bash
+pnpm add emblor
+```
 
 ## Usage
 
 Here's a sample implementation that initializes the component with a list of initial tags and suggestions list. Apart from this, there are multiple events, handlers for which need to be set.
+
+The example below uses `tailwindcss` `@shadcn/ui` `tailwind-merge` `clsx`:
 
 ```tsx
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -86,7 +98,8 @@ export default function Hero() {
                           {...field}
                           placeholder="Enter a topic"
                           tags={tags}
-                          className="sm:min-w-[450px]"
+                          // using Shadcn input styling
+                          className="sm:min-w-[450px] flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                           setTags={(newTags) => {
                             setTags(newTags);
                             setValue('topics', newTags as [Tag, ...Tag[]]);
@@ -109,6 +122,138 @@ export default function Hero() {
 }
 ```
 
+To create a detailed API Reference section in your README for the Emblor tag input component, you can structure it similarly to the OTPInput example you provided. Here's a structured API reference that incorporates the properties and options of the Emblor tag input:
+
+---
+
+## API Reference
+
+### TagInput
+
+The primary component for user interaction. Configure the tag input behavior and appearance using these props, and manage tag data dynamically.
+
+#### Props
+
+```typescript
+type TagInputProps = {
+  // Placeholder text for the input.
+  placeholder?: string; // default: ""
+
+  // Array of tags displayed as pre-selected.
+  tags: Array<{ id: string; text: string }>; // default: []
+
+  // Function to set the state of tags.
+  setTags: React.Dispatch<React.SetStateAction<{ id: string; text: string }[]>>;
+
+  // Enable or disable the autocomplete feature.
+  enableAutocomplete?: boolean; // default: false
+
+  // List of autocomplete options.
+  autocompleteOptions?: Array<{ id: string; text: string }>; // default: []
+
+  // Maximum number of tags allowed.
+  maxTags?: number; // default: null
+
+  // Minimum number of tags required.
+  minTags?: number; // default: null
+
+  // Make the input read-only.
+  readOnly?: boolean; // default: false
+
+  // Disable the input.
+  disabled?: boolean; // default: false
+
+  // Callback function when a tag is added.
+  onTagAdd?: (tag: string) => void; // default: null
+
+  // Callback function when a tag is removed.
+  onTagRemove?: (tag: string) => void; // default: null
+
+  // Allow duplicate tags.
+  allowDuplicates?: boolean; // default: false
+
+  // Maximum length of a tag.
+  maxLength?: number; // default: null
+
+  // Minimum length of a tag.
+  minLength?: number; // default: null
+
+  // Function to validate a tag.
+  validateTag?: (tag: string) => boolean; // default: null
+
+  // Character used to separate tags.
+  delimiter?: Delimiter; // default: null
+
+  // Show the count of tags.
+  showCount?: boolean; // default: false
+
+  // Placeholder text when tag limit is reached.
+  placeholderWhenFull?: string; // default: ""
+
+  // Sort tags alphabetically.
+  sortTags?: boolean; // default: false
+
+  // List of characters that can be used as delimiters.
+  delimiterList?: string[]; // default: []
+
+  // Truncate tag text to a certain length.
+  truncate?: number; // default: null
+
+  // Function to filter autocomplete options.
+  autocompleteFilter?: (option: string) => boolean; // default: null
+
+  // Layout direction of the tag inputs.
+  direction?: 'row' | 'column'; // default: 'row'
+
+  // A callback function that is called whenever the input value changes.
+  onInputChange?: (value: string) => void; // default: null
+
+  // A callback function that is used to render custom tag elements.
+  customTagRenderer?: (tag: { id: string; text: string }) => React.ReactElement; // default: null
+
+  // Function to be called when the input field gains focus.
+  onFocus?: React.FocusEventHandler<HTMLInputElement>; // default: null
+
+  // Function to be called when the input field loses focus.
+  onBlur?: React.FocusEventHandler<HTMLInputElement>; // default: null
+
+  // Only allow tags that are present in the autocomplete options.
+  restrictTagsToAutocompleteOptions?: boolean; // default: false
+
+  // A callback function to be called when a tag is clicked.
+  onTagClick?: (tag: { id: string; text: string }) => void; // default: null
+
+  // Enable drag and drop functionality.
+  draggable?: boolean; // default: false
+
+  // Position of the input field in relation to the tags.
+  inputFieldPosition?: 'bottom' | 'top' | 'inline'; // default: 'bottom'
+
+  // Show a button to clear all tags.
+  clearAll?: boolean; // default: false
+
+  // A callback function to be called when the clear all button is clicked.
+  onClearAll?: () => void; // default: null
+
+  // Additional props to be passed to the input field.
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>; // default: {}
+
+  // Use a popover to display tags instead of inline.
+  usePopoverForTags?: boolean; // default: false
+};
+```
+
+### Delimiter
+
+Define the delimiters that can be used to separate tags within the input.
+
+```typescript
+enum Delimiter {
+  Comma = ',',
+  Enter = 'Enter',
+}
+```
+
 ## Documentation
 
-You can find out more about the API and implementation in the [Documentation](https://shadcn-tag-input.vercel.app/#setup).
+You can find out more about the API and implementation in the [Documentation](https://emblor.jaleelbennett.com/#setup).
