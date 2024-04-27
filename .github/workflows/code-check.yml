@@ -1,4 +1,4 @@
-name: Code check
+name: CC
 
 on:
   pull_request:
