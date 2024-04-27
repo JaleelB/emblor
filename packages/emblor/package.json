@@ -1,0 +1,62 @@
+{
+  "name": "emblor",
+  "version": "0.0.0",
+  "description": "A full featured, unstyled tag input component for React",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "pnpm turbo build --filter emblor",
+    "type-check": "tsc --noEmit",
+    "build": "run-p build:*",
+    "build:tsup": "tsup --dts --minify",
+    "clean": "rimraf dist",
+    "dev": "tsup --watch --dts",
+    "format": "prettier --write .",
+    "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "release": "pnpm run build && changeset publish"
+  },
+  "keywords": [
+    "shadcn",
+    "react",
+    "tag input",
+    "shadcn/ui",
+    "tag input component",
+    "shadcn tag input component",
+    "input",
+    "radix ui",
+    "react tag input"
+  ],
+  "author": "Jaleel Bennett <jaleelcodes@gmailcom>",
+  "license": "MIT",
+  "homepage": "https://emblor.jaleelbennett.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JaleelB/emblor"
+  },
+  "bugs": {
+    "url": "https://github.com/JaleelB/emblor/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.13",
+    "@types/react": "^18.0.26",
+    "react": "^18.2.0",
+    "typescript": "^4.8.4"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "packageManager": "pnpm@9.0.2",
+  "dependencies": {
+    "tsup": "^6.5.0"
+  }
+}

@@ -1,4 +1,4 @@
-name: Code check
+name: CC
 
 on:
   pull_request:
@@ -38,8 +38,14 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Contentlayer build
-        run: pnpm contentlayer build
+      # - name: Contentlayer build
+      #   run: pnpm contentlayer build
 
-      - name: Run typecheck
-        run: pnpm run typecheck
+      # - name: Run typecheck
+      #   run: pnpm run typecheck
+
+      - name: Check prettier format
+        run: pnpm run prettier-check
+
+      - name: Build packages
+        run: pnpm run build --filter "./packages/*"

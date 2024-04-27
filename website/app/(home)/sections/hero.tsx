@@ -1,18 +1,5 @@
-https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
-
-[Shadcn Tag Input](https://shadcn-tag-input.vercel.app/) is a tag input component built as part of the Shadcn design system. It offers a blend of customization and out-of-the-box styling, adhering to Shadcn's sleek and modern design principles.
-
-## Why
-
-I needed a tagging component for a project. I looked around for any tagging components that used Shadcn's design system, but I couldn't find any. So, I decided to make one myself. I hope you find it useful!
-
-## Usage
-
-Here's a sample implementation that initializes the component with a list of initial tags and suggestions list. Apart from this, there are multiple events, handlers for which need to be set.
-
-```tsx
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Tag, TagInput } from '@/components/tag-input';
+import { Tag, TagInput } from '@/components/tag/tag-input';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { z } from 'zod';
@@ -58,12 +45,21 @@ export default function Hero() {
           An implementation of a Tag Input component built on top of Shadcn UI&apos;s input component.
         </p>
         <div className="flex gap-2 mt-1">
-          <Link href="#try" className={`${buttonVariants({ variant: 'default', size: 'lg' })} min-w-[150px] shadow-sm`}>
+          <Link
+            href="#try"
+            className={`${buttonVariants({
+              variant: 'default',
+              size: 'lg',
+            })} min-w-[150px] shadow-sm`}
+          >
             Try it out
           </Link>
           <Link
             href="https://github.com/JaleelB/shadcn-tag-input"
-            className={`${buttonVariants({ variant: 'secondary', size: 'lg' })} shadow-sm`}
+            className={`${buttonVariants({
+              variant: 'secondary',
+              size: 'lg',
+            })} shadow-sm`}
           >
             Github
           </Link>
@@ -81,7 +77,7 @@ export default function Hero() {
                   render={({ field }) => (
                     <FormItem className="flex flex-col items-start">
                       <FormLabel className="text-left">Topics</FormLabel>
-                      <FormControl>
+                      <FormControl className="w-full">
                         <TagInput
                           {...field}
                           placeholder="Enter a topic"
@@ -93,7 +89,9 @@ export default function Hero() {
                           }}
                         />
                       </FormControl>
-                      <FormDescription>These are the topics that you&apos;re interested in.</FormDescription>
+                      <FormDescription className="text-left">
+                        These are the topics that you&apos;re interested in.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -107,8 +105,3 @@ export default function Hero() {
     </section>
   );
 }
-```
-
-## Documentation
-
-You can find out more about the API and implementation in the [Documentation](https://shadcn-tag-input.vercel.app/#setup).
