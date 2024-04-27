@@ -1,0 +1,33 @@
+{
+  "name": "workspace-root",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "18",
+    "prettier": "^3.2.5",
+    "tsup": "^6.5.0",
+    "turbo": "latest",
+    "typescript": "5.4.5",
+    "zod": "^3.22.4"
+  },
+  "trustedDependencies": [
+    "npm-run-all"
+  ],
+  "packageManager": "pnpm@9.0.2",
+  "engines": {
+    "node": ">=18 <20"
+  },
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^5.0.5"
+  }
+}
