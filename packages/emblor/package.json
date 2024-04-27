@@ -2,6 +2,10 @@
   "name": "emblor",
   "version": "0.0.1",
   "description": "A full featured, unstyled tag input component for React",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.mjs",
