@@ -39,15 +39,9 @@ importers:
 
   packages/emblor:
     dependencies:
-      clsx:
-        specifier: ^2.0.0
-        version: 2.1.1
       react-dom:
         specifier: ^18.0.0
         version: 18.2.0(react@18.2.0)
-      tailwind-merge:
-        specifier: ^1.14.0
-        version: 1.14.0
       tsup:
         specifier: ^6.5.0
         version: 6.7.0(postcss@8.4.29)(typescript@4.9.5)
