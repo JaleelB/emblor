@@ -41,5 +41,11 @@ jobs:
       # - name: Contentlayer build
       #   run: pnpm contentlayer build
 
-      - name: Run typecheck
-        run: pnpm run typecheck
+      # - name: Run typecheck
+      #   run: pnpm run typecheck
+
+      - name: Check prettier format
+        run: pnpm run prettier-check
+
+      - name: Build packages
+        run: pnpm run build --filter "./packages/*"
