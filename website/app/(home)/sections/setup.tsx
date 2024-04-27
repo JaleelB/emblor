@@ -1,13 +1,8 @@
-import React from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import CodeBlock from "../../../components/code-block";
-import { Snippet as SnippetType, allSnippets } from "contentlayer/generated";
-import { Snippet } from "../../../components/snippet";
+import React from 'react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import CodeBlock from '../../../components/code-block';
+import { Snippet as SnippetType, allSnippets } from 'contentlayer/generated';
+import { Snippet } from '../../../components/snippet';
 
 const snippets: SnippetType[] = allSnippets.sort((a, b) => a.order - b.order);
 
@@ -18,27 +13,19 @@ export default function Setup() {
         Setup
       </h2>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Install Shadcn via CLI
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Install Shadcn via CLI</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Run the{" "}
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
-            shadcn-ui
-          </code>{" "}
+          Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code>{' '}
           init command to setup your project:
         </p>
-        <CodeBlock value={"npx shadcn-ui@latest init"} className="mt-2" />
+        <CodeBlock value={'npx shadcn-ui@latest init'} className="mt-2" />
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
           Install the necessary Shadcn components:
         </h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Run the{" "}
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
-            shadcn-ui
-          </code>{" "}
+          Run the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">shadcn-ui</code>{' '}
           add command to add the necessary shadcn components to your project:
         </p>
         <div data-rehype-pretty-code-fragment="">
@@ -52,8 +39,7 @@ export default function Setup() {
             Install the necessary dependencies:
           </h3>
           <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-            Run the following command to install the necessary dependencies for
-            the tag input component:
+            Run the following command to install the necessary dependencies for the tag input component:
           </p>
           <div data-rehype-pretty-code-fragment="">
             <CodeBlock className="mt-2" value={`pnpm i react-easy-sort`} />
@@ -66,27 +52,21 @@ export default function Setup() {
         </h3>
         <ul className="list-decimal list-outside ml-5 marker:text-muted-foreground space-y-3 text-sm">
           {snippets.map((snippet) =>
-            !snippet.file.includes("demo") ? (
+            !snippet.file.includes('demo') ? (
               <li key={snippet.file}>
-                Copy & paste{" "}
-                <a
-                  href={`#${snippet.file}`}
-                  className="font-mono underline hover:no-underline"
-                >
+                Copy & paste{' '}
+                <a href={`#${snippet.file}`} className="font-mono underline hover:no-underline">
                   {snippet.file}
                 </a>
               </li>
             ) : (
               <li key={snippet.file}>
-                Define your <code>TagInput</code> component e.g.{" "}
-                <a
-                  href={`#${snippet.file}`}
-                  className="font-mono underline hover:no-underline"
-                >
+                Define your <code>TagInput</code> component e.g.{' '}
+                <a href={`#${snippet.file}`} className="font-mono underline hover:no-underline">
                   {snippet.file}
                 </a>
               </li>
-            )
+            ),
           )}
         </ul>
         <div className="mt-10 flex flex-col">

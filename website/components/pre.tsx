@@ -1,13 +1,9 @@
-import React from "react";
-import { Copy, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import React from 'react';
+import { Copy, Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from './ui/button';
 
-export default function Pre({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLPreElement>) {
+export default function Pre({ children, className, ...props }: React.HTMLAttributes<HTMLPreElement>) {
   const [copied, setCopied] = React.useState(false);
   const ref = React.useRef<HTMLPreElement>(null);
 
@@ -37,7 +33,7 @@ export default function Pre({
         variant="ghost"
         className={cn(
           `absolute top-4 right-4 bg-transparent p-0 h-8 w-8 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50`,
-          copied && "text-foreground"
+          copied && 'text-foreground',
         )}
         onClick={onClick}
       >
@@ -46,8 +42,8 @@ export default function Pre({
       <pre
         ref={ref}
         className={cn(
-          "border border-border rounded-lg p-4 text-sm overflow-auto text-white/80 bg-zinc-950 dark:bg-zinc-900",
-          className
+          'border border-border rounded-lg p-4 text-sm overflow-auto text-white/80 bg-zinc-950 dark:bg-zinc-900',
+          className,
         )}
         {...props}
       >

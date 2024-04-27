@@ -1,47 +1,36 @@
-import React from "react";
-import { Tag, TagInput } from "../../../components/tag/tag-input";
-import { Label } from "../../../components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { propOption, tagInputProps } from "@/utils/utils";
-import { cn, uuid } from "@/lib/utils";
-import { CheckCircle } from "lucide-react";
+import React from 'react';
+import { Tag, TagInput } from '../../../components/tag/tag-input';
+import { Label } from '../../../components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { propOption, tagInputProps } from '@/utils/utils';
+import { cn, uuid } from '@/lib/utils';
+import { CheckCircle } from 'lucide-react';
 
 export default function Props() {
   const tags: Tag[] = [
-    { id: uuid(), text: "Sports" },
-    { id: uuid(), text: "Programming" },
-    { id: uuid(), text: "Travel" },
+    { id: uuid(), text: 'Sports' },
+    { id: uuid(), text: 'Programming' },
+    { id: uuid(), text: 'Travel' },
   ];
 
   const autoCompleteOptions = [
     ...tags,
-    { id: uuid(), text: "Food" },
-    { id: uuid(), text: "Movies" },
-    { id: uuid(), text: "Art" },
-    { id: uuid(), text: "Books" },
+    { id: uuid(), text: 'Food' },
+    { id: uuid(), text: 'Movies' },
+    { id: uuid(), text: 'Art' },
+    { id: uuid(), text: 'Books' },
   ];
 
   const [autocompleteTags, setAutocompleteTags] = React.useState<Tag[]>([]);
   const [maxTags, setMaxTags] = React.useState<Tag[]>([]);
   const [truncateTags, setTruncateTags] = React.useState<Tag[]>(tags);
-  const [allowDuplicatesTags, setAllowDuplicatesTags] = React.useState<Tag[]>(
-    []
-  );
+  const [allowDuplicatesTags, setAllowDuplicatesTags] = React.useState<Tag[]>([]);
   const [directionTags, setDirectionTags] = React.useState<Tag[]>(tags);
   const [customRenderTags, setCustomRenderTags] = React.useState<Tag[]>(tags);
-  const [allowDraggableTags, setAllowDraggableTags] =
-    React.useState<Tag[]>(tags);
+  const [allowDraggableTags, setAllowDraggableTags] = React.useState<Tag[]>(tags);
   const [clearAllTags, setClearAllTags] = React.useState<Tag[]>(tags);
-  const [inputFieldPositionTags, setInputFieldPositionTags] =
-    React.useState<Tag[]>(tags);
+  const [inputFieldPositionTags, setInputFieldPositionTags] = React.useState<Tag[]>(tags);
   const [usePopoverTags, setUsePopoverTags] = React.useState<Tag[]>([]);
 
   const renderCustomTag = (tag: Tag) => {
@@ -63,9 +52,7 @@ export default function Props() {
         Props
       </h2>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Autocomplete
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Autocomplete</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Enable or disable the autocomplete feature for the tag input.
         </p>
@@ -87,12 +74,9 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Custom tag render
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Custom tag render</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Replace the standard tag appearance with your own custom-designed
-          tags.
+          Replace the standard tag appearance with your own custom-designed tags.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <div className="space-y-2">
@@ -110,9 +94,7 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Max tags
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Max tags</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Set the maximum number of tags that can be added.
         </p>
@@ -133,9 +115,7 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Draggable
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Draggable</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Allow tags to be dragged and dropped to reorder them.
         </p>
@@ -155,12 +135,9 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Tag Popover
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Tag Popover</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Allows users to view all entered tags in a popover overlay, offering
-          easier management of tags.
+          Allows users to view all entered tags in a popover overlay, offering easier management of tags.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <div className="space-y-2">
@@ -178,12 +155,9 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Truncate
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Truncate</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Prevent tags from overflowing the tag input by specifying the maximum
-          number of characters to display.
+          Prevent tags from overflowing the tag input by specifying the maximum number of characters to display.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <div className="space-y-2">
@@ -201,12 +175,8 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Clear all tags
-        </h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Clear all tags from the tag input.
-        </p>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Clear all tags</h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">Clear all tags from the tag input.</p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <div className="space-y-2">
             <Label htmlFor="">Topics</Label>
@@ -226,9 +196,7 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Allow duplicate tags
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Allow duplicate tags</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Allow duplicate tags to be added to the tag input.
         </p>
@@ -248,20 +216,13 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Input field position
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Input field position</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
-          Change the position of the input field to be inline or stacked in
-          relation to the tags.
+          Change the position of the input field to be inline or stacked in relation to the tags.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <Tabs defaultValue="bottom" className="w-full mt-4">
-            <TabsList
-              className={cn(
-                "mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start"
-              )}
-            >
+            <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
               <TabsTrigger value="bottom">Bottom</TabsTrigger>
               <TabsTrigger value="top">Top</TabsTrigger>
               <TabsTrigger value="inline">Inline</TabsTrigger>
@@ -308,19 +269,13 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Tag direction
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Tag direction</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
           Change the direction of the tag layout from row to column.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <Tabs defaultValue="row" className="w-full mt-4">
-            <TabsList
-              className={cn(
-                "mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start"
-              )}
-            >
+            <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
               <TabsTrigger value="row">Row</TabsTrigger>
               <TabsTrigger value="column">Column</TabsTrigger>
             </TabsList>
@@ -353,9 +308,7 @@ export default function Props() {
         </div>
       </div>
       <div className="w-full">
-        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">
-          Options
-        </h3>
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Options</h3>
         <div className="border rounded-md mt-6">
           <Table>
             <TableHeader>
@@ -363,15 +316,12 @@ export default function Props() {
                 <TableHead>Option</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Default</TableHead>
-                <TableHead className={cn("w-[400px]")}>Description</TableHead>
+                <TableHead className={cn('w-[400px]')}>Description</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {tagInputProps.map((prop: propOption, index) => (
-                <TableRow
-                  key={index * Math.random()}
-                  className={`${index % 2 == 0 ? "bg-muted/50" : ""}`}
-                >
+                <TableRow key={index * Math.random()} className={`${index % 2 == 0 ? 'bg-muted/50' : ''}`}>
                   <TableCell>{prop.option}</TableCell>
                   <TableCell>{prop.type}</TableCell>
                   <TableCell>{prop.default}</TableCell>

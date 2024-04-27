@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Snippet } from ".contentlayer/generated";
-import { useMDXComponent } from "next-contentlayer/hooks";
-import Pre from "./pre";
+import React from 'react';
+import { Snippet } from '.contentlayer/generated';
+import { useMDXComponent } from 'next-contentlayer/hooks';
+import Pre from './pre';
 
 const components = {
   pre: Pre,

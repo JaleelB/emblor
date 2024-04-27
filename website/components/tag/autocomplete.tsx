@@ -1,12 +1,6 @@
-import React from "react";
-import {
-  Command,
-  CommandList,
-  CommandItem,
-  CommandGroup,
-  CommandEmpty,
-} from "@/components/ui/command";
-import { type Tag as TagType } from "./tag-input";
+import React from 'react';
+import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '@/components/ui/command';
+import { type Tag as TagType } from './tag-input';
 
 type AutocompleteProps = {
   tags: TagType[];
@@ -39,11 +33,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 className="w-full"
                 onClick={() => {
                   if (maxTags && tags.length >= maxTags) return;
-                  if (
-                    !allowDuplicates &&
-                    tags.some((tag) => tag.text === option.text)
-                  )
-                    return;
+                  if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) return;
                   setTags([...tags, option]);
                   onTagAdd?.(option.text);
                 }}

@@ -15,7 +15,7 @@ function useClipboard() {
       }
     } else {
       // Clipboard API not available, use fallback
-      const textArea = document.createElement("textarea");
+      const textArea = document.createElement('textarea');
       textArea.value = text;
       document.body.appendChild(textArea);
       textArea.focus();

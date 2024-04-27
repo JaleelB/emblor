@@ -1,10 +1,10 @@
-"use client";
-import { ModeToggle } from "@/components/mode-toggle";
-import Hero from "@/app/(home)/sections/hero";
-import Props from "@/app/(home)/sections/props";
-import Setup from "@/app/(home)/sections/setup";
-import Variants from "@/app/(home)/sections/variants";
-import React from "react";
+'use client';
+import { ModeToggle } from '@/components/mode-toggle';
+import Hero from '@/app/(home)/sections/hero';
+import Props from '@/app/(home)/sections/props';
+import Setup from '@/app/(home)/sections/setup';
+import Variants from '@/app/(home)/sections/variants';
+import React from 'react';
 
 export default function Home() {
   return (
@@ -32,10 +32,7 @@ export default function Home() {
                 </a>
               </li>
               <li>
-                <a
-                  href="#variants"
-                  className="text-muted-foreground font-light"
-                >
+                <a href="#variants" className="text-muted-foreground font-light">
                   Variants
                 </a>
               </li>
@@ -51,9 +48,9 @@ export default function Home() {
       <footer className="py-6 md:px-8 md:py-0 border-t">
         <div className="container max-w-5xl flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            Built by{" "}
+            Built by{' '}
             <a
-              href={"https://twitter.com/jal_eelll"}
+              href={'https://twitter.com/jal_eelll'}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
