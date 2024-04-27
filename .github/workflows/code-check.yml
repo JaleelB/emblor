@@ -2,7 +2,7 @@ name: CC
 
 on:
   pull_request:
-    branches: ["*"]
+    branches: ['*']
 
 jobs:
   typecheck-lint:
@@ -41,8 +41,11 @@ jobs:
       # - name: Contentlayer build
       #   run: pnpm contentlayer build
 
-      # - name: Run typecheck
-      #   run: pnpm run typecheck
+      - name: Run typecheck in website workspace
+        run: pnpm -C website run typecheck
+
+      - name: Run typecheck in packages workspace
+        run: pnpm -C packages/emblor run typecheck
 
       - name: Check prettier format
         run: pnpm run prettier-check
