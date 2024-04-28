@@ -145,6 +145,9 @@ importers:
       date-fns:
         specifier: ^3.0.6
         version: 3.6.0
+      emblor:
+        specifier: ^1.0.0
+        version: 1.0.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.2.2)
       eslint:
         specifier: 8.48.0
         version: 8.48.0
@@ -1888,6 +1891,12 @@ packages:
 
   electron-to-chromium@1.4.750:
     resolution: {integrity: sha512-9ItEpeu15hW5m8jKdriL+BQrgwDTXEL9pn4SkillWFu73ZNNNQ2BKKLS+ZHv2vC9UkNhosAeyfxOf/5OSeTCPA==}
+
+  emblor@1.0.0:
+    resolution: {integrity: sha512-G7jo8FGWWoQnDOpXadeu68evPI8PRwTjRWAg8+LZHtAe51PzxLx76xl1WX/wTBlcnEmaJ6RpaQC7suLUfLFQag==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -6036,6 +6045,28 @@ snapshots:
 
   electron-to-chromium@1.4.750: {}
 
+  emblor@1.0.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.2.2):
+    dependencies:
+      '@radix-ui/react-dialog': 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@radix-ui/react-popover': 1.0.7(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@radix-ui/react-slot': 1.0.2(@types/react@18.2.21)(react@18.2.0)
+      class-variance-authority: 0.7.0
+      clsx: 2.1.1
+      cmdk: 0.2.1(@types/react@18.2.21)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-easy-sort: 1.6.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      tailwind-merge: 1.14.0
+      tsup: 6.7.0(postcss@8.4.29)(typescript@5.2.2)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@types/react'
+      - '@types/react-dom'
+      - postcss
+      - supports-color
+      - ts-node
+      - typescript
+
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
@@ -8477,6 +8508,29 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.29
       typescript: 4.9.5
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+
+  tsup@6.7.0(postcss@8.4.29)(typescript@5.2.2):
+    dependencies:
+      bundle-require: 4.0.3(esbuild@0.17.19)
+      cac: 6.7.14
+      chokidar: 3.6.0
+      debug: 4.3.4
+      esbuild: 0.17.19
+      execa: 5.1.1
+      globby: 11.1.0
+      joycon: 3.1.1
+      postcss-load-config: 3.1.4(postcss@8.4.29)
+      resolve-from: 5.0.0
+      rollup: 3.29.4
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tree-kill: 1.2.2
+    optionalDependencies:
+      postcss: 8.4.29
+      typescript: 5.2.2
     transitivePeerDependencies:
       - supports-color
       - ts-node

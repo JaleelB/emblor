@@ -1,5 +1,6 @@
 import React from 'react';
-import { Tag, TagInput } from '../../../components/tag/tag-input';
+// import { Tag, TagInput } from '../../../components/tag/tag-input';
+import { Tag, TagInput } from 'emblor';
 import { Label } from '../../../components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
