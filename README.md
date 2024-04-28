@@ -1,12 +1,10 @@
 https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
 
-[Emblor](https://emblor.jaleelbennett.com/) is a fully-featured tag input component designed for seamless integration into any project — styled your way or ready to adopt the sleek aesthetics of Shadcn's design system
+[Emblor](https://emblor.jaleelbennett.com/) is a highly customizable, accessible, and fully-featured tag input component built with Shadcn UI.
 
-## Features
+## About
 
-- **Customizable**: Emblor is unstyled by default, allowing you to easily style it to fit your design system.
-- **Accessible**: Emblor is built with accessibility in mind, ensuring that it is usable by everyone.
-- **Easy to use**: Emblor provides a simple and easy to use API that allows you to quickly integrate a tag input component into your project.
+Emblor is built on top of the [Input](https://ui.shadcn.com/docs/components/input), [Popover](https://ui.shadcn.com/docs/components/popover), [Command](https://ui.shadcn.com/docs/components/command) and [Dialog](https://ui.shadcn.com/docs/components/dialog) components from [Shadcn UI](https://ui.shadcn.com/).
 
 ## Installation
 
@@ -99,7 +97,7 @@ export default function Hero() {
                           placeholder="Enter a topic"
                           tags={tags}
                           // using Shadcn input styling
-                          className="sm:min-w-[450px] flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          className="sm:min-w-[450px]"
                           setTags={(newTags) => {
                             setTags(newTags);
                             setValue('topics', newTags as [Tag, ...Tag[]]);
@@ -122,9 +120,15 @@ export default function Hero() {
 }
 ```
 
-To create a detailed API Reference section in your README for the Emblor tag input component, you can structure it similarly to the OTPInput example you provided. Here's a structured API reference that incorporates the properties and options of the Emblor tag input:
+## Features
 
----
+- **Autocomplete**: Enable autocomplete suggestions for tags.
+- **Validation**: Validate tags based on custom rules.
+- **Customization**: Customize the appearance and behavior of the tag input.
+- **Accessibility**: Ensure that the tag input is accessible to all users.
+- **Drag and Drop**: Allow users to reorder tags using drag and drop.
+- **Read-only Mode**: Prevent users from editing the tag input.
+- **Delimiters**: Define custom delimiters for separating tags.
 
 ## API Reference
 
