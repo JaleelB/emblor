@@ -9,8 +9,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Shadcn Tag Input',
-  description: `A tag input component implementation of Shadcn's input component`,
+  title: siteConfig.name,
+  description: siteConfig.description,
   keywords: [
     'shadcn',
     'tag input',

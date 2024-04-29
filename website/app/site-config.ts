@@ -9,11 +9,11 @@ export type SiteConfig = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: 'Shadcn Tag Input',
-  description: "A tag input component implementation of Shadcn's input component",
-  url: 'https://shadcn-tag-input.vercel.app',
+  name: 'Emblor',
+  description: `A highly customizable, accessible, and fully-featured tag input component built with Shadcn UI.`,
+  url: 'https://emblor.jaleelbennett.com',
   links: {
     twitter: 'https://twitter.com/jal_eelll',
-    github: 'https://github.com/JaleelB/shadcn-tag-input',
+    github: 'https://github.com/JaleelB/emblor',
   },
 };
