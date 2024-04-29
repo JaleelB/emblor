@@ -9,6 +9,7 @@ import CodeBlock from './code-block';
 import Variants from './mdx/variants';
 import Props from './mdx/props';
 import Demo from './mdx/demo';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -104,6 +105,30 @@ const components = {
   Variants: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Variants {...props} />,
   Props: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Props {...props} />,
   Demo: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Demo {...props} />,
+  Tabs: ({ className, ...props }: React.ComponentProps<typeof Tabs>) => (
+    <Tabs className={cn('relative mt-6 w-full', className)} {...props} />
+  ),
+  TabsList: ({ className, ...props }: React.ComponentProps<typeof TabsList>) => (
+    <TabsList className={cn('w-full justify-start rounded-none border-b bg-transparent p-0', className)} {...props} />
+  ),
+  TabsTrigger: ({ className, ...props }: React.ComponentProps<typeof TabsTrigger>) => (
+    <TabsTrigger
+      className={cn(
+        'relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none',
+        className,
+      )}
+      {...props}
+    />
+  ),
+  TabsContent: ({ className, ...props }: React.ComponentProps<typeof TabsContent>) => (
+    <TabsContent
+      className={cn('relative [&_h3.font-heading]:text-base [&_h3.font-heading]:font-semibold', className)}
+      {...props}
+    />
+  ),
+  CodeBlock: ({ className, value, ...props }: React.HTMLAttributes<HTMLElement> & { value: string }) => (
+    <CodeBlock value={value} {...props} />
+  ),
 };
 
 interface MdxProps {
