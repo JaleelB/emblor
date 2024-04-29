@@ -1,6 +1,7 @@
-import { defineDocumentType, defineNestedType, makeSource } from 'contentlayer/source-files';
+import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import rehypePrettyCode from 'rehype-pretty-code';
 
+/** @type {import('contentlayer/source-files').ComputedFields} */
 export const Snippet = defineDocumentType(() => ({
   name: 'Docs',
   filePathPattern: `docs/**/*.mdx`,
@@ -18,7 +19,11 @@ export const Snippet = defineDocumentType(() => ({
   computedFields: {
     slug: {
       type: 'string',
-      resolve: (_) => _._raw.sourceFileName.replace(/\.[^.$]+$/, ''),
+      resolve: (doc) => `/${doc._raw.flattenedPath}`,
+    },
+    slugAsParams: {
+      type: 'string',
+      resolve: (doc) => doc._raw.flattenedPath.split('/').slice(1).join('/'),
     },
   },
 }));
