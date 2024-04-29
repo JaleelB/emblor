@@ -1,0 +1,197 @@
+---
+title: API Reference
+description: Detailed documentation of all the properties, types, and options available in the Emblor tag input component.
+---
+
+Explore the full capabilities of the Emblor tag input component with this detailed API reference. Understand how to customize the component to fit the needs of your project through various props.
+
+## Props
+
+Below is a list of all the properties you can use with the Emblor tag input, along with their types, default values, and descriptions.
+
+<Props />
+
+## API Reference
+
+This section provides detailed information about the properties, methods, and events associated with the Emblor tag input component. You'll find comprehensive details to help you fully integrate and customize the component according to your needs.
+
+## General Properties
+
+- **`placeholder`** (`string`)
+
+  - Default: `""`
+  - Description: Placeholder text for the input when no tags are present.
+
+- **`tags`** (`Array<{ id: string, text: string }>`)
+
+  - Default: `[]`
+  - Description: An array of tag objects that are displayed as pre-selected.
+
+- **`setTags`** (`React.Dispatch<React.SetStateAction<{ id: string, text: string }[]>>`)
+
+- Default: Not applicable (function required)
+- Description: Function to update the state of the tags, typically used to add or remove tags.
+
+- **`enableAutocomplete`** (`boolean`)
+
+  - Default: `false`
+  - Description: Enables the autocomplete feature which allows users to select from a predefined list of tags.
+
+- **`autocompleteOptions`** (`Array<{ id: string, text: string }>`)
+
+  - Default: `[]`
+  - Description: Defines the options available for autocomplete when `enableAutocomplete` is true.
+
+- **`maxTags`** (`number`)
+
+  - Default: `null`
+  - Description: Sets a limit on the number of tags a user can add.
+
+- **`minTags`** (`number`)
+
+  - Default: `null`
+  - Description: Sets a minimum number of tags a user must add.
+
+- **`readOnly`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, prevents the user from modifying the tags.
+
+- **`disabled`** (`boolean`)
+
+  - Default: `false`
+  - Description: Disables the tag input, preventing users from adding or removing tags.
+
+- **`allowDuplicates`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, allows the user to add duplicate tags.
+
+- **`maxLength`** (`number`)
+
+  - Default: `null`
+  - Description: Sets a maximum character limit for each tag.
+
+- **`minLength`** (`number`)
+
+  - Default: `null`
+  - Description: Sets a minimum character limit for each tag.
+
+- **`delimiter`** (`string`)
+
+  - Default: `","`
+  - Description: Defines the character used to separate tags when pasting multiple tags. Defaults to a comma (`,`) or Enter key.
+
+- **`showCounter`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, displays a counter showing the number of tags added.
+
+- **`placeholderWhenFull`** (`string`)
+
+  - Default: `""`
+  - Description: Placeholder text displayed when the maximum number of tags is reached.
+
+- **`sortTags`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, sorts the tags alphabetically.
+
+- **`delimiterList`** (`Array<string>`)
+
+  - Default: `[]`
+  - Description: An array of characters that can be used as delimiters to separate tags.
+
+- **`truncate`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, truncates tags that exceed the maximum character limit.
+
+- **`direction`** (`"row" | "column"`)
+
+  - Default: `"row"`
+  - Description: Sets the direction of the tag input. Can be either `"row"` or `"column"`.
+
+- **`restrictTagsToAutocompleteOptions`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, restricts the user to selecting tags only from the autocomplete options.
+
+- **`draggable`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, allows the user to drag and reorder tags.
+
+- **`inputFieldPosition`** (`"top" | "bottom" | "inline"`)
+
+  - Default: `"bottom"`
+  - Description: Sets the position of the input field. Can be either `"top"`,`"bottom"` or `"inline"`.
+
+- **`clearAll`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, displays a "Clear All" button to remove all tags.
+
+- **`inputProps`** (`InputHTMLAttributes<HTMLInputElement>`)
+
+  - Default: `{}`
+  - Description: Additional props to pass to the input field.
+
+- **`usePopoverForTags`** (`boolean`)
+
+  - Default: `false`
+  - Description: If true, displays tags in a popover when they exceed the available space.
+
+## Events
+
+- **`onTagAdd`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when a new tag is added. Receives the text of the new tag as a parameter.
+
+- **`onTagRemove`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when a tag is removed. Receives the text of the removed tag as a parameter.
+
+- **`onInputChange`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers on every keystroke within the input field. Useful for custom logic like live validation.
+
+- **`onFocus`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when the input field is focused.
+
+- **`onBlur`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when the input field loses focus.
+
+- **`onTagClick`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when a tag is clicked. Receives the tag object as a parameter.
+
+- **`onClearAll`** (`Function`)
+
+  - Default: `null`
+  - Description: Callback function that triggers when the "Clear All" button is clicked.
+
+## Methods
+
+**`validateTag`** (`Function`)
+
+- Default: `null`
+- Description: Callback function that validates the tag before adding it. Receives the tag text as a parameter and should return a boolean.
+
+**`autocompleteFilter`** (`Function`)
+
+- Default: `null`
+- Description: Callback function that filters the autocomplete options based on the user input. Receives the input text as a parameter and should return a boolean to indicate whether the option should be displayed.
+
+**`customTagRenderer`** (`Function`)
+
+- Default: `null`
+- Description: Callback function that allows you to customize the rendering of tags. Receives the tag object as a parameter and should return a React element.

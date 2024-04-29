@@ -1,0 +1,42 @@
+---
+title: Introduction
+description: A highly customizable, accessible, and fully-featured tag input component built with shadcn/ui.
+---
+
+<div class="flex justify-center mb-4">
+  <video src="https://github.com/JaleelB/emblor/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc" />
+</div>
+
+## Demo
+
+<Demo />
+
+## Installation
+
+To install Emblor, run the command:
+
+```bash
+# NPM
+npm install emblor
+# Or, use any package manager of your choice.
+```
+
+## Usage
+
+```tsx
+import { TagInput } from 'emblor';
+
+<TagInput
+  {...field}
+  placeholder="Enter a topic"
+  tags={tags}
+  // using Shadcn input styling
+  className="sm:min-w-[450px]"
+  setTags={(newTags) => {
+    setTags(newTags);
+    setValue('topics', newTags as [Tag, ...Tag[]]);
+  }}
+/>;
+```
+
+And that's it! You have successfully integrated Emblor into your project. 🎉
