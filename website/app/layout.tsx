@@ -5,6 +5,8 @@ import { Inter } from 'next/font/google';
 import { siteConfig } from '../config/site-config';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
+import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -54,7 +56,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html className="smooth-scroll" lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <SiteHeader />
           {children}
+          <SiteFooter />
         </ThemeProvider>
         <Analytics />
         <Toaster />
