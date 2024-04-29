@@ -8,3 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function uuid() {
   return crypto.getRandomValues(new Uint32Array(1))[0].toString();
 }
+
+export function absoluteUrl(path: string) {
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+}
