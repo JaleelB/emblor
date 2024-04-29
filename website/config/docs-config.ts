@@ -11,7 +11,7 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: 'Introduction',
-          href: '/docs',
+          href: '/',
           items: [],
         },
       ],
@@ -21,12 +21,12 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: 'API Reference',
-          href: '/docs/api-reference',
+          href: '/api-reference',
           items: [],
         },
         {
           title: 'Variants',
-          href: '/docs/variants',
+          href: '/variants',
           items: [],
         },
       ],
@@ -36,12 +36,12 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: 'With React Hook Form',
-          href: '/docs/integrations/react-hook-form',
+          href: '/integrations/react-hook-form',
           items: [],
         },
         {
           title: 'With Shadcn Form',
-          href: '/docs/integrations/shadcn-form',
+          href: '/integrations/shadcn-form',
           items: [],
         },
       ],
