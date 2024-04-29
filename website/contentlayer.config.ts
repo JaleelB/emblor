@@ -2,7 +2,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import rehypePrettyCode from 'rehype-pretty-code';
 
 /** @type {import('contentlayer/source-files').ComputedFields} */
-export const Snippet = defineDocumentType(() => ({
+export const Docs = defineDocumentType(() => ({
   name: 'Docs',
   filePathPattern: `docs/**/*.mdx`,
   contentType: 'mdx',
@@ -30,7 +30,7 @@ export const Snippet = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'content',
-  documentTypes: [Snippet],
+  documentTypes: [Docs],
   mdx: {
     rehypePlugins: [
       [
