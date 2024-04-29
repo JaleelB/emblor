@@ -18,7 +18,7 @@ const FormSchema = z.object({
   ),
 });
 
-export default function Hero() {
+export default function Demo() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -39,34 +39,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="z-10 max-w-5xl w-full flex flex-col items-center text-center gap-5">
-      <div className="z-10 w-full flex flex-col items-center text-center gap-5">
-        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Shadcn Tag Input</h1>
-        <p className="text-muted-foreground max-w-[450px]">
-          An implementation of a Tag Input component built on top of Shadcn UI&apos;s input component.
-        </p>
-        <div className="flex gap-2 mt-1">
-          <Link
-            href="#try"
-            className={`${buttonVariants({
-              variant: 'default',
-              size: 'lg',
-            })} min-w-[150px] shadow-sm`}
-          >
-            Try it out
-          </Link>
-          <Link
-            href="https://github.com/JaleelB/shadcn-tag-input"
-            className={`${buttonVariants({
-              variant: 'secondary',
-              size: 'lg',
-            })} shadow-sm`}
-          >
-            Github
-          </Link>
-        </div>
-      </div>
-
+    <section className="z-10 w-full flex flex-col items-center text-center gap-5">
       <div id="try" className="w-full py-8">
         <div className="w-full relative my-4 flex flex-col space-y-2">
           <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import CodeBlock from './code-block';
 import Variants from '@/app/(home)/sections/variants';
 import Props from '@/app/(home)/sections/props';
+import Hero from '@/app/(home)/sections/demo';
 
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -132,6 +133,7 @@ const components = {
   ),
   Variants: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Variants {...props} />,
   Props: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Props {...props} />,
+  Demo: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Hero {...props} />,
 };
 
 interface MdxProps {
