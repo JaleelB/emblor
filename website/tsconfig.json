@@ -31,7 +31,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "content/docs/integrations-react-hook-form.mdx"
+    "content/docs/integrations/react-hook-form.mdx",
+    "contentlayer.config.js"
   ],
   "exclude": ["website/node_modules"]
 }

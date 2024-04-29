@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import { cn } from '@/lib/utils';
 import CodeBlock from './code-block';
-import Variants from '@/app/(home)/sections/variants';
-import Props from '@/app/(home)/sections/props';
-import Hero from '@/app/(home)/sections/demo';
+import Variants from './mdx/variants';
+import Props from './mdx/props';
+import Demo from './mdx/demo';
 
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -102,15 +102,18 @@ const components = {
       />
     );
   },
+  // code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
+  //   // <code
+  //   //   className={cn(
+  //   //     "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm",
+  //   //     className
+  //   //   )}
+  //   //   {...props}
+  //   // />
+  //   <CodeBlock value={props.children as string} />
+  // ),
   code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    // <code
-    //   className={cn(
-    //     "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm",
-    //     className
-    //   )}
-    //   {...props}
-    // />
-    <CodeBlock value={props.children as string} />
+    <code className={cn('relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm', className)} {...props} />
   ),
   Image,
   Step: ({ className, ...props }: React.ComponentProps<'h3'>) => (
@@ -133,7 +136,7 @@ const components = {
   ),
   Variants: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Variants {...props} />,
   Props: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Props {...props} />,
-  Demo: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Hero {...props} />,
+  Demo: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Demo {...props} />,
 };
 
 interface MdxProps {

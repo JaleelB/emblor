@@ -2,7 +2,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { siteConfig } from './site-config';
+import { siteConfig } from '../config/site-config';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 

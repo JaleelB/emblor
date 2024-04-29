@@ -1,4 +1,4 @@
-https://github.com/JaleelB/shadcn-tag-input/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
+https://github.com/JaleelB/emblor/assets/78449846/7f678789-ef5e-4913-b26c-9317003d6dbc
 
 [Emblor](https://emblor.jaleelbennett.com/) is a highly customizable, accessible, and fully-featured tag input component built with Shadcn UI.
 
@@ -96,7 +96,6 @@ export default function Hero() {
                           {...field}
                           placeholder="Enter a topic"
                           tags={tags}
-                          // using Shadcn input styling
                           className="sm:min-w-[450px]"
                           setTags={(newTags) => {
                             setTags(newTags);
