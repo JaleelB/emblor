@@ -7,6 +7,7 @@ In this guide, we will take a look at building forms with [shadcn/ui form compon
 
 ## Anatomy
 
+<br />
 ```tsx
 <Form>
   <FormField
@@ -30,11 +31,15 @@ In this guide, we will take a look at building forms with [shadcn/ui form compon
 
 Install the **Form** component by running the following command:
 
+<br />
+
 ```bash
 npx shadcn-ui@latest add form
 ```
 
 Install **Emblor** by running the following command:
+
+<br />
 
 ```bash
 npm install emblor
@@ -65,6 +70,8 @@ const FormSchema = z.object({
 ### Define a form
 
 Use the **useForm** hook from **react-hook-form** to create a form.
+
+<br />
 
 ```tsx showLineNumbers {3-4,14-20,22-27}
 'use client';
@@ -110,6 +117,8 @@ Since **FormField** is using a controlled component, you need to provide a defau
 ### Build your form
 
 We can now use the **Form** components to build our form.
+
+<br />
 
 ```tsx showLineNumbers {7-17,28-50}
 'use client';

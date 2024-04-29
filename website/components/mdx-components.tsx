@@ -81,37 +81,7 @@ const components = {
       {...props}
     />
   ),
-  pre: ({
-    className,
-    __rawString__,
-    __withMeta__,
-    __src__,
-    ...props
-  }: React.HTMLAttributes<HTMLPreElement> & {
-    __rawString__?: string;
-    __withMeta__?: boolean;
-    __src__?: string;
-  }) => {
-    return (
-      <pre
-        className={cn(
-          'mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-lg border bg-zinc-950 p-4 dark:bg-zinc-900',
-          className,
-        )}
-        {...props}
-      />
-    );
-  },
-  code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    // <code
-    //   className={cn(
-    //     "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm",
-    //     className
-    //   )}
-    //   {...props}
-    // />
-    <CodeBlock value={props.children as string} />
-  ),
+  code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => <CodeBlock value={props.children as string} />,
   Image,
   Step: ({ className, ...props }: React.ComponentProps<'h3'>) => (
     <h3 className={cn('font-heading mt-8 scroll-m-20 text-xl font-semibold tracking-tight', className)} {...props} />

@@ -3,6 +3,7 @@ import { cn } from '../lib/utils';
 import { buttonVariants } from './ui/button';
 import { Icons } from './icons';
 import { siteConfig } from '@/config/site-config';
+import { ModeToggle } from './mode-toggle';
 
 export function SiteHeader() {
   return (
@@ -36,6 +37,7 @@ export function SiteHeader() {
                 <span className="sr-only">Twitter</span>
               </div>
             </Link>
+            <ModeToggle />
           </nav>
         </div>
       </div>

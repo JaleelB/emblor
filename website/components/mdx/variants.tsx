@@ -20,12 +20,9 @@ export default function Variants() {
 
   return (
     <section id="variants" className="max-w-5xl w-full py-8">
-      <h2 className="font-heading mt-12 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        Variants
-      </h2>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Variant</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
           Choose from different visual styles like default, primary, and destructive.
         </p>
         <Tabs defaultValue="default" className="w-full mt-4">
@@ -70,7 +67,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Size</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">Adjust the size of the tags.</p>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Adjust the size of the tags.</p>
         <Tabs defaultValue="small" className="w-full mt-4">
           <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
             <TabsTrigger value="small">Small</TabsTrigger>
@@ -126,7 +123,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Shape</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">Customize the shape of the tags.</p>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Customize the shape of the tags.</p>
         <Tabs defaultValue="default" className="w-full mt-4">
           <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
             <TabsTrigger value="default">Default</TabsTrigger>
@@ -182,7 +179,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Border styles</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
           Choose between different border styles or opt for no border at all.
         </p>
         <Tabs defaultValue="default" className="w-full mt-4">
@@ -216,7 +213,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Text case</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">Control the text casing within the tags.</p>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Control the text casing within the tags.</p>
         <Tabs defaultValue="capitalize" className="w-full mt-4">
           <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
             <TabsTrigger value="capitalize">Capitalize</TabsTrigger>
@@ -260,7 +257,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Interaction</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
           Define the interaction style of the tags. Make them clickable or non-clickable.
         </p>
         <Tabs defaultValue="clickable" className="w-full mt-4">
@@ -294,7 +291,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Animations</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">Add animations on render for tags.</p>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Add animations on render for tags.</p>
         <Tabs defaultValue="none" className="w-full mt-4">
           <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
             <TabsTrigger value="none">None</TabsTrigger>
@@ -350,7 +347,7 @@ export default function Variants() {
       </div>
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Text styles</h3>
-        <p className="leading-7 [&amp;:not(:first-child)]:mt-6 text-normal">
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
           Customize the text style within the tags.
         </p>
         <Tabs defaultValue="normal" className="w-full mt-4">
