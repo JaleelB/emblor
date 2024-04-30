@@ -1,5 +1,11 @@
 # emblor
 
+## 1.0.1
+
+### Patch Changes
+
+- f69e771: removed the unused toast notification feature
+
 ## 1.0.0
 
 ### Major Changes
