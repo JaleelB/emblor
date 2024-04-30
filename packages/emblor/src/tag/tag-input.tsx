@@ -5,7 +5,6 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { type VariantProps } from 'class-variance-authority';
 import { CommandInput } from '../ui/command';
-// import { toast } from '../ui/use-toast';
 import { TagPopover } from './tag-popover';
 import { TagList } from './tag-list';
 import { tagVariants } from './tag';
@@ -115,11 +114,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
-    // toast({
-    //   title: 'maxTags and minTags cannot be less than 0',
-    //   description: 'Please set maxTags and minTags to a value greater than or equal to 0',
-    //   variant: 'destructive',
-    // });
+    // error
     return null;
   }
 
@@ -136,11 +131,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
       // Check if the tag is in the autocomplete options if restrictTagsToAutocomplete is true
       if (restrictTagsToAutocompleteOptions && !autocompleteOptions?.some((option) => option.text === newTagText)) {
-        // toast({
-        //   title: 'Invalid Tag',
-        //   description: 'Please select a tag from the autocomplete options.',
-        //   variant: 'destructive',
-        // });
+        // error
         return;
       }
 
@@ -150,21 +141,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
       if (minLength && newTagText.length < minLength) {
         console.warn('Tag is too short');
-        // toast({
-        //   title: 'Tag is too short',
-        //   description: 'Please enter a tag with more characters',
-        //   variant: 'destructive',
-        // });
+        // error
         return;
       }
 
       // Validate maxLength
       if (maxLength && newTagText.length > maxLength) {
-        // toast({
-        //   title: 'Tag is too long',
-        //   description: 'Please enter a tag with less characters',
-        //   variant: 'destructive',
-        // });
+        // error
         console.warn('Tag is too long');
         return;
       }
