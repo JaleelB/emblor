@@ -1,5 +1,11 @@
 # emblor
 
+## 1.0.3
+
+### Patch Changes
+
+- 6a58922: corrected 'stroke-linejoin' dom property to 'strokeLinejoin' to resolve console warning
+
 ## 1.0.1
 
 ### Patch Changes
