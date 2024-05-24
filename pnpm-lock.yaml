@@ -149,8 +149,8 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       emblor:
-        specifier: ^1.0.0
-        version: 1.0.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
+        specifier: ^1.0.3
+        version: 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
       eslint:
         specifier: 8.48.0
         version: 8.48.0
@@ -1917,8 +1917,8 @@ packages:
   electron-to-chromium@1.4.750:
     resolution: {integrity: sha512-9ItEpeu15hW5m8jKdriL+BQrgwDTXEL9pn4SkillWFu73ZNNNQ2BKKLS+ZHv2vC9UkNhosAeyfxOf/5OSeTCPA==}
 
-  emblor@1.0.0:
-    resolution: {integrity: sha512-G7jo8FGWWoQnDOpXadeu68evPI8PRwTjRWAg8+LZHtAe51PzxLx76xl1WX/wTBlcnEmaJ6RpaQC7suLUfLFQag==}
+  emblor@1.0.3:
+    resolution: {integrity: sha512-Pab9HwDPtNd67LOyyuscPDH9hlIju6Q3oKR3xY/cuINntTzexbUluZjcmE/8dYjJdddwcX5Pyb+IvzTQLwFvyQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -6486,7 +6486,7 @@ snapshots:
 
   electron-to-chromium@1.4.750: {}
 
-  emblor@1.0.0(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2):
+  emblor@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.21)(postcss@8.4.29)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2):
     dependencies:
       '@radix-ui/react-dialog': 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-popover': 1.0.7(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
