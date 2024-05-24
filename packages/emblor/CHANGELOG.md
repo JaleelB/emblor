@@ -1,5 +1,11 @@
 # emblor
 
+## 1.1.1
+
+### Patch Changes
+
+- 69b6dfb: updated input styling when tags are rendered inline
+
 ## 1.1.0
 
 ### Minor Changes
