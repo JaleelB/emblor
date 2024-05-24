@@ -204,7 +204,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
   return (
     <div
-      className={`w-full flex ${
+      className={`w-full flex ${!includeTagsInInput ? 'gap-3' : ''} ${
         inputFieldPosition === 'bottom' ? 'flex-col' : inputFieldPosition === 'top' ? 'flex-col-reverse' : 'flex-row'
       }`}
     >
