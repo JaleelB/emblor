@@ -36,36 +36,39 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   );
 };
 
-const CommandInput = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="lucide lucide-search mr-2 h-4 w-4 shrink-0 opacity-50"
-    >
-      <circle cx="11" cy="11" r="8"></circle>
-      <path d="m21 21-4.3-4.3"></path>
-    </svg>
-    <CommandPrimitive.Input
-      ref={ref}
-      className={cn(
-        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-        className,
-      )}
-      {...props}
-    />
-  </div>
-));
+interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> {
+  includeTagsInInput?: boolean;
+}
+
+const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, CommandInputProps>(
+  ({ className, includeTagsInInput, ...props }, ref) => (
+    <div className={`flex items-center ${includeTagsInInput ? 'px-0.5' : 'px-3'}`} cmdk-input-wrapper="">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="lucide lucide-search mr-2 h-4 w-4 shrink-0 opacity-50"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <CommandPrimitive.Input
+        ref={ref}
+        className={cn(
+          'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+        {...props}
+      />
+    </div>
+  ),
+);
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 

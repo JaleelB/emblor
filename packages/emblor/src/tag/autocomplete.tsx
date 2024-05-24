@@ -24,7 +24,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   return (
     <Command className="border min-w-[400px]">
       {children}
-      <CommandList>
+      <CommandList className="border-t">
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
           {autocompleteOptions.map((option) => (
