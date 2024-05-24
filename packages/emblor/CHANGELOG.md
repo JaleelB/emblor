@@ -1,5 +1,14 @@
 # emblor
 
+## 1.1.0
+
+### Minor Changes
+
+- 4d808e2: 🚀 Features
+
+  - Introduced includeTagsInInput prop to allow tags to be rendered inside the input field.
+  - Adjusted TagList to support inline rendering of tags within the input field.
+
 ## 1.0.3
 
 ### Patch Changes
