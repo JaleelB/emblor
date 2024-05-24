@@ -1,9 +1,7 @@
 import React from 'react';
 import { Tag, TagInput } from 'emblor';
 import { Label } from '../ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { propOption, tagInputProps } from '@/utils/utils';
 import { cn, uuid } from '@/lib/utils';
 import { CheckCircle } from 'lucide-react';
 
@@ -32,12 +30,17 @@ export default function Props() {
   const [clearAllTags, setClearAllTags] = React.useState<Tag[]>(tags);
   const [inputFieldPositionTags, setInputFieldPositionTags] = React.useState<Tag[]>(tags);
   const [usePopoverTags, setUsePopoverTags] = React.useState<Tag[]>([]);
+  const [inlineTags, setInlineTags] = React.useState<Tag[]>([
+    ...tags,
+    { id: uuid(), text: 'Music' },
+    { id: uuid(), text: 'Dance' },
+  ]);
 
   const renderCustomTag = (tag: Tag) => {
     return (
       <div
         key={tag.id}
-        className={`flex items-center gap-2 p-2 rounded bg-blue-500
+        className={`flex items-center gap-2 p-2 rounded bg-red-500
         }`}
       >
         <CheckCircle size={16} className="text-white" />
@@ -65,6 +68,26 @@ export default function Props() {
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
                 setAutocompleteTags(newTags);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-full">
+        <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Include Tags In Input</h3>
+        <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+          Allows users to display tags inside the input field for a more compact and inline appearance.
+        </p>
+        <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
+          <div className="space-y-2 w-full max-w-[400px]">
+            <Label htmlFor="">Topics</Label>
+            <TagInput
+              placeholder="Enter a topic"
+              tags={inlineTags}
+              includeTagsInInput
+              className="w-[150px]"
+              setTags={(newTags) => {
+                setInlineTags(newTags);
               }}
             />
           </div>

@@ -3,7 +3,7 @@ import { allDocs } from 'contentlayer/generated';
 
 import '../../mdx.css';
 import type { Metadata } from 'next';
-import { ChevronRightIcon, ExternalLinkIcon } from '@radix-ui/react-icons';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
 import Balancer from 'react-wrap-balancer';
 
 import { siteConfig } from '@/config/site-config';
@@ -76,7 +76,7 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   return (
-    <main className="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+    <main className="w-full relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-1 max-w-4xl">
       <div className="mx-auto w-full min-w-0">
         <div className="mb-4 flex items-center space-x-1 text-sm text-muted-foreground">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">Docs</div>
