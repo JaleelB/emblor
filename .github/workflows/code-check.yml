@@ -18,9 +18,9 @@ jobs:
           node-version: 18
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
+        uses: pnpm/action-setup@v4
         with:
-          version: 8.7.4
+          version: 9.0.2
 
       - name: Get pnpm store directory
         id: pnpm-cache
