@@ -28,7 +28,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
           {autocompleteOptions.map((option) => (
-            <CommandItem key={option.id}>
+            <CommandItem key={option.id} className="cursor-pointer">
               <div
                 className="w-full"
                 onClick={() => {
