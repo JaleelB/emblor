@@ -73,6 +73,8 @@ export type TagProps = {
   animation: TagInputProps['animation'];
   textStyle: TagInputProps['textStyle'];
   onRemoveTag: (id: string) => void;
+  tagClassname?: string;
+  closeClassname?: string;
 } & Pick<TagInputProps, 'direction' | 'onTagClick' | 'draggable'>;
 
 export const Tag: React.FC<TagProps> = ({
@@ -89,6 +91,8 @@ export const Tag: React.FC<TagProps> = ({
   interaction,
   animation,
   textStyle,
+  tagClassname,
+  closeClassname,
 }) => {
   return (
     <span
@@ -109,6 +113,7 @@ export const Tag: React.FC<TagProps> = ({
           'justify-between': direction === 'column',
           'cursor-pointer': draggable,
         },
+        tagClassname,
       )}
       onClick={() => onTagClick?.(tagObj)}
     >
@@ -120,7 +125,7 @@ export const Tag: React.FC<TagProps> = ({
           e.stopPropagation(); // Prevent event from bubbling up to the tag span
           onRemoveTag(tagObj.id);
         }}
-        className={cn('py-1 px-3 h-full hover:bg-transparent')}
+        className={cn('py-1 px-3 h-full hover:bg-transparent', closeClassname)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -61,6 +61,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
   includeTagsInInput?: boolean;
+  tagClassname?: string;
+  closeClassname?: string;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -108,6 +110,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inputProps = {},
     restrictTagsToAutocompleteOptions,
     includeTagsInInput = false,
+    tagClassname,
+    closeClassname,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -227,6 +231,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             onRemoveTag={removeTag}
             direction={direction}
             includeTagsInInput={includeTagsInInput}
+            tagClassname={tagClassname}
+            closeClassname={closeClassname}
           />
         ) : (
           <div className="w-full">
@@ -250,6 +256,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 onRemoveTag={removeTag}
                 direction={direction}
                 includeTagsInInput={includeTagsInInput}
+                tagClassname={tagClassname}
+                closeClassname={closeClassname}
               />
               <Input
                 ref={inputRef}
@@ -318,6 +326,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onRemoveTag={removeTag}
                     direction={direction}
                     includeTagsInInput={includeTagsInInput}
+                    tagClassname={tagClassname}
+                    closeClassname={closeClassname}
                   />
                   <CommandInput
                     placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}

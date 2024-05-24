@@ -11,6 +11,8 @@ export type TagListProps = {
   onSortEnd: (oldIndex: number, newIndex: number) => void;
   className?: string;
   includeTagsInInput?: boolean;
+  tagClassname?: string;
+  closeClassname?: string;
 } & Omit<TagProps, 'tagObj'>;
 
 const DropTarget: React.FC = () => {
