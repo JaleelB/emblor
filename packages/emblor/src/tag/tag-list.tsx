@@ -1,7 +1,6 @@
 import React from 'react';
 import { type Tag as TagType } from './tag-input';
 import { Tag, TagProps } from './tag';
-
 import SortableList, { SortableItem } from 'react-easy-sort';
 import { cn } from '../utils';
 
@@ -10,6 +9,8 @@ export type TagListProps = {
   customTagRenderer?: (tag: TagType) => React.ReactNode;
   direction?: TagProps['direction'];
   onSortEnd: (oldIndex: number, newIndex: number) => void;
+  className?: string;
+  includeTagsInInput?: boolean;
 } & Omit<TagProps, 'tagObj'>;
 
 const DropTarget: React.FC = () => {
@@ -22,6 +23,8 @@ export const TagList: React.FC<TagListProps> = ({
   direction,
   draggable,
   onSortEnd,
+  className,
+  includeTagsInInput,
   ...tagListProps
 }) => {
   const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
@@ -35,36 +38,67 @@ export const TagList: React.FC<TagListProps> = ({
   };
 
   return (
-    <div
-      className={cn('rounded-md max-w-[450px]', {
-        'flex flex-wrap gap-2': direction === 'row',
-        'flex flex-col gap-2': direction === 'column',
-      })}
-    >
-      {draggable ? (
-        <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
-          {tags.map((tagObj) => (
-            <SortableItem key={tagObj.id}>
-              <div
-                onMouseDown={() => handleMouseDown(tagObj.id)}
-                onMouseLeave={handleMouseUp}
-                className={cn(
-                  {
-                    'border border-solid border-primary rounded-md': draggedTagId === tagObj.id,
-                  },
-                  'transition-all duration-200 ease-in-out',
-                )}
-              >
-                {customTagRenderer ? customTagRenderer(tagObj) : <Tag tagObj={tagObj} {...tagListProps} />}
-              </div>
-            </SortableItem>
-          ))}
-        </SortableList>
+    <>
+      {!includeTagsInInput ? (
+        <div
+          className={cn('rounded-md w-full', className, {
+            'flex flex-wrap gap-2': direction === 'row',
+            'flex flex-col gap-2': direction === 'column',
+          })}
+        >
+          {draggable ? (
+            <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
+              {tags.map((tagObj) => (
+                <SortableItem key={tagObj.id}>
+                  <div
+                    onMouseDown={() => handleMouseDown(tagObj.id)}
+                    onMouseLeave={handleMouseUp}
+                    className={cn(
+                      {
+                        'border border-solid border-primary rounded-md': draggedTagId === tagObj.id,
+                      },
+                      'transition-all duration-200 ease-in-out',
+                    )}
+                  >
+                    {customTagRenderer ? customTagRenderer(tagObj) : <Tag tagObj={tagObj} {...tagListProps} />}
+                  </div>
+                </SortableItem>
+              ))}
+            </SortableList>
+          ) : (
+            tags.map((tagObj) =>
+              customTagRenderer ? customTagRenderer(tagObj) : <Tag key={tagObj.id} tagObj={tagObj} {...tagListProps} />,
+            )
+          )}
+        </div>
       ) : (
-        tags.map((tagObj) =>
-          customTagRenderer ? customTagRenderer(tagObj) : <Tag key={tagObj.id} tagObj={tagObj} {...tagListProps} />,
-        )
+        <>
+          {draggable ? (
+            <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
+              {tags.map((tagObj) => (
+                <SortableItem key={tagObj.id}>
+                  <div
+                    onMouseDown={() => handleMouseDown(tagObj.id)}
+                    onMouseLeave={handleMouseUp}
+                    className={cn(
+                      {
+                        'border border-solid border-primary rounded-md': draggedTagId === tagObj.id,
+                      },
+                      'transition-all duration-200 ease-in-out',
+                    )}
+                  >
+                    {customTagRenderer ? customTagRenderer(tagObj) : <Tag tagObj={tagObj} {...tagListProps} />}
+                  </div>
+                </SortableItem>
+              ))}
+            </SortableList>
+          ) : (
+            tags.map((tagObj) =>
+              customTagRenderer ? customTagRenderer(tagObj) : <Tag key={tagObj.id} tagObj={tagObj} {...tagListProps} />,
+            )
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 };
