@@ -34,7 +34,7 @@
     "cmdk": "^0.2.1",
     "contentlayer": "^0.3.4",
     "date-fns": "^3.6.0",
-    "emblor": "latest",
+    "emblor": "^1.1.0",
     "eslint": "8.48.0",
     "eslint-config-next": "14.2.3",
     "framer-motion": "^10.18.0",
