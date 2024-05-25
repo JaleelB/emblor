@@ -22,7 +22,7 @@ The example below uses `tailwindcss` `@shadcn/ui` `tailwind-merge` `clsx`:
 
 ```tsx
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Tag, TagInput } from '@/components/tag-input';
+import { Tag, TagInput } from 'emblor';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { z } from 'zod';
