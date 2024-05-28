@@ -27,18 +27,35 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 }) => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
     if (open && triggerRef.current) {
       setPopoverWidth(triggerRef.current.offsetWidth);
     }
+    setIsPopoverOpen(open);
+  };
+
+  const handleInputFocus = () => {
+    setIsPopoverOpen(true);
+  };
+
+  const handleInputBlur = (event: React.FocusEvent) => {
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && triggerRef.current && triggerRef.current.contains(relatedTarget)) {
+      return;
+    }
+    setIsPopoverOpen(false);
   };
 
   return (
     <Command className="border w-full">
-      <Popover onOpenChange={handleOpenChange}>
+      <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild ref={triggerRef}>
-          {children}
+          {React.cloneElement(children as React.ReactElement<any>, {
+            onFocus: handleInputFocus,
+            onBlur: handleInputBlur,
+          })}
         </PopoverTrigger>
         <PopoverContent
           className={cn(`p-0`)}
