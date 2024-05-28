@@ -36,8 +36,10 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     setIsPopoverOpen(open);
   };
 
-  const handleInputFocus = () => {
+  const handleInputFocus = (event: React.FocusEvent) => {
     setIsPopoverOpen(true);
+    const userOnFocus = (children as React.ReactElement<any>).props.onFocus;
+    if (userOnFocus) userOnFocus(event);
   };
 
   const handleInputBlur = (event: React.FocusEvent) => {
@@ -46,6 +48,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       return;
     }
     setIsPopoverOpen(false);
+    const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
+    if (userOnBlur) userOnBlur(event);
   };
 
   return (
