@@ -208,8 +208,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         inputFieldPosition === 'bottom' ? 'flex-col' : inputFieldPosition === 'top' ? 'flex-col-reverse' : 'flex-row'
       }`}
     >
-      {!usePopoverForTags && !enableAutocomplete ? (
-        !includeTagsInInput ? (
+      {!usePopoverForTags &&
+        (!includeTagsInInput ? (
           <TagList
             tags={truncatedTags}
             customTagRenderer={customTagRenderer}
@@ -229,51 +229,52 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             includeTagsInInput={includeTagsInInput}
           />
         ) : (
-          <div className="w-full">
-            <div
-              className={`flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              <TagList
-                tags={truncatedTags}
-                customTagRenderer={customTagRenderer}
-                variant={variant}
-                size={size}
-                shape={shape}
-                borderStyle={borderStyle}
-                textCase={textCase}
-                interaction={interaction}
-                animation={animation}
-                textStyle={textStyle}
-                onTagClick={onTagClick}
-                draggable={draggable}
-                onSortEnd={onSortEnd}
-                onRemoveTag={removeTag}
-                direction={direction}
-                includeTagsInInput={includeTagsInInput}
-              />
-              <Input
-                ref={inputRef}
-                id={id}
-                type="text"
-                placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
-                value={inputValue}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                {...inputProps}
-                className={cn(
-                  className,
-                  'border-0 h-5 bg-transparent sm:min-w-focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 w-fit',
-                )}
-                autoComplete={enableAutocomplete ? 'on' : 'off'}
-                list={enableAutocomplete ? 'autocomplete-options' : undefined}
-                disabled={maxTags !== undefined && tags.length >= maxTags}
-              />
+          !enableAutocomplete && (
+            <div className="w-full">
+              <div
+                className={`flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+              >
+                <TagList
+                  tags={truncatedTags}
+                  customTagRenderer={customTagRenderer}
+                  variant={variant}
+                  size={size}
+                  shape={shape}
+                  borderStyle={borderStyle}
+                  textCase={textCase}
+                  interaction={interaction}
+                  animation={animation}
+                  textStyle={textStyle}
+                  onTagClick={onTagClick}
+                  draggable={draggable}
+                  onSortEnd={onSortEnd}
+                  onRemoveTag={removeTag}
+                  direction={direction}
+                  includeTagsInInput={includeTagsInInput}
+                />
+                <Input
+                  ref={inputRef}
+                  id={id}
+                  type="text"
+                  placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  {...inputProps}
+                  className={cn(
+                    className,
+                    'border-0 h-5 bg-transparent sm:min-w-focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 w-fit',
+                  )}
+                  autoComplete={enableAutocomplete ? 'on' : 'off'}
+                  list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                  disabled={maxTags !== undefined && tags.length >= maxTags}
+                />
+              </div>
             </div>
-          </div>
-        )
-      ) : null}
+          )
+        ))}
       {enableAutocomplete ? (
         <div className="w-full">
           <Autocomplete
