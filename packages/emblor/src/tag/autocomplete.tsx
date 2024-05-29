@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
 import { type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
@@ -26,6 +26,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   children,
 }) => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  // const inputRef = useRef<HTMLInputElement | null>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -42,14 +43,21 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     if (userOnFocus) userOnFocus(event);
   };
 
-  const handleInputBlur = (event: React.FocusEvent) => {
-    const relatedTarget = event.relatedTarget as HTMLElement;
-    if (relatedTarget && triggerRef.current && triggerRef.current.contains(relatedTarget)) {
-      return;
-    }
-    setIsPopoverOpen(false);
-    const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
-    if (userOnBlur) userOnBlur(event);
+  const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    // Delay the popover closing to allow for related focus events to complete
+    setTimeout(() => {
+      const input = event.target as HTMLInputElement;
+
+      // Check if the related target (new focus element) is within the input
+      if (triggerRef.current?.contains(input)) {
+        input.focus();
+        return;
+      }
+
+      setIsPopoverOpen(false);
+      const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
+      if (userOnBlur) userOnBlur(event);
+    }, 100);
   };
 
   return (
