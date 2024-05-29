@@ -1,5 +1,5 @@
 ---
-"emblor": minor
+'emblor': minor
 ---
 
 🚀 Features
