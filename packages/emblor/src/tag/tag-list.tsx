@@ -6,7 +6,7 @@ import { cn } from '../utils';
 
 export type TagListProps = {
   tags: TagType[];
-  customTagRenderer?: (tag: TagType) => React.ReactNode;
+  customTagRenderer?: (tag: TagType, isActiveTag: boolean) => React.ReactNode;
   direction?: TagProps['direction'];
   onSortEnd: (oldIndex: number, newIndex: number) => void;
   className?: string;
@@ -65,9 +65,9 @@ export const TagList: React.FC<TagListProps> = ({
                     )}
                   >
                     {customTagRenderer ? (
-                      customTagRenderer(tagObj) // add active classess
+                      customTagRenderer(tagObj, index === activeTagIndex)
                     ) : (
-                      <Tag tagObj={tagObj} isActive={index === activeTagIndex} {...tagListProps} />
+                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
                     )}
                   </div>
                 </SortableItem>
@@ -76,9 +76,9 @@ export const TagList: React.FC<TagListProps> = ({
           ) : (
             tags.map((tagObj, index) =>
               customTagRenderer ? (
-                customTagRenderer(tagObj)
+                customTagRenderer(tagObj, index === activeTagIndex)
               ) : (
-                <Tag key={tagObj.id} tagObj={tagObj} isActive={index === activeTagIndex} {...tagListProps} />
+                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
               ),
             )
           )}
@@ -100,9 +100,9 @@ export const TagList: React.FC<TagListProps> = ({
                     )}
                   >
                     {customTagRenderer ? (
-                      customTagRenderer(tagObj)
+                      customTagRenderer(tagObj, index === activeTagIndex)
                     ) : (
-                      <Tag tagObj={tagObj} isActive={index === activeTagIndex} {...tagListProps} />
+                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
                     )}
                   </div>
                 </SortableItem>
@@ -111,9 +111,9 @@ export const TagList: React.FC<TagListProps> = ({
           ) : (
             tags.map((tagObj, index) =>
               customTagRenderer ? (
-                customTagRenderer(tagObj)
+                customTagRenderer(tagObj, index === activeTagIndex)
               ) : (
-                <Tag key={tagObj.id} tagObj={tagObj} isActive={index === activeTagIndex} {...tagListProps} />
+                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
               ),
             )
           )}

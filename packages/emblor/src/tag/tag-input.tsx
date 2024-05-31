@@ -50,7 +50,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   autocompleteFilter?: (option: string) => boolean;
   direction?: 'row' | 'column';
   onInputChange?: (value: string) => void;
-  customTagRenderer?: (tag: Tag) => React.ReactNode;
+  customTagRenderer?: (tag: Tag, isActiveTag: boolean) => React.ReactNode;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
@@ -61,6 +61,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
   includeTagsInInput?: boolean;
+  activeTagIndex?: number | null;
+  setActiveTagIndex?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -108,12 +110,14 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inputProps = {},
     restrictTagsToAutocompleteOptions,
     includeTagsInInput = false,
+    activeTagIndex,
+    setActiveTagIndex,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
   const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+  // const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
@@ -415,6 +419,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 onSortEnd={onSortEnd}
                 onRemoveTag={removeTag}
                 direction={direction}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               >
                 <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
@@ -469,6 +475,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               onSortEnd={onSortEnd}
               onRemoveTag={removeTag}
               direction={direction}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             >
               <Input
                 ref={inputRef}
