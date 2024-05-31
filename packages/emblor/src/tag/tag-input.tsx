@@ -61,8 +61,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
   includeTagsInInput?: boolean;
-  activeTagIndex?: number | null;
-  setActiveTagIndex?: React.Dispatch<React.SetStateAction<number | null>>;
+  activeTagIndex: number | null;
+  setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -180,53 +180,53 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         setTagCount((prevTagCount) => prevTagCount + 1);
       }
       setInputValue('');
-    }
-
-    switch (e.key) {
-      case 'Delete':
-        if (activeTagIndex !== null) {
+    } else {
+      switch (e.key) {
+        case 'Delete':
+          if (activeTagIndex !== null) {
+            e.preventDefault();
+            const newTags = [...tags];
+            newTags.splice(activeTagIndex, 1);
+            setTags(newTags);
+            setActiveTagIndex((prev) =>
+              newTags.length === 0 ? null : prev! >= newTags.length ? newTags.length - 1 : prev,
+            );
+          }
+          break;
+        case 'Backspace':
+          if (activeTagIndex !== null) {
+            e.preventDefault();
+            const newTags = [...tags];
+            newTags.splice(activeTagIndex, 1);
+            setTags(newTags);
+            setActiveTagIndex((prev) => (prev! === 0 ? null : prev! - 1));
+          }
+          break;
+        case 'ArrowRight':
           e.preventDefault();
-          const newTags = [...tags];
-          newTags.splice(activeTagIndex, 1);
-          setTags(newTags);
-          setActiveTagIndex((prev) =>
-            newTags.length === 0 ? null : prev! >= newTags.length ? newTags.length - 1 : prev,
-          );
-        }
-        break;
-      case 'Backspace':
-        if (activeTagIndex !== null) {
+          if (activeTagIndex === null) {
+            setActiveTagIndex(0);
+          } else {
+            setActiveTagIndex((prev) => (prev! + 1 >= tags.length ? 0 : prev! + 1));
+          }
+          break;
+        case 'ArrowLeft':
           e.preventDefault();
-          const newTags = [...tags];
-          newTags.splice(activeTagIndex, 1);
-          setTags(newTags);
-          setActiveTagIndex((prev) => (prev! === 0 ? null : prev! - 1));
-        }
-        break;
-      case 'ArrowRight':
-        e.preventDefault();
-        if (activeTagIndex === null) {
+          if (activeTagIndex === null) {
+            setActiveTagIndex(tags.length - 1);
+          } else {
+            setActiveTagIndex((prev) => (prev! === 0 ? tags.length - 1 : prev! - 1));
+          }
+          break;
+        case 'Home':
+          e.preventDefault();
           setActiveTagIndex(0);
-        } else {
-          setActiveTagIndex((prev) => (prev! + 1 >= tags.length ? 0 : prev! + 1));
-        }
-        break;
-      case 'ArrowLeft':
-        e.preventDefault();
-        if (activeTagIndex === null) {
+          break;
+        case 'End':
+          e.preventDefault();
           setActiveTagIndex(tags.length - 1);
-        } else {
-          setActiveTagIndex((prev) => (prev! === 0 ? tags.length - 1 : prev! - 1));
-        }
-        break;
-      case 'Home':
-        e.preventDefault();
-        setActiveTagIndex(0);
-        break;
-      case 'End':
-        e.preventDefault();
-        setActiveTagIndex(tags.length - 1);
-        break;
+          break;
+      }
     }
   };
 
