@@ -9,7 +9,7 @@ import { TagPopover } from './tag-popover';
 import { TagList } from './tag-list';
 import { tagVariants } from './tag';
 import { Autocomplete } from './autocomplete';
-import { cn } from '../utils';
+import { cn, uuid } from '../utils';
 
 export enum Delimiter {
   Comma = ',',
@@ -109,7 +109,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     usePopoverForTags = false,
     inputProps = {},
     restrictTagsToAutocompleteOptions,
-    includeTagsInInput = false,
+    includeTagsInInput = true,
     activeTagIndex,
     setActiveTagIndex,
   } = props;
@@ -168,7 +168,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         return;
       }
 
-      const newTagId = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+      const newTagId = uuid();
 
       if (
         newTagText &&
