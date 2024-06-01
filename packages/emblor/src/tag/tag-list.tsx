@@ -6,11 +6,13 @@ import { cn } from '../utils';
 
 export type TagListProps = {
   tags: TagType[];
-  customTagRenderer?: (tag: TagType) => React.ReactNode;
+  customTagRenderer?: (tag: TagType, isActiveTag: boolean) => React.ReactNode;
   direction?: TagProps['direction'];
   onSortEnd: (oldIndex: number, newIndex: number) => void;
   className?: string;
   includeTagsInInput?: boolean;
+  activeTagIndex?: number | null;
+  setActiveTagIndex?: (index: number | null) => void;
 } & Omit<TagProps, 'tagObj'>;
 
 const DropTarget: React.FC = () => {
@@ -25,6 +27,8 @@ export const TagList: React.FC<TagListProps> = ({
   onSortEnd,
   className,
   includeTagsInInput,
+  activeTagIndex,
+  setActiveTagIndex,
   ...tagListProps
 }) => {
   const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
@@ -48,7 +52,7 @@ export const TagList: React.FC<TagListProps> = ({
         >
           {draggable ? (
             <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
-              {tags.map((tagObj) => (
+              {tags.map((tagObj, index) => (
                 <SortableItem key={tagObj.id}>
                   <div
                     onMouseDown={() => handleMouseDown(tagObj.id)}
@@ -60,14 +64,22 @@ export const TagList: React.FC<TagListProps> = ({
                       'transition-all duration-200 ease-in-out',
                     )}
                   >
-                    {customTagRenderer ? customTagRenderer(tagObj) : <Tag tagObj={tagObj} {...tagListProps} />}
+                    {customTagRenderer ? (
+                      customTagRenderer(tagObj, index === activeTagIndex)
+                    ) : (
+                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                    )}
                   </div>
                 </SortableItem>
               ))}
             </SortableList>
           ) : (
-            tags.map((tagObj) =>
-              customTagRenderer ? customTagRenderer(tagObj) : <Tag key={tagObj.id} tagObj={tagObj} {...tagListProps} />,
+            tags.map((tagObj, index) =>
+              customTagRenderer ? (
+                customTagRenderer(tagObj, index === activeTagIndex)
+              ) : (
+                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+              ),
             )
           )}
         </div>
@@ -75,7 +87,7 @@ export const TagList: React.FC<TagListProps> = ({
         <>
           {draggable ? (
             <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
-              {tags.map((tagObj) => (
+              {tags.map((tagObj, index) => (
                 <SortableItem key={tagObj.id}>
                   <div
                     onMouseDown={() => handleMouseDown(tagObj.id)}
@@ -87,14 +99,22 @@ export const TagList: React.FC<TagListProps> = ({
                       'transition-all duration-200 ease-in-out',
                     )}
                   >
-                    {customTagRenderer ? customTagRenderer(tagObj) : <Tag tagObj={tagObj} {...tagListProps} />}
+                    {customTagRenderer ? (
+                      customTagRenderer(tagObj, index === activeTagIndex)
+                    ) : (
+                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                    )}
                   </div>
                 </SortableItem>
               ))}
             </SortableList>
           ) : (
-            tags.map((tagObj) =>
-              customTagRenderer ? customTagRenderer(tagObj) : <Tag key={tagObj.id} tagObj={tagObj} {...tagListProps} />,
+            tags.map((tagObj, index) =>
+              customTagRenderer ? (
+                customTagRenderer(tagObj, index === activeTagIndex)
+              ) : (
+                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+              ),
             )
           )}
         </>

@@ -73,6 +73,7 @@ export type TagProps = {
   animation: TagInputProps['animation'];
   textStyle: TagInputProps['textStyle'];
   onRemoveTag: (id: string) => void;
+  isActiveTag?: boolean;
 } & Pick<TagInputProps, 'direction' | 'onTagClick' | 'draggable'>;
 
 export const Tag: React.FC<TagProps> = ({
@@ -89,6 +90,7 @@ export const Tag: React.FC<TagProps> = ({
   interaction,
   animation,
   textStyle,
+  isActiveTag,
 }) => {
   return (
     <span
@@ -108,6 +110,7 @@ export const Tag: React.FC<TagProps> = ({
         {
           'justify-between': direction === 'column',
           'cursor-pointer': draggable,
+          'ring-ring ring-offset-2 ring-2 ring-offset-background': isActiveTag,
         },
       )}
       onClick={() => onTagClick?.(tagObj)}

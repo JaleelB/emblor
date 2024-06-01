@@ -50,7 +50,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   autocompleteFilter?: (option: string) => boolean;
   direction?: 'row' | 'column';
   onInputChange?: (value: string) => void;
-  customTagRenderer?: (tag: Tag) => React.ReactNode;
+  customTagRenderer?: (tag: Tag, isActiveTag: boolean) => React.ReactNode;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
@@ -61,6 +61,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
   includeTagsInInput?: boolean;
+  activeTagIndex: number | null;
+  setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -108,11 +110,14 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inputProps = {},
     restrictTagsToAutocompleteOptions,
     includeTagsInInput = false,
+    activeTagIndex,
+    setActiveTagIndex,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
   const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
   const inputRef = React.useRef<HTMLInputElement>(null);
+  // const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
@@ -124,6 +129,15 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     const newValue = e.target.value;
     setInputValue(newValue);
     onInputChange?.(newValue);
+  };
+
+  const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    setActiveTagIndex(null); // Reset active tag index when the input field gains focus
+    onFocus?.(event);
+  };
+
+  const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    onBlur?.(event);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -166,6 +180,53 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         setTagCount((prevTagCount) => prevTagCount + 1);
       }
       setInputValue('');
+    } else {
+      switch (e.key) {
+        case 'Delete':
+          if (activeTagIndex !== null) {
+            e.preventDefault();
+            const newTags = [...tags];
+            newTags.splice(activeTagIndex, 1);
+            setTags(newTags);
+            setActiveTagIndex((prev) =>
+              newTags.length === 0 ? null : prev! >= newTags.length ? newTags.length - 1 : prev,
+            );
+          }
+          break;
+        case 'Backspace':
+          if (activeTagIndex !== null) {
+            e.preventDefault();
+            const newTags = [...tags];
+            newTags.splice(activeTagIndex, 1);
+            setTags(newTags);
+            setActiveTagIndex((prev) => (prev! === 0 ? null : prev! - 1));
+          }
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          if (activeTagIndex === null) {
+            setActiveTagIndex(0);
+          } else {
+            setActiveTagIndex((prev) => (prev! + 1 >= tags.length ? 0 : prev! + 1));
+          }
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          if (activeTagIndex === null) {
+            setActiveTagIndex(tags.length - 1);
+          } else {
+            setActiveTagIndex((prev) => (prev! === 0 ? tags.length - 1 : prev! - 1));
+          }
+          break;
+        case 'Home':
+          e.preventDefault();
+          setActiveTagIndex(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          setActiveTagIndex(tags.length - 1);
+          break;
+      }
     }
   };
 
@@ -227,6 +288,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             onRemoveTag={removeTag}
             direction={direction}
             includeTagsInInput={includeTagsInInput}
+            activeTagIndex={activeTagIndex}
+            setActiveTagIndex={setActiveTagIndex}
           />
         ) : (
           !enableAutocomplete && (
@@ -251,6 +314,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   onRemoveTag={removeTag}
                   direction={direction}
                   includeTagsInInput={includeTagsInInput}
+                  activeTagIndex={activeTagIndex}
+                  setActiveTagIndex={setActiveTagIndex}
                 />
                 <Input
                   ref={inputRef}
@@ -260,12 +325,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   value={inputValue}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                   {...inputProps}
                   className={cn(
                     className,
-                    'border-0 h-5 bg-transparent sm:min-w-focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 w-fit',
+                    'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 w-fit',
                   )}
                   autoComplete={enableAutocomplete ? 'on' : 'off'}
                   list={enableAutocomplete ? 'autocomplete-options' : undefined}
@@ -295,9 +360,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   disabled={maxTags !== undefined && tags.length >= maxTags}
                   onChangeCapture={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  className="w-full"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  className={cn('w-full', className)}
                 />
               ) : (
                 <div
@@ -320,6 +385,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onRemoveTag={removeTag}
                     direction={direction}
                     includeTagsInInput={includeTagsInInput}
+                    activeTagIndex={activeTagIndex}
+                    setActiveTagIndex={setActiveTagIndex}
                   />
                   <CommandInput
                     placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
@@ -328,10 +395,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     disabled={maxTags !== undefined && tags.length >= maxTags}
                     onChangeCapture={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
                     includeTagsInInput={includeTagsInInput}
-                    className="border-0 w-fit h-5"
+                    className={cn('border-0 w-fit h-5', className)}
                   />
                 </div>
               )
@@ -352,6 +419,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 onSortEnd={onSortEnd}
                 onRemoveTag={removeTag}
                 direction={direction}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               >
                 <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
@@ -360,9 +429,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   disabled={maxTags !== undefined && tags.length >= maxTags}
                   onChangeCapture={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  className="w-full"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  className={cn('w-full', className)}
                 />
               </TagPopover>
             )}
@@ -380,8 +449,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                onFocus={onFocus}
-                onBlur={onBlur}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 {...inputProps}
                 className={className}
                 autoComplete={enableAutocomplete ? 'on' : 'off'}
@@ -406,6 +475,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               onSortEnd={onSortEnd}
               onRemoveTag={removeTag}
               direction={direction}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             >
               <Input
                 ref={inputRef}
@@ -415,8 +486,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                onFocus={onFocus}
-                onBlur={onBlur}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 {...inputProps}
                 className={className}
                 autoComplete={enableAutocomplete ? 'on' : 'off'}

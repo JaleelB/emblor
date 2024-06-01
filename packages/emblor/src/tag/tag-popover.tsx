@@ -6,10 +6,19 @@ import { TagList, TagListProps } from './tag-list';
 type TagPopoverProps = {
   children: React.ReactNode;
   tags: TagType[];
-  customTagRenderer?: (tag: TagType) => React.ReactNode;
+  customTagRenderer?: (tag: TagType, isActiveTag: boolean) => React.ReactNode;
+  activeTagIndex?: number | null;
+  setActiveTagIndex?: (index: number | null) => void;
 } & TagListProps;
 
-export const TagPopover: React.FC<TagPopoverProps> = ({ children, tags, customTagRenderer, ...tagProps }) => {
+export const TagPopover: React.FC<TagPopoverProps> = ({
+  children,
+  tags,
+  customTagRenderer,
+  activeTagIndex,
+  setActiveTagIndex,
+  ...tagProps
+}) => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -49,9 +58,15 @@ export const TagPopover: React.FC<TagPopoverProps> = ({ children, tags, customTa
       >
         <div className="space-y-1">
           <h4 className="text-sm font-medium leading-none">Entered Tags</h4>
-          <p className="text-sm text-muted-foreground text-left">These are the tags you&apos;ve entered.</p>
+          <p className="text-sm text-muted-foregrounsd text-left">These are the tags you&apos;ve entered.</p>
         </div>
-        <TagList tags={tags} customTagRenderer={customTagRenderer} {...tagProps} />
+        <TagList
+          tags={tags}
+          customTagRenderer={customTagRenderer}
+          activeTagIndex={activeTagIndex}
+          setActiveTagIndex={setActiveTagIndex}
+          {...tagProps}
+        />
       </PopoverContent>
     </Popover>
   );

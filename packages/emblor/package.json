@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "prepare": "pnpm turbo build --filter emblor",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "build": "run-p build:*",
     "build:tsup": "tsup --dts --minify",
     "clean": "rimraf dist",
