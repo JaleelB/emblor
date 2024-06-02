@@ -1,0 +1,67 @@
+---
+title: Keyboard Interactions
+description: Learn how to integrate keyboard shortcuts and commands with the Emblor tag input component.
+---
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px] border-r">Key</TableHead>
+      <TableHead>Description</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          Delete
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">
+        When a tag is active, remove it and set the next tag on the right as active.
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          Backspace
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">
+        When a tag is active, remove it and set the previous tag on the left as active.
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          ArrowRight
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">Move the active state to the next tag.</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          ArrowLeft
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">Move the active state to the previous tag.</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          Home
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">Set the first tag as active.</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r bg-background">
+        <div className="rounded-md border bg-muted/50 dark:bg-neutral-900 dark:border-neutral-700 border-b-2 px-1.5 py-[1px] w-fit">
+          End
+        </div>
+      </TableCell>
+      <TableCell className="bg-background">Set the last tag as active.</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>

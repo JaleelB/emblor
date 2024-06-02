@@ -29,6 +29,11 @@ export const docsConfig: DocsConfig = {
           href: '/variants',
           items: [],
         },
+        {
+          title: 'Keyboard Interactions',
+          href: '/keyboard-interactions',
+          items: [],
+        },
       ],
     },
     {
