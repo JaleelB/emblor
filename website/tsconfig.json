@@ -32,7 +32,8 @@
     ".next/types/**/*.ts",
     ".contentlayer/generated",
     "content/docs/integrations/react-hook-form.mdx",
-    "contentlayer.config.js"
+    "contentlayer.config.js",
+    "content/docs/keyboard-integrations.mdx"
   ],
   "exclude": ["website/node_modules"]
 }
