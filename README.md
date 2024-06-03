@@ -14,6 +14,23 @@ To install Emblor, run the command:
 pnpm add emblor
 ```
 
+## Features
+
+- **Autocomplete**: Enable autocomplete suggestions for tags.
+- **Validation**: Validate tags based on custom rules.
+- **Limit**: Set a maximum and minimum number of tags.
+- **Duplication**: Allow or disallow duplicate tags.
+- **Character Limit**: Define the maximum length of a tag.
+- **Sorting**: Sort tags alphabetically.
+- **Truncation**: Truncate tags that exceed a certain length.
+- **Popovers**: Use popovers to display tags.
+- **Keyboard Navigation**: Use keyboard shortcuts to interact with the tag input.
+- **Customization**: Change the appearance and behavior of the tags by passing in a custom tag renderer.
+- **Accessibility**: Ensure that the tag input is accessible to all users.
+- **Drag and Drop**: Allow users to reorder tags using drag and drop.
+- **Read-only Mode**: Prevent users from editing the tag input.
+- **Delimiters**: Define custom delimiters for separating tags.
+
 ## Usage
 
 Here's a sample implementation that initializes the component with a list of initial tags and suggestions list. Apart from this, there are multiple events, handlers for which need to be set.
@@ -118,16 +135,6 @@ export default function Hero() {
   );
 }
 ```
-
-## Features
-
-- **Autocomplete**: Enable autocomplete suggestions for tags.
-- **Validation**: Validate tags based on custom rules.
-- **Customization**: Customize the appearance and behavior of the tag input.
-- **Accessibility**: Ensure that the tag input is accessible to all users.
-- **Drag and Drop**: Allow users to reorder tags using drag and drop.
-- **Read-only Mode**: Prevent users from editing the tag input.
-- **Delimiters**: Define custom delimiters for separating tags.
 
 ## API Reference
 
