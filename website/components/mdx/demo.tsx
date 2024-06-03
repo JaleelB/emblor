@@ -22,6 +22,7 @@ export default function Demo() {
   });
 
   const [tags, setTags] = React.useState<Tag[]>([]);
+  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
   const { setValue } = form;
 
@@ -59,6 +60,8 @@ export default function Demo() {
                             setTags(newTags);
                             setValue('topics', newTags as [Tag, ...Tag[]]);
                           }}
+                          activeTagIndex={activeTagIndex}
+                          setActiveTagIndex={setActiveTagIndex}
                         />
                       </FormControl>
                       <FormDescription className="text-left">

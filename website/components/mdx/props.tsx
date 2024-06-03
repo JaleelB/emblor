@@ -1,5 +1,6 @@
 import React from 'react';
-import { Tag, TagInput } from 'emblor';
+// import { Tag, TagInput } from 'emblor';
+import { Tag, TagInput } from '../../../packages/emblor/src';
 import { Label } from '../ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, uuid } from '@/lib/utils';
@@ -36,12 +37,14 @@ export default function Props() {
     { id: uuid(), text: 'Dance' },
   ]);
 
-  const renderCustomTag = (tag: Tag) => {
+  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+
+  const renderCustomTag = (tag: Tag, isActiveTag: boolean) => {
     return (
       <div
         key={tag.id}
         className={`flex items-center gap-2 p-2 rounded bg-red-500
-        }`}
+        ${isActiveTag ? 'ring-ring ring-offset-2 ring-2 ring-offset-background' : ''}`}
       >
         <CheckCircle size={16} className="text-white" />
         <span className="text-white text-sm mr-2">{tag.text}</span>
@@ -57,18 +60,21 @@ export default function Props() {
           Enable or disable the autocomplete feature for the tag input.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2 max-w-[450px]">
+          <div className="space-y-2 w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={autocompleteTags}
               enableAutocomplete
+              includeTagsInInput
               restrictTagsToAutocompleteOptions
               autocompleteOptions={autoCompleteOptions}
               className="sm:min-w-[450px]"
               setTags={(newTags) => {
                 setAutocompleteTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -79,16 +85,18 @@ export default function Props() {
           Allows users to display tags inside the input field for a more compact and inline appearance.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2 w-full max-w-[400px]">
+          <div className="space-y-2 w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={inlineTags}
               includeTagsInInput
-              className="w-[150px]"
+              className="w-full"
               setTags={(newTags) => {
                 setInlineTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -99,16 +107,18 @@ export default function Props() {
           Replace the standard tag appearance with your own custom-designed tags.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={customRenderTags}
               customTagRenderer={renderCustomTag}
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setCustomRenderTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -119,17 +129,19 @@ export default function Props() {
           Set the maximum number of tags that can be added.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={maxTags}
               maxTags={5}
               showCount
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setMaxTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -140,16 +152,18 @@ export default function Props() {
           Allow tags to be dragged and dropped to reorder them.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={allowDraggableTags}
               draggable
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setAllowDraggableTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -160,16 +174,18 @@ export default function Props() {
           Allows users to view all entered tags in a popover overlay, offering easier management of tags.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={usePopoverTags}
               usePopoverForTags
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setUsePopoverTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -180,16 +196,18 @@ export default function Props() {
           Prevent tags from overflowing the tag input by specifying the maximum number of characters to display.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={truncateTags}
               truncate={4}
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setTruncateTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -198,7 +216,7 @@ export default function Props() {
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Clear all tags</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Clear all tags from the tag input.</p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-2">
+          <div className="space-y-2  w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
@@ -207,10 +225,12 @@ export default function Props() {
               onClearAll={() => {
                 setClearAllTags([]);
               }}
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setClearAllTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -221,16 +241,18 @@ export default function Props() {
           Allow duplicate tags to be added to the tag input.
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
-          <div className="space-y-1">
+          <div className="space-y-2 w-full max-w-[450px]">
             <Label htmlFor="">Topics</Label>
             <TagInput
               placeholder="Enter a topic"
               tags={allowDuplicatesTags}
               allowDuplicates
-              className="sm:min-w-[450px]"
+              className="w-full"
               setTags={(newTags) => {
                 setAllowDuplicatesTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </div>
         </div>
@@ -247,42 +269,48 @@ export default function Props() {
               <TabsTrigger value="top">Top</TabsTrigger>
               <TabsTrigger value="inline">Inline</TabsTrigger>
             </TabsList>
-            <TabsContent value="bottom" className="space-y-2">
+            <TabsContent value="bottom" className="space-y-2 w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
               <TagInput
                 placeholder="Enter a topic"
                 tags={inputFieldPositionTags}
                 size="md"
-                className="sm:min-w-[450px]"
+                className="w-full"
                 setTags={(newTags) => {
                   setInputFieldPositionTags(newTags);
                 }}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               />
             </TabsContent>
-            <TabsContent value="top" className="space-y-2">
+            <TabsContent value="top" className="space-y-2  w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
               <TagInput
                 placeholder="Enter a topic"
                 tags={directionTags}
                 size="md"
                 inputFieldPosition="top"
-                className="sm:min-w-[450px]"
+                className="w-full"
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
                 }}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               />
             </TabsContent>
-            <TabsContent value="inline" className="space-y-2">
+            <TabsContent value="inline" className="space-y-2  w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
               <TagInput
                 placeholder="Enter a topic"
                 tags={inputFieldPositionTags}
                 size="md"
                 inputFieldPosition="inline"
-                className="sm:min-w-[450px]"
+                className="w-full"
                 setTags={(newTags) => {
                   setInputFieldPositionTags(newTags);
                 }}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               />
             </TabsContent>
           </Tabs>
@@ -299,29 +327,33 @@ export default function Props() {
               <TabsTrigger value="row">Row</TabsTrigger>
               <TabsTrigger value="column">Column</TabsTrigger>
             </TabsList>
-            <TabsContent value="row" className="space-y-2">
+            <TabsContent value="row" className="space-y-2  w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
               <TagInput
                 placeholder="Enter a topic"
                 tags={directionTags}
                 size="md"
-                className="sm:min-w-[450px]"
+                className="w-full"
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
                 }}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               />
             </TabsContent>
-            <TabsContent value="column" className="space-y-2">
+            <TabsContent value="column" className="space-y-2  w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
               <TagInput
                 placeholder="Enter a topic"
                 tags={directionTags}
                 size="md"
                 direction="column"
-                className="sm:min-w-[450px]"
+                className="w-full"
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
                 }}
+                activeTagIndex={activeTagIndex}
+                setActiveTagIndex={setActiveTagIndex}
               />
             </TabsContent>
           </Tabs>

@@ -17,6 +17,7 @@ export default function Variants() {
   const [interactionTags, setInteractionTags] = React.useState<Tag[]>(tags);
   const [animationTags, setAnimationTags] = React.useState<Tag[]>(tags);
   const [textStyleTags, setTextStyleTags] = React.useState<Tag[]>(tags);
+  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
   return (
     <section id="variants" className="max-w-5xl w-full py-8">
@@ -39,6 +40,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setVariantTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="primary">
@@ -50,6 +53,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setVariantTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="destructive">
@@ -61,6 +66,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setVariantTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -84,6 +91,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setSizeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="medium">
@@ -95,6 +104,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setSizeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="large">
@@ -106,6 +117,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setSizeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="x-large">
@@ -117,6 +130,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setSizeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -140,6 +155,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setShapeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="square">
@@ -151,6 +168,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setShapeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="rounded">
@@ -162,6 +181,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setShapeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="pill">
@@ -173,6 +194,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setShapeTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -196,6 +219,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setBorderTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="none">
@@ -207,6 +232,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setBorderTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -229,6 +256,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextCaseTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="uppercase">
@@ -240,6 +269,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextCaseTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="lowercase">
@@ -251,6 +282,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextCaseTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -274,6 +307,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setInteractionTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="non-clickable">
@@ -285,6 +320,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setInteractionTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -308,6 +345,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setAnimationTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="bounce">
@@ -319,6 +358,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setAnimationTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="fade-in">
@@ -330,6 +371,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setAnimationTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="slide-in">
@@ -341,6 +384,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setAnimationTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
@@ -367,6 +412,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextStyleTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="bold">
@@ -378,6 +425,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextStyleTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="italic">
@@ -389,6 +438,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextStyleTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="underline">
@@ -400,6 +451,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextStyleTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
           <TabsContent value="line-through">
@@ -411,6 +464,8 @@ export default function Variants() {
               setTags={(newTags) => {
                 setTextStyleTags(newTags);
               }}
+              activeTagIndex={activeTagIndex}
+              setActiveTagIndex={setActiveTagIndex}
             />
           </TabsContent>
         </Tabs>
