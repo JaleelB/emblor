@@ -59,6 +59,7 @@ description: A highly customizable, accessible, and fully-featured tag input com
       });
 
       const [tags, setTags] = React.useState<Tag[]>([]);
+      const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
       const { setValue } = form;
 
@@ -96,6 +97,8 @@ description: A highly customizable, accessible, and fully-featured tag input com
                                 setTags(newTags);
                                 setValue('topics', newTags as [Tag, ...Tag[]]);
                               }}
+                               activeTagIndex={activeTagIndex}
+                              setActiveTagIndex={setActiveTagIndex}
                             />
                           </FormControl>
                           <FormDescription className="text-left">
@@ -123,7 +126,21 @@ description: A highly customizable, accessible, and fully-featured tag input com
   </TabsContent>
 </Tabs>
 
-## Installation
+<br />
+
+<Steps>
+
+### Run the CLI
+
+Run the shadcn-ui init command and setup your project with Shadcn:
+
+<br />
+
+```bash
+npx shadcn-ui@latest init
+```
+
+### Installation
 
 To install Emblor, run the command:
 
@@ -135,22 +152,33 @@ npm install emblor
 # Or, use any package manager of your choice.
 ```
 
-## Usage
+### Usage
+
+To use Emblor in your project, import the components you need and start using them in your application.
+
+<br />
 
 ```tsx
 import { TagInput } from 'emblor';
+
+const [tags, setTags] = React.useState<Tag[]>([]);
+const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
 <TagInput
   {...field}
   placeholder="Enter a topic"
   tags={tags}
-  // using Shadcn input styling
-  className="sm:min-w-[450px]"
   setTags={(newTags) => {
     setTags(newTags);
     setValue('topics', newTags as [Tag, ...Tag[]]);
   }}
+  activeTagIndex={activeTagIndex}
+  setActiveTagIndex={setActiveTagIndex}
 />;
 ```
 
-And that's it! You have successfully integrated Emblor into your project. 🎉
+### Thats it!
+
+You have successfully integrated Emblor into your project. 🎉
+
+</Steps>

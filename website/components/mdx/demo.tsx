@@ -55,7 +55,7 @@ export default function Demo() {
                           {...field}
                           placeholder="Enter a topic"
                           tags={tags}
-                          className="sm:min-w-[450px]"
+                          className="max-w-[250px]"
                           setTags={(newTags) => {
                             setTags(newTags);
                             setValue('topics', newTags as [Tag, ...Tag[]]);
