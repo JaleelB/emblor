@@ -1,5 +1,14 @@
 # emblor
 
+## 1.3.1
+
+### Patch Changes
+
+- 28aec5a: 🛠️ Changes
+
+  - Refactored inputFieldPosition prop: Removed the inline option from inputFieldPosition.
+  - Renamed includeTagsInInput prop to inlineTags for better clarity and consistency.
+
 ## 1.3.0
 
 ### Minor Changes
