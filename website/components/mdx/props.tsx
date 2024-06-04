@@ -66,7 +66,7 @@ export default function Props() {
               placeholder="Enter a topic"
               tags={autocompleteTags}
               enableAutocomplete
-              includeTagsInInput
+              inlineTags
               restrictTagsToAutocompleteOptions
               autocompleteOptions={autoCompleteOptions}
               className="sm:min-w-[450px]"
@@ -90,7 +90,7 @@ export default function Props() {
             <TagInput
               placeholder="Enter a topic"
               tags={inlineTags}
-              includeTagsInInput
+              inlineTags
               className="w-full"
               setTags={(newTags) => {
                 setInlineTags(newTags);
@@ -260,14 +260,17 @@ export default function Props() {
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Input field position</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
-          Change the position of the input field to be inline or stacked in relation to the tags.
+          Changes the position of the input field in relation to the tags.{' '}
+          <strong>
+            This only works when inlineTags is set to false and the tags are rendered as a separate list above/below the
+            input field.
+          </strong>
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <Tabs defaultValue="bottom" className="w-full mt-4">
             <TabsList className={cn('mb-4 w-full overflow-x-auto h-auto overflow-y-hidden justify-start')}>
               <TabsTrigger value="bottom">Bottom</TabsTrigger>
               <TabsTrigger value="top">Top</TabsTrigger>
-              <TabsTrigger value="inline">Inline</TabsTrigger>
             </TabsList>
             <TabsContent value="bottom" className="space-y-2 w-full max-w-[450px]">
               <Label htmlFor="">Topics</Label>
@@ -276,6 +279,7 @@ export default function Props() {
                 tags={inputFieldPositionTags}
                 size="md"
                 className="w-full"
+                inlineTags={false}
                 setTags={(newTags) => {
                   setInputFieldPositionTags(newTags);
                 }}
@@ -291,23 +295,9 @@ export default function Props() {
                 size="md"
                 inputFieldPosition="top"
                 className="w-full"
+                inlineTags={false}
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
-                }}
-                activeTagIndex={activeTagIndex}
-                setActiveTagIndex={setActiveTagIndex}
-              />
-            </TabsContent>
-            <TabsContent value="inline" className="space-y-2  w-full max-w-[450px]">
-              <Label htmlFor="">Topics</Label>
-              <TagInput
-                placeholder="Enter a topic"
-                tags={inputFieldPositionTags}
-                size="md"
-                inputFieldPosition="inline"
-                className="w-full"
-                setTags={(newTags) => {
-                  setInputFieldPositionTags(newTags);
                 }}
                 activeTagIndex={activeTagIndex}
                 setActiveTagIndex={setActiveTagIndex}
@@ -319,7 +309,11 @@ export default function Props() {
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Tag direction</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
-          Change the direction of the tag layout from row to column.
+          Changes the layout of the tag list either as a row or as a column.{' '}
+          <strong>
+            This only works when inlineTags is set to false and the tags are rendered as a separate list above/below the
+            input field.
+          </strong>
         </p>
         <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border">
           <Tabs defaultValue="row" className="w-full mt-4">
@@ -337,6 +331,7 @@ export default function Props() {
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
                 }}
+                inlineTags={false}
                 activeTagIndex={activeTagIndex}
                 setActiveTagIndex={setActiveTagIndex}
               />
@@ -349,6 +344,7 @@ export default function Props() {
                 size="md"
                 direction="column"
                 className="w-full"
+                inlineTags={false}
                 setTags={(newTags) => {
                   setDirectionTags(newTags);
                 }}

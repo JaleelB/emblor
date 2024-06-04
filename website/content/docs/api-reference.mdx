@@ -95,10 +95,13 @@ description: Detailed documentation of all the properties, types, and options av
       <TableCell>No</TableCell>
     </TableRow>
     <TableRow>
-      <TableCell className="border-r">includeTagsInInput</TableCell>
-      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">inlineTags</TableCell>
+      <TableCell className="border-r">true</TableCell>
       <TableCell className="border-r">boolean</TableCell>
-      <TableCell className="border-r">If true, renders the tags inline in the input field.</TableCell>
+      <TableCell className="border-r">
+        Toggles between rendering the tags inline (in the input field) or in a tag list above the input when the user
+        enters a tag.
+      </TableCell>
       <TableCell>No</TableCell>
     </TableRow>
     <TableRow>
@@ -167,7 +170,10 @@ description: Detailed documentation of all the properties, types, and options av
       <TableCell className="border-r">direction</TableCell>
       <TableCell className="border-r">"row"</TableCell>
       <TableCell className="border-r">"row" | "column"</TableCell>
-      <TableCell className="border-r">Sets the direction of the tag input.</TableCell>
+      <TableCell className="border-r">
+        Changes the layout of the tag list either as a row or as a column. ***This only works when inlineTags is set to
+        false and the tags are rendered as a separate list above/below the input field.***
+      </TableCell>
       <TableCell>No</TableCell>
     </TableRow>
     <TableRow>
@@ -180,8 +186,11 @@ description: Detailed documentation of all the properties, types, and options av
     <TableRow>
       <TableCell className="border-r">inputFieldPosition</TableCell>
       <TableCell className="border-r">"bottom"</TableCell>
-      <TableCell className="border-r">"top" | "bottom" | "inline"</TableCell>
-      <TableCell className="border-r">Sets the position of the input field.</TableCell>
+      <TableCell className="border-r">"top" | "bottom"</TableCell>
+      <TableCell className="border-r">
+        Sets the position of the input field. ***This only works when inlineTags is set to false and the tags are
+        rendered as a separate list above/below the input field.***
+      </TableCell>
       <TableCell>No</TableCell>
     </TableRow>
     <TableRow>
