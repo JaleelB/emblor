@@ -11,6 +11,7 @@ import Props from './mdx/props';
 import Demo from './mdx/demo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ComponentPreview } from './component-preview';
 
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -142,6 +143,7 @@ const components = {
   CodeBlock: ({ className, value, ...props }: React.HTMLAttributes<HTMLElement> & { value: string }) => (
     <CodeBlock value={value} {...props} />
   ),
+  ComponentPreview,
 };
 
 interface MdxProps {

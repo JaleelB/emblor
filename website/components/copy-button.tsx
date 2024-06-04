@@ -1,10 +1,20 @@
 import { useCallback, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { Button, ButtonProps } from './ui/button';
 import { Check, Copy } from 'lucide-react';
 
-export default function CopyButton({ value }: { value: string; copyable?: boolean }) {
+export default function CopyButton({
+  value,
+  copyable = true,
+  variant = 'ghost',
+  className,
+}: {
+  value: string;
+  copyable?: boolean;
+  variant: ButtonProps['variant'];
+  className?: string;
+}) {
   const [copying, setCopying] = useState<number>(0);
 
   const onCopy = useCallback(async () => {
@@ -28,9 +38,10 @@ export default function CopyButton({ value }: { value: string; copyable?: boolea
     <Button
       onClick={onCopy}
       aria-label="Copy code"
-      variant="ghost"
+      variant={variant}
       className={cn(
-        `absolute right-3 top-[0.6rem] p-0 z-50 flex h-8 w-8 items-center justify-center rounded-md text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50`,
+        'absolute right-3 top-[0.6rem] p-0 z-50 flex h-8 w-8 items-center justify-center rounded-md text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50',
+        className,
       )}
     >
       <MotionConfig transition={{ duration: 0.15 }}>
