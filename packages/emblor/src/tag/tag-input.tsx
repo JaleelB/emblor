@@ -55,7 +55,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onTagClick?: (tag: Tag) => void;
   draggable?: boolean;
-  inputFieldPosition?: 'bottom' | 'top' | 'inline';
+  inputFieldPosition?: 'bottom' | 'top';
   clearAll?: boolean;
   onClearAll?: () => void;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
