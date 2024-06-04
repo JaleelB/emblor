@@ -53,7 +53,7 @@ export default function Props() {
   };
 
   return (
-    <section id="props" className="w-full py-8">
+    <section id="props" className="w-full">
       <div className="w-full">
         <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Autocomplete</h3>
         <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">

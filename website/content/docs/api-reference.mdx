@@ -3,200 +3,383 @@ title: API Reference
 description: Detailed documentation of all the properties, types, and options available in the Emblor tag input component.
 ---
 
-Explore the full capabilities of the Emblor tag input component with this detailed API reference. Understand how to customize the component to fit the needs of your project through various props.
-
-## Props
-
-Below is a list of all the properties you can use with the Emblor tag input, along with their types, default values, and descriptions.
+## Demos
 
 <Props />
 
 ## API Reference
 
-This section provides detailed information about the properties, methods, and events associated with the Emblor tag input component. You'll find comprehensive details to help you fully integrate and customize the component according to your needs.
-
-## General Properties
-
-- **placeholder** (string)
-
-  - Default: ""
-  - Description: Placeholder text for the input when no tags are present.
-
-- **tags** (Array)
-
-  - Default: []
-  - Description: An array of tag objects that are displayed as pre-selected.
-
-- **setTags** (React.Dispatch)
-
-- Default: Not applicable (function required)
-- Description: Function to update the state of the tags, typically used to add or remove tags.
-
-- **enableAutocomplete** (boolean)
-
-  - Default: false
-  - Description: Enables the autocomplete feature which allows users to select from a predefined list of tags.
-
-- **autocompleteOptions** (string[])
-
-  - Default: []
-  - Description: Defines the options available for autocomplete when enableAutocomplete is true.
-
-- **includeTagsInInput** (boolean)
-
-  - Default: false
-  - Description: If true, renders the tags inline in the input field.
-
-- **maxTags** (number)
-
-  - Default: null
-  - Description: Sets a limit on the number of tags a user can add.
-
-- **minTags** (number)
-
-  - Default: null
-  - Description: Sets a minimum number of tags a user must add.
-
-- **readOnly** (boolean)
-
-  - Default: false
-  - Description: If true, prevents the user from modifying the tags.
-
-- **disabled** (boolean)
-
-  - Default: false
-  - Description: Disables the tag input, preventing users from adding or removing tags.
-
-- **allowDuplicates** (boolean)
-
-  - Default: false
-  - Description: If true, allows the user to add duplicate tags.
-
-- **maxLength** (number)
-
-  - Default: null
-  - Description: Sets a maximum character limit for each tag.
-
-- **minLength** (number)
-
-  - Default: null
-  - Description: Sets a minimum character limit for each tag.
-
-- **delimiter** (string)
-
-  - Default: ","
-  - Description: Defines the character used to separate tags when pasting multiple tags. Defaults to a comma (,) or Enter key.
-
-- **showCounter** (boolean)
-
-  - Default: false
-  - Description: If true, displays a counter showing the number of tags added.
-
-- **placeholderWhenFull** (string)
-
-  - Default: ""
-  - Description: Placeholder text displayed when the maximum number of tags is reached.
-
-- **sortTags** (boolean)
-
-  - Default: false
-  - Description: If true, sorts the tags alphabetically.
-
-- **delimiterList** (string[])
-
-  - Default: []
-  - Description: An array of characters that can be used as delimiters to separate tags.
-
-- **truncate** (boolean)
-
-  - Default: false
-  - Description: If true, truncates tags that exceed the maximum character limit.
-
-- **direction** ("row" | "column")
-
-  - Default: "row"
-  - Description: Sets the direction of the tag input. Can be either "row" or "column".
-
-- **restrictTagsToAutocompleteOptions** (boolean)
-
-  - Default: false
-  - Description: If true, restricts the user to selecting tags only from the autocomplete options.
-
-- **draggable** (boolean)
-
-  - Default: false
-  - Description: If true, allows the user to drag and reorder tags.
-
-- **inputFieldPosition** ("top" | "bottom" | "inline")
-
-  - Default: "bottom"
-  - Description: Sets the position of the input field. Can be either "top","bottom" or "inline".
-
-- **clearAll** (boolean)
-
-  - Default: false
-  - Description: If true, displays a "Clear All" button to remove all tags.
-
-- **inputProps** (InputHTMLAttributes)
-
-  - Default: {}
-  - Description: Additional props to pass to the input field.
-
-- **usePopoverForTags** (boolean)
-
-  - Default: false
-  - Description: If true, displays tags in a popover when they exceed the available space.
-
-## Events
-
-- **onTagAdd** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when a new tag is added. Receives the text of the new tag as a parameter.
-
-- **onTagRemove** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when a tag is removed. Receives the text of the removed tag as a parameter.
-
-- **onInputChange** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers on every keystroke within the input field. Useful for custom logic like live validation.
-
-- **onFocus** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when the input field is focused.
-
-- **onBlur** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when the input field loses focus.
-
-- **onTagClick** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when a tag is clicked. Receives the tag object as a parameter.
-
-- **onClearAll** (Function)
-
-  - Default: null
-  - Description: Callback function that triggers when the "Clear All" button is clicked.
-
-## Methods
-
-**validateTag** (Function)
-
-- Default: null
-- Description: Callback function that validates the tag before adding it. Receives the tag text as a parameter and should return a boolean.
-
-**autocompleteFilter** (Function)
-
-- Default: null
-- Description: Callback function that filters the autocomplete options based on the user input. Receives the input text as a parameter and should return a boolean to indicate whether the option should be displayed.
-
-**customTagRenderer** (Function)
-
-- Default: null
-- Description: Callback function that allows you to customize the rendering of tags. Receives the tag object as a parameter and should return a React element.
+### General Properties
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px] border-r">Prop</TableHead>
+      <TableHead className="w-[100px] border-r">Default</TableHead>
+      <TableHead className="w-[200px] border-r">Type</TableHead>
+      <TableHead className="border-r">Description</TableHead>
+      <TableHead>Required</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r">placeholder</TableCell>
+      <TableCell className="border-r">""</TableCell>
+      <TableCell className="border-r">string</TableCell>
+      <TableCell className="border-r">Placeholder text for the input when no tags are present.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">tags</TableCell>
+      <TableCell className="border-r">[]</TableCell>
+      <TableCell className="border-r">Tag[]</TableCell>
+      <TableCell className="border-r">An array of tag objects that are displayed as pre-selected.</TableCell>
+      <TableCell>Yes</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">setTags</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">React.Dispatch</TableCell>
+      <TableCell className="border-r">Function to update the state of the tags.</TableCell>
+      <TableCell>Yes</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">maxTags</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">number</TableCell>
+      <TableCell className="border-r">Sets a limit on the number of tags a user can add.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">minTags</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">number</TableCell>
+      <TableCell className="border-r">Sets a minimum number of tags a user must add.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">readOnly</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Prevents the user from modifying the tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">disabled</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Disables the tag input.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">allowDuplicates</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Allows the user to add duplicate tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">maxLength</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">number</TableCell>
+      <TableCell className="border-r">Sets a maximum character limit for each tag.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">minLength</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">number</TableCell>
+      <TableCell className="border-r">Sets a minimum character limit for each tag.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">includeTagsInInput</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">If true, renders the tags inline in the input field.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">delimiterList</TableCell>
+      <TableCell className="border-r">[]</TableCell>
+      <TableCell className="border-r">string[]</TableCell>
+      <TableCell className="border-r">
+        An array of characters that can be used as delimiters to separate tags.
+      </TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">delimiter</TableCell>
+      <TableCell className="border-r">","</TableCell>
+      <TableCell className="border-r">string</TableCell>
+      <TableCell className="border-r">Character used to separate tags when pasting multiple tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">showCounter</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Displays a counter showing the number of tags added.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">placeholderWhenFull</TableCell>
+      <TableCell className="border-r">""</TableCell>
+      <TableCell className="border-r">string</TableCell>
+      <TableCell className="border-r">Placeholder text displayed when the maximum number of tags is reached.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">sortTags</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Sorts the tags alphabetically.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">activeTagIndex</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">number | null</TableCell>
+      <TableCell className="border-r">
+        Sets the index of the tag that is currently active. This is useful when using keyboard navigation.
+      </TableCell>
+      <TableCell>Yes</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">setActiveTagIndex</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">number | null</TableCell>
+      <TableCell className="border-r">
+        Function to update the active tag index. This is useful when using keyboard navigation.
+      </TableCell>
+      <TableCell>Yes</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">truncate</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Truncates tags that exceed the maximum character limit.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">direction</TableCell>
+      <TableCell className="border-r">"row"</TableCell>
+      <TableCell className="border-r">"row" | "column"</TableCell>
+      <TableCell className="border-r">Sets the direction of the tag input.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">draggable</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Allows the user to drag and reorder tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">inputFieldPosition</TableCell>
+      <TableCell className="border-r">"bottom"</TableCell>
+      <TableCell className="border-r">"top" | "bottom" | "inline"</TableCell>
+      <TableCell className="border-r">Sets the position of the input field.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">clearAll</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Displays a "Clear All" button to remove all tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">usePopoverForTags</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Displays tags in a popover when they exceed the available space.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Autocomplete Properties
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px] border-r">Prop</TableHead>
+      <TableHead className="w-[100px] border-r">Default</TableHead>
+      <TableHead className="w-[200px] border-r">Type</TableHead>
+      <TableHead className="border-r">Description</TableHead>
+      <TableHead>Required</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r">enableAutocomplete</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Enables the autocomplete feature.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">autocompleteOptions</TableCell>
+      <TableCell className="border-r">[]</TableCell>
+      <TableCell className="border-r">string[]</TableCell>
+      <TableCell className="border-r">Defines the options available for autocomplete.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">restrictTagsToAutocompleteOptions</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">
+        Restricts the user to selecting tags only from the autocomplete options.
+      </TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">autocompleteFilter</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Filters the autocomplete options based on the user input.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">autocompleteFilter</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Filters the autocomplete options based on the user input.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Input Properties
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px] border-r">Prop</TableHead>
+      <TableHead className="w-[100px] border-r">Default</TableHead>
+      <TableHead className="border-r">Type</TableHead>
+      <TableHead className="border-r">Description</TableHead>
+      <TableHead>Required</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow className="h-[100px]">
+      <TableCell className="border-r">inputProps</TableCell>
+      <TableCell className="border-r">Object</TableCell>
+      <TableCell className="border-r">InputHTMLAttributes</TableCell>
+      <TableCell className="border-r">Additional props to pass to the input field.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Events
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px] border-r">Prop</TableHead>
+      <TableHead className="w-[100px] border-r">Default</TableHead>
+      <TableHead className="w-[200px] border-r">Type</TableHead>
+      <TableHead className="border-r">Description</TableHead>
+      <TableHead>Required</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r">onTagAdd</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that triggers when a new tag is added.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onTagRemove</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that triggers when a tag is removed.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onInputChange</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">
+        Callback function that triggers on every keystroke within the input field.
+      </TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onFocus</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that triggers when the input field is focused.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onBlur</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that triggers when the input field loses focus.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onTagClick</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that triggers when a tag is clicked.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">onClearAll</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">
+        Callback function that triggers when the "Clear All" button is clicked.
+      </TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Methods
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[150px] border-r">Method</TableHead>
+      <TableHead className="w-[100px] border-r">Default</TableHead>
+      <TableHead className="w-[200px] border-r">Type</TableHead>
+      <TableHead className="border-r">Description</TableHead>
+      <TableHead>Required</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r">validateTag</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Callback function that validates the tag before adding it.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">customTagRenderer</TableCell>
+      <TableCell className="border-r">null</TableCell>
+      <TableCell className="border-r">Function</TableCell>
+      <TableCell className="border-r">Customizes the rendering of tags.</TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
