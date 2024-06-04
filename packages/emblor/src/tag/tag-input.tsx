@@ -60,7 +60,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   onClearAll?: () => void;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
-  includeTagsInInput?: boolean;
+  inlineTags?: boolean;
   activeTagIndex: number | null;
   setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
@@ -109,7 +109,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     usePopoverForTags = false,
     inputProps = {},
     restrictTagsToAutocompleteOptions,
-    includeTagsInInput = true,
+    inlineTags = true,
     activeTagIndex,
     setActiveTagIndex,
   } = props;
@@ -265,12 +265,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
   return (
     <div
-      className={`w-full flex ${!includeTagsInInput && tags.length > 0 ? 'gap-3' : ''} ${
+      className={`w-full flex ${!inlineTags && tags.length > 0 ? 'gap-3' : ''} ${
         inputFieldPosition === 'bottom' ? 'flex-col' : inputFieldPosition === 'top' ? 'flex-col-reverse' : 'flex-row'
       }`}
     >
       {!usePopoverForTags &&
-        (!includeTagsInInput ? (
+        (!inlineTags ? (
           <TagList
             tags={truncatedTags}
             customTagRenderer={customTagRenderer}
@@ -287,7 +287,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             onSortEnd={onSortEnd}
             onRemoveTag={removeTag}
             direction={direction}
-            includeTagsInInput={includeTagsInInput}
+            inlineTags={inlineTags}
             activeTagIndex={activeTagIndex}
             setActiveTagIndex={setActiveTagIndex}
           />
@@ -313,7 +313,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   onSortEnd={onSortEnd}
                   onRemoveTag={removeTag}
                   direction={direction}
-                  includeTagsInInput={includeTagsInInput}
+                  inlineTags={inlineTags}
                   activeTagIndex={activeTagIndex}
                   setActiveTagIndex={setActiveTagIndex}
                 />
@@ -349,10 +349,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             maxTags={maxTags}
             onTagAdd={onTagAdd}
             allowDuplicates={allowDuplicates ?? false}
-            includeTagsInInput={includeTagsInInput}
+            inlineTags={inlineTags}
           >
             {!usePopoverForTags ? (
-              !includeTagsInInput ? (
+              !inlineTags ? (
                 <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                   ref={inputRef}
@@ -384,7 +384,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onSortEnd={onSortEnd}
                     onRemoveTag={removeTag}
                     direction={direction}
-                    includeTagsInInput={includeTagsInInput}
+                    inlineTags={inlineTags}
                     activeTagIndex={activeTagIndex}
                     setActiveTagIndex={setActiveTagIndex}
                   />
@@ -397,7 +397,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onKeyDown={handleKeyDown}
                     onFocus={handleInputFocus}
                     onBlur={handleInputBlur}
-                    includeTagsInInput={includeTagsInInput}
+                    inlineTags={inlineTags}
                     className={cn('border-0 w-fit h-5', className)}
                   />
                 </div>
@@ -440,7 +440,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
       ) : (
         <div className="w-full">
           {!usePopoverForTags ? (
-            !includeTagsInInput ? (
+            !inlineTags ? (
               <Input
                 ref={inputRef}
                 id={id}

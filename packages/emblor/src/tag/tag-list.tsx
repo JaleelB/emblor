@@ -10,7 +10,7 @@ export type TagListProps = {
   direction?: TagProps['direction'];
   onSortEnd: (oldIndex: number, newIndex: number) => void;
   className?: string;
-  includeTagsInInput?: boolean;
+  inlineTags?: boolean;
   activeTagIndex?: number | null;
   setActiveTagIndex?: (index: number | null) => void;
 } & Omit<TagProps, 'tagObj'>;
@@ -26,7 +26,7 @@ export const TagList: React.FC<TagListProps> = ({
   draggable,
   onSortEnd,
   className,
-  includeTagsInInput,
+  inlineTags,
   activeTagIndex,
   setActiveTagIndex,
   ...tagListProps
@@ -43,7 +43,7 @@ export const TagList: React.FC<TagListProps> = ({
 
   return (
     <>
-      {!includeTagsInInput ? (
+      {!inlineTags ? (
         <div
           className={cn('rounded-md w-full', className, {
             'flex flex-wrap gap-2': direction === 'row',

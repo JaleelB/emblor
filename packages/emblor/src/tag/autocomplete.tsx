@@ -12,7 +12,7 @@ type AutocompleteProps = {
   onTagAdd?: (tag: string) => void;
   allowDuplicates: boolean;
   children: React.ReactNode;
-  includeTagsInInput?: boolean;
+  inlineTags?: boolean;
 };
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
@@ -22,7 +22,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   maxTags,
   onTagAdd,
   allowDuplicates,
-  includeTagsInInput,
+  inlineTags,
   children,
 }) => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -72,8 +72,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
         <PopoverContent
           className={cn(`p-0`)}
           style={{
-            width: !includeTagsInInput ? `calc(${popoverWidth}px + 45px)` : `${popoverWidth}px`,
-            marginLeft: !includeTagsInInput ? '-25px' : '0',
+            width: !inlineTags ? `calc(${popoverWidth}px + 45px)` : `${popoverWidth}px`,
+            marginLeft: !inlineTags ? '-25px' : '0',
           }}
         >
           <CommandList>

@@ -37,12 +37,12 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
 };
 
 interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> {
-  includeTagsInInput?: boolean;
+  inlineTags?: boolean;
 }
 
 const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, CommandInputProps>(
-  ({ className, includeTagsInInput, ...props }, ref) => (
-    <div className={`flex items-center ${includeTagsInInput ? 'px-0.5' : 'px-3'}`} cmdk-input-wrapper="">
+  ({ className, inlineTags, ...props }, ref) => (
+    <div className={`flex items-center ${inlineTags ? 'px-0.5' : 'px-3'}`} cmdk-input-wrapper="">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
