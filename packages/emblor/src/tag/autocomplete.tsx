@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
 import { type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
@@ -30,9 +30,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
-    if (open && triggerRef.current) {
-      setPopoverWidth(triggerRef.current.offsetWidth);
-    }
+    // if (open && triggerRef.current) {
+    setPopoverWidth(triggerRef.current.offsetWidth);
+    // }
     setIsPopoverOpen(open);
   };
 
@@ -48,12 +48,13 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       const input = event.target as HTMLInputElement;
 
       // Check if the related target (new focus element) is within the input
-      if (triggerRef.current?.contains(input)) {
+      if (triggerRef.current?.contains(input) && isPopoverOpen) {
         input.focus();
         return;
       }
 
       setIsPopoverOpen(false);
+
       const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
       if (userOnBlur) userOnBlur(event);
     }, 100);
