@@ -247,6 +247,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   };
 
   const handleClearAll = () => {
+    if (!onClearAll) {
+      setActiveTagIndex(-1);
+      setTags([]);
+      return;
+    }
     onClearAll?.();
   };
 

@@ -26,7 +26,6 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   children,
 }) => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  // const inputRef = useRef<HTMLInputElement | null>(null);
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
