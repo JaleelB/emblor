@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Tag, TagInput } from 'emblor';
+import { uuid } from '@/lib/utils';
 
 const FormSchema = z.object({
   topics: z.array(
@@ -21,9 +22,14 @@ export default function Demo() {
     resolver: zodResolver(FormSchema),
   });
 
-  const [tags, setTags] = React.useState<Tag[]>([]);
-  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+  const defaultTags: Tag[] = [
+    { id: uuid(), text: 'Sports' },
+    { id: uuid(), text: 'Programming' },
+    { id: uuid(), text: 'Travel' },
+  ];
 
+  const [tags, setTags] = React.useState<Tag[]>(defaultTags);
+  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
   const { setValue } = form;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -71,7 +77,9 @@ export default function Demo() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="w-full">
+                  Submit
+                </Button>
               </form>
             </Form>
           </div>
