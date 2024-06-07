@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
 import { type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popoever';
+import { Button } from '../ui/button';
 
 type AutocompleteProps = {
   tags: TagType[];
@@ -25,55 +26,101 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   inlineTags,
   children,
 }) => {
+  const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
 
-  const handleOpenChange = (open: boolean) => {
-    // if (open && triggerRef.current) {
-    setPopoverWidth(triggerRef.current.offsetWidth);
-    // }
-    setIsPopoverOpen(open);
-  };
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open && triggerContainerRef.current) {
+        setPopoverWidth(triggerContainerRef.current.offsetWidth);
+      }
 
-  const handleInputFocus = (event: React.FocusEvent) => {
-    setIsPopoverOpen(true);
+      if (open) {
+        inputRef.current?.focus();
+        setIsPopoverOpen(open);
+      }
+    },
+    [inputFocused],
+  );
+
+  const handleInputFocus = () => {
+    // Only set inputFocused to true if the popover is already open.
+    // This will prevent the popover from opening due to an input focus if it was initially closed.
+    if (isPopoverOpen) {
+      setInputFocused(true);
+    }
+
     const userOnFocus = (children as React.ReactElement<any>).props.onFocus;
     if (userOnFocus) userOnFocus(event);
   };
 
-  const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    // Delay the popover closing to allow for related focus events to complete
-    setTimeout(() => {
-      const input = event.target as HTMLInputElement;
+  const handleInputBlur = () => {
+    setInputFocused(false);
 
-      // Check if the related target (new focus element) is within the input
-      if (triggerRef.current?.contains(input) && isPopoverOpen) {
-        input.focus();
-        return;
-      }
-
+    // Allow the popover to close if no other interactions keep it open
+    if (!isPopoverOpen) {
       setIsPopoverOpen(false);
+    }
 
-      const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
-      if (userOnBlur) userOnBlur(event);
-    }, 100);
+    const userOnBlur = (children as React.ReactElement<any>).props.onBlur;
+    if (userOnBlur) userOnBlur(event);
   };
 
   return (
-    <Command className="border w-full">
+    <Command className="w-full">
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
-        <PopoverTrigger asChild ref={triggerRef}>
+        <div
+          className="relative flex items-center rounded-md border border-input bg-transparent pr-3"
+          ref={triggerContainerRef}
+        >
           {React.cloneElement(children as React.ReactElement<any>, {
             onFocus: handleInputFocus,
             onBlur: handleInputBlur,
+            ref: inputRef,
           })}
-        </PopoverTrigger>
+          <PopoverTrigger asChild ref={triggerRef}>
+            <PopoverTrigger asChild>
+              <Button
+                ref={triggerRef}
+                variant="ghost"
+                size="icon"
+                role="combobox"
+                className={`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`}
+                aria-expanded={open as unknown as boolean}
+                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
+                >
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </Button>
+            </PopoverTrigger>
+          </PopoverTrigger>
+        </div>
         <PopoverContent
-          className={cn(`p-0`)}
+          ref={popoverRef}
+          side="bottom"
+          align="start"
+          className={cn(`p-0 relative`)}
           style={{
-            width: !inlineTags ? `calc(${popoverWidth}px + 45px)` : `${popoverWidth}px`,
-            marginLeft: !inlineTags ? '-25px' : '0',
+            marginLeft: !inlineTags ? `-${popoverWidth}px` : `calc(-${popoverWidth}px + 32px)`,
+            width: `${popoverWidth}px`,
           }}
         >
           <CommandList>
