@@ -30,10 +30,10 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
+  const [popoverWidth, setPopoverWidth] = useState<number>(0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
-  const [popooverContentTop, setPopoverContentTop] = useState<number | undefined>(undefined);
+  const [popooverContentTop, setPopoverContentTop] = useState<number>(0);
 
   // Dynamically calculate the top position for the popover content
   useEffect(() => {

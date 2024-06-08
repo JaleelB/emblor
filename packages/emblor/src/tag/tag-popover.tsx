@@ -23,7 +23,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
+  const [popoverWidth, setPopoverWidth] = useState<number>(0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
 
