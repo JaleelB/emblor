@@ -29,16 +29,26 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const popoverRef = useRef<HTMLDivElement | null>(null);
 
   const [popoverWidth, setPopoverWidth] = useState<number | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [popooverContentTop, setPopoverContentTop] = useState<number | undefined>(undefined);
+
+  // Dynamically calculate the top position for the popover content
+  useEffect(() => {
+    if (!triggerContainerRef.current || !triggerRef.current) return;
+    setPopoverContentTop(
+      triggerContainerRef.current?.getBoundingClientRect().bottom - triggerRef.current?.getBoundingClientRect().bottom,
+    );
+  }, [tags]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (open && triggerContainerRef.current) {
-        setPopoverWidth(triggerContainerRef.current.offsetWidth);
+        // setPopoverWidth(triggerContainerRef.current.offsetWidth);
+        const { width } = triggerContainerRef.current.getBoundingClientRect();
+        setPopoverWidth(width);
       }
 
       if (open) {
@@ -73,10 +83,10 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   };
 
   return (
-    <Command className="w-full">
+    <Command className="w-full h-full">
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
         <div
-          className="relative flex items-center rounded-md border border-input bg-transparent pr-3"
+          className="relative h-full flex items-center rounded-md border border-input bg-transparent pr-3"
           ref={triggerContainerRef}
         >
           {React.cloneElement(children as React.ReactElement<any>, {
@@ -85,41 +95,38 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
             ref: inputRef,
           })}
           <PopoverTrigger asChild ref={triggerRef}>
-            <PopoverTrigger asChild>
-              <Button
-                ref={triggerRef}
-                variant="ghost"
-                size="icon"
-                role="combobox"
-                className={`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`}
-                aria-expanded={open as unknown as boolean}
-                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+            <Button
+              variant="ghost"
+              size="icon"
+              role="combobox"
+              className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`)}
+              aria-expanded={open as unknown as boolean}
+              onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
-                >
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </Button>
-            </PopoverTrigger>
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </Button>
           </PopoverTrigger>
         </div>
         <PopoverContent
-          ref={popoverRef}
           side="bottom"
           align="start"
           className={cn(`p-0 relative`)}
           style={{
-            marginLeft: !inlineTags ? `-${popoverWidth}px` : `calc(-${popoverWidth}px + 32px)`,
+            top: `${popooverContentTop}px`,
+            marginLeft: `calc(-${popoverWidth}px + 36px)`,
             width: `${popoverWidth}px`,
           }}
         >
