@@ -82,6 +82,33 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     if (userOnBlur) userOnBlur(event);
   };
 
+  const toggleTag = (option: TagType) => {
+    // Check if the tag already exists in the array
+    const index = tags.findIndex((tag) => tag.text === option.text);
+
+    if (index >= 0) {
+      // Tag exists, remove it
+      const newTags = tags.filter((_, i) => i !== index);
+      setTags(newTags);
+      console.log('newTags', newTags);
+    } else {
+      // Tag doesn't exist, add it if allowed
+      if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) {
+        // If duplicates aren't allowed and a tag with the same text exists, do nothing
+        return;
+      }
+      console.log('option', option);
+
+      // Add the tag if it doesn't exceed max tags, if applicable
+      if (!maxTags || tags.length < maxTags) {
+        setTags([...tags, option]);
+        if (onTagAdd) {
+          onTagAdd(option.text);
+        }
+      }
+    }
+  };
+
   return (
     <Command className="w-full h-full">
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
@@ -137,12 +164,13 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 <CommandItem key={option.id} className="cursor-pointer">
                   <div
                     className="w-full flex items-center gap-2"
-                    onClick={() => {
-                      if (maxTags && tags.length >= maxTags) return;
-                      if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) return;
-                      setTags([...tags, option]);
-                      onTagAdd?.(option.text);
-                    }}
+                    // onClick={() => {
+                    //   if (maxTags && tags.length >= maxTags) return;
+                    //   if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) return;
+                    //   setTags([...tags, option]);
+                    //   onTagAdd?.(option.text);
+                    // }}
+                    onClick={() => toggleTag(option)}
                   >
                     {option.text}
                     {tags.some((tag) => tag.text === option.text) && (
