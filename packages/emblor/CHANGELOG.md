@@ -1,5 +1,13 @@
 # emblor
 
+## 1.3.3
+
+### Patch Changes
+
+- e09d618: 🐞 Bug Fixes:
+
+  Dynamic Values Calculation Safety: Fixed an issue where the some state variable could be undefined when initialized
+
 ## 1.3.2
 
 ### Patch Changes
