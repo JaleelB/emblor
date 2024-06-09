@@ -12,7 +12,7 @@ export default function CopyButton({
 }: {
   value: string;
   copyable?: boolean;
-  variant: ButtonProps['variant'];
+  variant?: ButtonProps['variant'];
   className?: string;
 }) {
   const [copying, setCopying] = useState<number>(0);
