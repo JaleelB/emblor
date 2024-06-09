@@ -3,16 +3,17 @@
 import React, { useState, useMemo } from 'react';
 import { cn, uuid } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TagInput, TagInputProps, Tag } from 'emblor';
+import { Tag, TagInput, TagInputProps } from '../../packages/emblor/src';
+// import { TagInput, TagInputProps, Tag } from 'emblor';
 import CodeBlock from './code-block';
+import { CheckCircle } from 'lucide-react';
 
-interface ComponentPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
-  name: string;
+interface ComponentPreviewProps
+  extends Omit<TagInputProps, 'tags' | 'setTags' | 'activeTagIndex' | 'setActiveTagIndex'> {
   description?: string;
-  props?: Partial<TagInputProps>;
 }
 
-export function ComponentPreview({ name, description, props, className, ...otherProps }: ComponentPreviewProps) {
+export function ComponentPreview({ description, className, ...otherProps }: ComponentPreviewProps) {
   const tags: Tag[] = useMemo(
     () => [
       { id: uuid(), text: 'Sports' },
@@ -22,7 +23,20 @@ export function ComponentPreview({ name, description, props, className, ...other
     [],
   );
   const [defaultTags, setDefaultTags] = useState<Tag[]>(tags);
-  const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+  const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+
+  const renderCustomTag = (tag: Tag, isActiveTag: boolean) => {
+    return (
+      <div
+        key={tag.id}
+        className={`flex items-center gap-2 p-2 rounded bg-red-500
+        ${isActiveTag ? 'ring-ring ring-offset-2 ring-2 ring-offset-background' : ''}`}
+      >
+        <CheckCircle size={16} className="text-white" />
+        <span className="text-white text-sm mr-2">{tag.text}</span>
+      </div>
+    );
+  };
 
   const defaultProps: TagInputProps = {
     tags: defaultTags,
@@ -30,22 +44,55 @@ export function ComponentPreview({ name, description, props, className, ...other
       setDefaultTags(newTags);
     },
     placeholder: 'Add a tag',
-    className: 'max-w-[250px]',
+    className: 'w-full',
     activeTagIndex: activeTagIndex,
     setActiveTagIndex: setActiveTagIndex,
-    ...props,
+    autocompleteOptions: tags,
+
+    ...otherProps,
   };
 
   const codeString = useMemo(() => {
-    const propEntries = Object.entries(props || {})
+    function serializeProp(value: any): string {
+      if (typeof value === 'function') {
+        // Converts function to a string representation, removing possible function body clutter
+        const funcString = value.toString().replace(/\{\s*\[native code\]\s*\}/g, '{}');
+        // Optionally, trim the function to make it cleaner in display if needed
+        return funcString;
+      } else if (Array.isArray(value)) {
+        // Serialize arrays to a more readable format
+        return `[${value.map(serializeProp).join(', ')}]`;
+      } else if (typeof value === 'object' && value !== null) {
+        // JSON stringify the object with indentation for readability
+        return `{${Object.entries(value)
+          .map(([key, val]) => `\n  ${key}: ${serializeProp(val)}`)
+          .join(',\n')}\n}`;
+      } else if (typeof value === 'string') {
+        // Return strings with proper quotes
+        return `"${value.replace(/"/g, '\\"')}"`;
+      } else {
+        // Return other types directly, wrapping them in braces if they are not simple literals
+        return `{${String(value)}}`;
+      }
+    }
+
+    const customRendererPlaceholder = `
+(tag, isActiveTag) => (
+  <div
+    key={tag.id}
+    className={\`px-2 py-1 bg-red-500 rounded-full \${isActiveTag ? "ring-ring ring-offset-2 ring-2 ring-offset-background" : ""}\`}
+  >
+    <span className="text-white text-sm mr-1">{tag.text}</span>
+  </div>
+)
+`;
+
+    const propEntries = Object.entries(otherProps || {})
       .map(([key, value]) => {
-        if (Array.isArray(value)) {
-          return `${key}={${JSON.stringify(value)}}`;
-        } else if (typeof value === 'object') {
-          return `${key}={${JSON.stringify(value)}}`;
-        } else {
-          return `${key}="${value}"`;
+        if (key === 'customTagRenderer') {
+          return `${key}={${customRendererPlaceholder}}`;
         }
+        return `${key}={${serializeProp(value)}}`;
       })
       .join('\n            ');
 
@@ -54,10 +101,9 @@ import React, { useState } from 'react';
 import { TagInput } from 'emblor';
 
 const Example = () => {
-    const [exampleTags, setExampleTags] = useState<Tag[]>(
-        ${JSON.stringify(defaultTags, null, 2)}
-    );
-    const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+    const tags = ${JSON.stringify(defaultTags, null, 2)};
+    const [exampleTags, setExampleTags] = useState<Tag[]>(tags);
+    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
 
     return (
         <TagInput
@@ -74,7 +120,7 @@ const Example = () => {
     );
 };
     `;
-  }, [defaultTags, props]);
+  }, [defaultTags, otherProps]);
 
   return (
     <div className={cn('group relative my-4 flex flex-col space-y-2', className)} {...otherProps}>
