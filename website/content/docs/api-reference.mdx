@@ -5,7 +5,100 @@ description: Detailed documentation of all the properties, types, and options av
 
 ## Demos
 
-<Props />
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Autocomplete</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Enable or disable the autocomplete feature for the tag input.
+</p>
+
+<ComponentPreview
+
+enableAutocomplete
+restrictTagsToAutocompleteOptions
+/>
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Include Tags In Input</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Allows users to display tags inside the input field for a more compact and inline appearance.
+</p>
+
+<ComponentPreview propName="inlineTags" selectOptions={[true, false]} />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Custom tag render</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Replace the standard tag appearance with your own custom-designed tags.
+</p>
+
+<ComponentPreview
+
+customTagRenderer={(tag, isActiveTag) => {
+return (
+
+<div
+  key={tag.id}
+  className={`px-2 py-1 bg-red-500 rounded-full
+        ${isActiveTag ? 'ring-ring ring-offset-2 ring-2 ring-offset-background' : ''}`}
+>
+  <span className="text-white text-sm mr-1">{tag.text}</span>
+</div>
+); }} />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Max tags</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Set the maximum number of tags that can be added.
+</p>
+
+<ComponentPreview maxTags={5} showCount />
+
+{' '}
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Draggable</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Allow tags to be dragged and dropped to reorder them.
+</p>
+
+<ComponentPreview draggable />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Tag Popover</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Allows users to view all entered tags in a popover overlay, offering easier management of tags.
+</p>
+
+<ComponentPreview usePopoverForTags />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Truncate</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Prevent tags from overflowing the tag input by specifying the maximum number of characters to display.
+</p>
+
+<ComponentPreview truncate={4} />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Clear all tags</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Clear all tags from the tag input.</p>
+
+<ComponentPreview clearAll />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Allow duplicate tags</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Allow duplicate tags to be added to the tag input.
+</p>
+
+<ComponentPreview allowDuplicates />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Input field position</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Changes the position of the input field in relation to the tags. **_ This only works when inlineTags is set to false
+  and the tags are rendered as a separate list above/below the input field. _**
+</p>
+
+<ComponentPreview propName="inputFieldPosition" selectOptions={['top', 'bottom']} inlineTags={false} />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Tag direction</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
+  Changes the layout of the tag list either as a row or as a column. **_ This only works when inlineTags is set to false
+  and the tags are rendered as a separate list above/below the input field. _**
+</p>
+
+<ComponentPreview propName="direction" selectOptions={['row', 'column']} inlineTags={false} />
 
 ## API Reference
 
@@ -392,3 +485,4 @@ description: Detailed documentation of all the properties, types, and options av
     </TableRow>
   </TableBody>
 </Table>
+import {custom} from "zod"
