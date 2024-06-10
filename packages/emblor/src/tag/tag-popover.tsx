@@ -23,9 +23,25 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [popoverWidth, setPopoverWidth] = useState<number>(0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [sideOffset, setSideOffset] = useState<number>(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (triggerContainerRef.current && triggerRef.current) {
+        setPopoverWidth(triggerContainerRef.current.offsetWidth);
+        setSideOffset(triggerContainerRef.current.offsetWidth - triggerRef?.current?.offsetWidth);
+      }
+    };
+
+    handleResize(); // Call on mount and layout changes
+
+    window.addEventListener('resize', handleResize); // Adjust on window resize
+    return () => window.removeEventListener('resize', handleResize);
+  }, [triggerContainerRef, triggerRef]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -83,7 +99,6 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             size="icon"
             role="combobox"
             className="hover:bg-transparent"
-            aria-expanded={open as unknown as boolean}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
@@ -106,7 +121,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
       <PopoverContent
         className="w-full space-y-3"
         style={{
-          marginLeft: `-${popoverWidth - triggerRef?.current?.offsetWidth}px`,
+          marginLeft: `-${sideOffset}px`,
           width: `${popoverWidth}px`,
         }}
       >

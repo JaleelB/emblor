@@ -46,7 +46,6 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (open && triggerContainerRef.current) {
-        // setPopoverWidth(triggerContainerRef.current.offsetWidth);
         const { width } = triggerContainerRef.current.getBoundingClientRect();
         setPopoverWidth(width);
       }
@@ -127,7 +126,6 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               size="icon"
               role="combobox"
               className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`)}
-              aria-expanded={open as unknown as boolean}
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}
             >
               <svg
@@ -162,16 +160,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
             <CommandGroup heading="Suggestions" className={cn('overflow-y-auto')}>
               {autocompleteOptions.map((option) => (
                 <CommandItem key={option.id} className="cursor-pointer">
-                  <div
-                    className="w-full flex items-center gap-2"
-                    // onClick={() => {
-                    //   if (maxTags && tags.length >= maxTags) return;
-                    //   if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) return;
-                    //   setTags([...tags, option]);
-                    //   onTagAdd?.(option.text);
-                    // }}
-                    onClick={() => toggleTag(option)}
-                  >
+                  <div className="w-full flex items-center gap-2" onClick={() => toggleTag(option)}>
                     {option.text}
                     {tags.some((tag) => tag.text === option.text) && (
                       <svg
