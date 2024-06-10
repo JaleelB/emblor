@@ -27,6 +27,9 @@ export const tagVariants = cva('transition-all border inline-flex items-center t
     borderStyle: {
       default: 'border-solid',
       none: 'border-none',
+      dashed: 'border-dashed',
+      dotted: 'border-dotted',
+      double: 'border-double',
     },
     textCase: {
       uppercase: 'uppercase',
