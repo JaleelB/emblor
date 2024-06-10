@@ -6,9 +6,6 @@ import Link from 'next/link';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import { cn } from '@/lib/utils';
 import CodeBlock from './code-block';
-import Variants from './mdx/variants';
-import Props from './mdx/props';
-import Demo from './mdx/demo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ComponentPreview } from './component-preview';
@@ -116,9 +113,6 @@ const components = {
       {...props}
     />
   ),
-  Variants: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Variants {...props} />,
-  Props: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Props {...props} />,
-  Demo: ({ ...props }: React.HTMLAttributes<HTMLElement>) => <Demo {...props} />,
   Tabs: ({ className, ...props }: React.ComponentProps<typeof Tabs>) => (
     <Tabs className={cn('relative mt-6 w-full', className)} {...props} />
   ),
