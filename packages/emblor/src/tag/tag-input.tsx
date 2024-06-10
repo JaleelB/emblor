@@ -335,7 +335,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   {...inputProps}
                   className={cn(
                     className,
-                    'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 w-fit',
+                    'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
                   )}
                   autoComplete={enableAutocomplete ? 'on' : 'off'}
                   list={enableAutocomplete ? 'autocomplete-options' : undefined}
@@ -403,7 +403,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onFocus={handleInputFocus}
                     onBlur={handleInputBlur}
                     inlineTags={inlineTags}
-                    className={cn('border-0 w-fit h-5', className)}
+                    className={cn('border-0  flex-1 w-fit h-5', className)}
                   />
                 </div>
               )
