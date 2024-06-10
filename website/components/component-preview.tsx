@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, use, useCallback } from 'react';
-import { cn, uuid } from '@/lib/utils';
+import React, { useState, useMemo, useCallback } from 'react';
+import { cn, formatJavaScriptCode, uuid } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tag, TagInput, TagInputProps } from '../../packages/emblor/src';
-// import { TagInput, TagInputProps, Tag } from 'emblor';
+// import { Tag, TagInput, TagInputProps } from '../../packages/emblor/src';
+import { TagInput, TagInputProps, Tag } from 'emblor';
 import CodeBlock from './code-block';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -40,7 +40,6 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
       activeTagIndex: activeTagIndex,
       setActiveTagIndex: setActiveTagIndex,
       autocompleteOptions: tags,
-      //   ...otherProps,
     };
 
     return props;
@@ -104,7 +103,7 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
       })
       .join('\n            ');
 
-    return `
+    const rawCodeString = `
         import React, { useState } from 'react';
         import { TagInput } from 'emblor';
 
@@ -128,6 +127,8 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
               );
           };
           `;
+
+    return formatJavaScriptCode(rawCodeString);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultTags, otherProps, propName, selectedPropValue]);
 
@@ -187,7 +188,7 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
         <TabsContent value="code">
           <div className="flex flex-col space-y-4">
             <div className="w-full rounded-md [&_pre]:my-0 [&_pre]:max-h-[350px] [&_pre]:overflow-auto">
-              <CodeBlock value={codeString} />
+              <CodeBlock value={codeString as string} />
             </div>
           </div>
         </TabsContent>
