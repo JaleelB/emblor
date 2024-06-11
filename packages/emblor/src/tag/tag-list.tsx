@@ -67,7 +67,13 @@ export const TagList: React.FC<TagListProps> = ({
                     {customTagRenderer ? (
                       customTagRenderer(tagObj, index === activeTagIndex)
                     ) : (
-                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                      <Tag
+                        tagObj={tagObj}
+                        isActiveTag={index === activeTagIndex}
+                        direction={direction}
+                        draggable={draggable}
+                        {...tagListProps}
+                      />
                     )}
                   </div>
                 </SortableItem>
@@ -78,7 +84,14 @@ export const TagList: React.FC<TagListProps> = ({
               customTagRenderer ? (
                 customTagRenderer(tagObj, index === activeTagIndex)
               ) : (
-                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                <Tag
+                  key={tagObj.id}
+                  tagObj={tagObj}
+                  isActiveTag={index === activeTagIndex}
+                  direction={direction}
+                  draggable={draggable}
+                  {...tagListProps}
+                />
               ),
             )
           )}
@@ -102,7 +115,13 @@ export const TagList: React.FC<TagListProps> = ({
                     {customTagRenderer ? (
                       customTagRenderer(tagObj, index === activeTagIndex)
                     ) : (
-                      <Tag tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                      <Tag
+                        tagObj={tagObj}
+                        isActiveTag={index === activeTagIndex}
+                        direction={direction}
+                        draggable={draggable}
+                        {...tagListProps}
+                      />
                     )}
                   </div>
                 </SortableItem>
@@ -113,7 +132,14 @@ export const TagList: React.FC<TagListProps> = ({
               customTagRenderer ? (
                 customTagRenderer(tagObj, index === activeTagIndex)
               ) : (
-                <Tag key={tagObj.id} tagObj={tagObj} isActiveTag={index === activeTagIndex} {...tagListProps} />
+                <Tag
+                  key={tagObj.id}
+                  tagObj={tagObj}
+                  isActiveTag={index === activeTagIndex}
+                  direction={direction}
+                  draggable={draggable}
+                  {...tagListProps}
+                />
               ),
             )
           )}

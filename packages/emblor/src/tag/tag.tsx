@@ -111,7 +111,7 @@ export const Tag: React.FC<TagProps> = ({
           textStyle,
         }),
         {
-          'justify-between': direction === 'column',
+          'justify-between w-full': direction === 'column',
           'cursor-pointer': draggable,
           'ring-ring ring-offset-2 ring-2 ring-offset-background': isActiveTag,
         },
