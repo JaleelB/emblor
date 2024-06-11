@@ -9,6 +9,7 @@ import CodeBlock from './code-block';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ComponentPreview } from './component-preview';
+import { ReactHookFormDemo, ShadcnFormDemo } from './form-demos';
 
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -138,6 +139,8 @@ const components = {
     <CodeBlock value={value} {...props} />
   ),
   ComponentPreview,
+  ShadcnFormDemo,
+  ReactHookFormDemo,
 };
 
 interface MdxProps {
