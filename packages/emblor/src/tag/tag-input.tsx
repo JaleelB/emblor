@@ -334,8 +334,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   onBlur={handleInputBlur}
                   {...inputProps}
                   className={cn(
-                    className,
                     'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
+                    className,
                   )}
                   autoComplete={enableAutocomplete ? 'on' : 'off'}
                   list={enableAutocomplete ? 'autocomplete-options' : undefined}
