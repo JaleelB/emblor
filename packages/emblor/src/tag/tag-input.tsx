@@ -23,6 +23,31 @@ export type Tag = {
   text: string;
 };
 
+interface TagInputStyleClassesProps {
+  inlineTagsContainer?: string;
+  tagPopover?: {
+    content?: string;
+    trigger?: string;
+  };
+  tagList?: {
+    container?: string;
+    sortableList?: string;
+  };
+  autoComplete?: {
+    command?: string;
+    popoverTrigger?: string;
+    popoverContent?: string;
+    commandList?: string;
+    commandGroup?: string;
+    commandItem?: string;
+  };
+  tag?: {
+    container?: string;
+    closeButton?: string;
+  };
+  input?: string;
+}
+
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
   placeholder?: string;
   tags: Tag[];
@@ -63,6 +88,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inlineTags?: boolean;
   activeTagIndex: number | null;
   setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  styleClasses?: TagInputStyleClassesProps;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -112,6 +138,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inlineTags = true,
     activeTagIndex,
     setActiveTagIndex,
+    styleClasses = {},
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
