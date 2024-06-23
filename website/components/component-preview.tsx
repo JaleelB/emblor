@@ -36,7 +36,10 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
         setDefaultTags(newTags);
       },
       placeholder: 'Add a tag',
-      className: 'w-full',
+      // className: 'w-full',
+      styleClasses: {
+        input: 'w-full',
+      },
       activeTagIndex: activeTagIndex,
       setActiveTagIndex: setActiveTagIndex,
       autocompleteOptions: tags,
