@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
-import { type Tag as TagType } from './tag-input';
+import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popoever';
 import { Button } from '../ui/button';
@@ -14,6 +14,7 @@ type AutocompleteProps = {
   allowDuplicates: boolean;
   children: React.ReactNode;
   inlineTags?: boolean;
+  classStyleProps: TagInputStyleClassesProps['autoComplete'];
 };
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
@@ -25,6 +26,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   allowDuplicates,
   inlineTags,
   children,
+  classStyleProps,
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -130,7 +132,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   };
 
   return (
-    <Command className="w-full h-full">
+    <Command className={cn('w-full h-full', classStyleProps.command)}>
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
         <div
           className="relative h-full flex items-center rounded-md border border-input bg-transparent pr-3"
@@ -146,7 +148,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               variant="ghost"
               size="icon"
               role="combobox"
-              className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`)}
+              className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`, classStyleProps.popoverTrigger)}
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}
             >
               <svg
@@ -170,18 +172,18 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           ref={popoverContentRef}
           side="bottom"
           align="start"
-          className={cn(`p-0 relative`)}
+          className={cn(`p-0 relative`, classStyleProps.popoverContent)}
           style={{
             top: `${popooverContentTop}px`,
             marginLeft: `calc(-${popoverWidth}px + 36px)`,
             width: `${popoverWidth}px`,
           }}
         >
-          <CommandList>
+          <CommandList className={cn(classStyleProps?.commandList)}>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions" className={cn('overflow-y-auto')}>
+            <CommandGroup heading="Suggestions" className={cn('overflow-y-auto', classStyleProps.commandGroup)}>
               {autocompleteOptions.map((option) => (
-                <CommandItem key={option.id} className="cursor-pointer">
+                <CommandItem key={option.id} className={cn('cursor-pointer', classStyleProps.commandItem)}>
                   <div className="w-full flex items-center gap-2" onClick={() => toggleTag(option)}>
                     {option.text}
                     {tags.some((tag) => tag.text === option.text) && (

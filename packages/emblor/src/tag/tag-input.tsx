@@ -23,11 +23,11 @@ export type Tag = {
   text: string;
 };
 
-interface TagInputStyleClassesProps {
+export interface TagInputStyleClassesProps {
   inlineTagsContainer?: string;
   tagPopover?: {
-    content?: string;
-    trigger?: string;
+    popoverTrigger?: string;
+    popoverContent?: string;
   };
   tagList?: {
     container?: string;
@@ -42,7 +42,7 @@ interface TagInputStyleClassesProps {
     commandItem?: string;
   };
   tag?: {
-    container?: string;
+    body?: string;
     closeButton?: string;
   };
   input?: string;
@@ -100,7 +100,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     variant,
     size,
     shape,
-    className,
+    // className,
     enableAutocomplete,
     autocompleteOptions,
     maxTags,
@@ -322,12 +322,19 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             inlineTags={inlineTags}
             activeTagIndex={activeTagIndex}
             setActiveTagIndex={setActiveTagIndex}
+            classStyleProps={{
+              tagListClasses: styleClasses?.tagList,
+              tagClasses: styleClasses?.tag,
+            }}
           />
         ) : (
           !enableAutocomplete && (
             <div className="w-full">
               <div
-                className={`flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+                className={cn(
+                  `flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+                  styleClasses?.inlineTagsContainer,
+                )}
               >
                 <TagList
                   tags={truncatedTags}
@@ -348,6 +355,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   inlineTags={inlineTags}
                   activeTagIndex={activeTagIndex}
                   setActiveTagIndex={setActiveTagIndex}
+                  classStyleProps={{
+                    tagListClasses: styleClasses?.tagList,
+                    tagClasses: styleClasses?.tag,
+                  }}
                 />
                 <Input
                   ref={inputRef}
@@ -362,7 +373,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   {...inputProps}
                   className={cn(
                     'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
-                    className,
+                    // className,
+                    styleClasses?.input,
                   )}
                   autoComplete={enableAutocomplete ? 'on' : 'off'}
                   list={enableAutocomplete ? 'autocomplete-options' : undefined}
@@ -382,6 +394,14 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             onTagAdd={onTagAdd}
             allowDuplicates={allowDuplicates ?? false}
             inlineTags={inlineTags}
+            classStyleProps={{
+              command: styleClasses?.autoComplete?.command,
+              popoverTrigger: styleClasses?.autoComplete?.popoverTrigger,
+              popoverContent: styleClasses?.autoComplete?.popoverContent,
+              commandList: styleClasses?.autoComplete?.commandList,
+              commandGroup: styleClasses?.autoComplete?.commandGroup,
+              commandItem: styleClasses?.autoComplete?.commandItem,
+            }}
           >
             {!usePopoverForTags ? (
               !inlineTags ? (
@@ -394,11 +414,18 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   onKeyDown={handleKeyDown}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
-                  className={cn('w-full', className)}
+                  className={cn(
+                    'w-full',
+                    // className,
+                    styleClasses?.input,
+                  )}
                 />
               ) : (
                 <div
-                  className={`flex flex-row flex-wrap items-center p-2 gap-2 h-fit w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+                  className={cn(
+                    `flex flex-row flex-wrap items-center p-2 gap-2 h-fit w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+                    styleClasses?.inlineTagsContainer,
+                  )}
                 >
                   <TagList
                     tags={truncatedTags}
@@ -419,6 +446,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     inlineTags={inlineTags}
                     activeTagIndex={activeTagIndex}
                     setActiveTagIndex={setActiveTagIndex}
+                    classStyleProps={{
+                      tagListClasses: styleClasses?.tagList,
+                      tagClasses: styleClasses?.tag,
+                    }}
                   />
                   <CommandInput
                     placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
@@ -430,7 +461,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     onFocus={handleInputFocus}
                     onBlur={handleInputBlur}
                     inlineTags={inlineTags}
-                    className={cn('border-0  flex-1 w-fit h-5', className)}
+                    className={cn(
+                      'border-0 flex-1 w-fit h-5',
+                      // className,
+                      styleClasses?.input,
+                    )}
                   />
                 </div>
               )
@@ -453,6 +488,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 direction={direction}
                 activeTagIndex={activeTagIndex}
                 setActiveTagIndex={setActiveTagIndex}
+                classStyleProps={{
+                  popoverClasses: styleClasses?.tagPopover,
+                  tagListClasses: styleClasses?.tagList,
+                  tagClasses: styleClasses?.tag,
+                }}
               >
                 <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
@@ -463,7 +503,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   onKeyDown={handleKeyDown}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
-                  className={cn('w-full', className)}
+                  className={cn(
+                    'w-full',
+                    // className,
+                    styleClasses?.input,
+                  )}
                 />
               </TagPopover>
             )}
@@ -484,7 +528,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
                 {...inputProps}
-                className={className}
+                className={cn(
+                  styleClasses?.input,
+                  // className
+                )}
                 autoComplete={enableAutocomplete ? 'on' : 'off'}
                 list={enableAutocomplete ? 'autocomplete-options' : undefined}
                 disabled={maxTags !== undefined && tags.length >= maxTags}
@@ -509,6 +556,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               direction={direction}
               activeTagIndex={activeTagIndex}
               setActiveTagIndex={setActiveTagIndex}
+              classStyleProps={{
+                popoverClasses: styleClasses?.tagPopover,
+                tagListClasses: styleClasses?.tagList,
+                tagClasses: styleClasses?.tag,
+              }}
             >
               <Input
                 ref={inputRef}
@@ -524,7 +576,11 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 autoComplete={enableAutocomplete ? 'on' : 'off'}
                 list={enableAutocomplete ? 'autocomplete-options' : undefined}
                 disabled={maxTags !== undefined && tags.length >= maxTags}
-                className={cn('border-0 w-full', className)}
+                className={cn(
+                  'border-0 w-full',
+                  styleClasses?.input,
+                  // className
+                )}
               />
             </TagPopover>
           )}

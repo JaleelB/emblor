@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Tag as TagType } from './tag-input';
+import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { Tag, TagProps } from './tag';
 import SortableList, { SortableItem } from 'react-easy-sort';
 import { cn } from '../utils';
@@ -13,6 +13,10 @@ export type TagListProps = {
   inlineTags?: boolean;
   activeTagIndex?: number | null;
   setActiveTagIndex?: (index: number | null) => void;
+  classStyleProps: {
+    tagListClasses: TagInputStyleClassesProps['tagList'];
+    tagClasses: TagInputStyleClassesProps['tag'];
+  };
 } & Omit<TagProps, 'tagObj'>;
 
 const DropTarget: React.FC = () => {
@@ -29,6 +33,7 @@ export const TagList: React.FC<TagListProps> = ({
   inlineTags,
   activeTagIndex,
   setActiveTagIndex,
+  classStyleProps,
   ...tagListProps
 }) => {
   const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
@@ -45,13 +50,23 @@ export const TagList: React.FC<TagListProps> = ({
     <>
       {!inlineTags ? (
         <div
-          className={cn('rounded-md w-full', className, {
-            'flex flex-wrap gap-2': direction === 'row',
-            'flex flex-col gap-2': direction === 'column',
-          })}
+          className={cn(
+            'rounded-md w-full',
+            // className,
+            {
+              'flex flex-wrap gap-2': direction === 'row',
+              'flex flex-col gap-2': direction === 'column',
+            },
+            classStyleProps?.tagListClasses?.container,
+          )}
         >
           {draggable ? (
-            <SortableList onSortEnd={onSortEnd} className="flex flex-wrap gap-2 list" dropTarget={<DropTarget />}>
+            <SortableList
+              onSortEnd={onSortEnd}
+              // className="flex flex-wrap gap-2 list"
+              className={`flex flex-wrap gap-2 list ${classStyleProps?.tagListClasses?.sortableList}`}
+              dropTarget={<DropTarget />}
+            >
               {tags.map((tagObj, index) => (
                 <SortableItem key={tagObj.id}>
                   <div
@@ -72,6 +87,7 @@ export const TagList: React.FC<TagListProps> = ({
                         isActiveTag={index === activeTagIndex}
                         direction={direction}
                         draggable={draggable}
+                        tagClasses={classStyleProps?.tagClasses}
                         {...tagListProps}
                       />
                     )}
@@ -90,6 +106,7 @@ export const TagList: React.FC<TagListProps> = ({
                   isActiveTag={index === activeTagIndex}
                   direction={direction}
                   draggable={draggable}
+                  tagClasses={classStyleProps?.tagClasses}
                   {...tagListProps}
                 />
               ),
@@ -120,6 +137,7 @@ export const TagList: React.FC<TagListProps> = ({
                         isActiveTag={index === activeTagIndex}
                         direction={direction}
                         draggable={draggable}
+                        tagClasses={classStyleProps?.tagClasses}
                         {...tagListProps}
                       />
                     )}
@@ -138,6 +156,7 @@ export const TagList: React.FC<TagListProps> = ({
                   isActiveTag={index === activeTagIndex}
                   direction={direction}
                   draggable={draggable}
+                  tagClasses={classStyleProps?.tagClasses}
                   {...tagListProps}
                 />
               ),
