@@ -10,6 +10,7 @@ import { TagList } from './tag-list';
 import { tagVariants } from './tag';
 import { Autocomplete } from './autocomplete';
 import { cn, uuid } from '../utils';
+import { type ClassValue } from 'clsx';
 
 export enum Delimiter {
   Comma = ',',
@@ -61,6 +62,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
   inlineTags?: boolean;
+  inlineTagsProps?: React.HTMLProps<HTMLDivElement>;
+  inlineTagsClassName?: ClassValue;
   activeTagIndex: number | null;
   setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
@@ -110,6 +113,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inputProps = {},
     restrictTagsToAutocompleteOptions,
     inlineTags = true,
+    inlineTagsProps = {},
+    inlineTagsClassName = '',
     activeTagIndex,
     setActiveTagIndex,
   } = props;
@@ -300,7 +305,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           !enableAutocomplete && (
             <div className="w-full">
               <div
-                className={`flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+                {...inlineTagsProps}
+                className={cn(`flex flex-row flex-wrap items-center gap-2 p-2 w-full rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`, inlineTagsClassName)}
               >
                 <TagList
                   tags={truncatedTags}
@@ -371,7 +377,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 />
               ) : (
                 <div
-                  className={`flex flex-row flex-wrap items-center p-2 gap-2 h-fit w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`}
+                  {...inlineTagsProps}
+                  className={cn(`flex flex-row flex-wrap items-center p-2 gap-2 h-fit w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`, inlineTagsClassName)}
                 >
                   <TagList
                     tags={truncatedTags}
