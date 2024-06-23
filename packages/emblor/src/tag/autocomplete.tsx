@@ -29,6 +29,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const popoverContentRef = useRef<HTMLDivElement | null>(null);
 
   const [popoverWidth, setPopoverWidth] = useState<number>(0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -42,6 +43,26 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       triggerContainerRef.current?.getBoundingClientRect().bottom - triggerRef.current?.getBoundingClientRect().bottom,
     );
   }, [tags]);
+
+  // Close the popover when clicking outside of it
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        isPopoverOpen &&
+        triggerContainerRef.current &&
+        !triggerContainerRef.current.contains(event.target) &&
+        !popoverContentRef.current.contains(event.target)
+      ) {
+        setIsPopoverOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isPopoverOpen]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -135,9 +156,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
               >
                 <path d="m6 9 6 6 6-6"></path>
@@ -146,6 +167,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           </PopoverTrigger>
         </div>
         <PopoverContent
+          ref={popoverContentRef}
           side="bottom"
           align="start"
           className={cn(`p-0 relative`)}

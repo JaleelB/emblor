@@ -22,6 +22,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const popoverContentRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [popoverWidth, setPopoverWidth] = useState<number>(0);
@@ -42,6 +43,26 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
     window.addEventListener('resize', handleResize); // Adjust on window resize
     return () => window.removeEventListener('resize', handleResize);
   }, [triggerContainerRef, triggerRef]);
+
+  // Close the popover when clicking outside of it
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        isPopoverOpen &&
+        triggerContainerRef.current &&
+        !triggerContainerRef.current.contains(event.target) &&
+        !popoverContentRef.current.contains(event.target)
+      ) {
+        setIsPopoverOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isPopoverOpen]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -107,9 +128,9 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
             >
               <path d="m6 9 6 6 6-6"></path>
@@ -118,6 +139,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
         </PopoverTrigger>
       </div>
       <PopoverContent
+        ref={popoverContentRef}
         className="w-full space-y-3"
         style={{
           marginLeft: `-${sideOffset}px`,
