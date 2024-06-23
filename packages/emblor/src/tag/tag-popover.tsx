@@ -57,7 +57,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
     [inputFocused],
   );
 
-  const handleInputFocus = () => {
+  const handleInputFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
     // Only set inputFocused to true if the popover is already open.
     // This will prevent the popover from opening due to an input focus if it was initially closed.
     if (isPopoverOpen) {
@@ -68,7 +68,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
     if (userOnFocus) userOnFocus(event);
   };
 
-  const handleInputBlur = () => {
+  const handleInputBlur = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
     setInputFocused(false);
 
     // Allow the popover to close if no other interactions keep it open
@@ -86,7 +86,6 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
         className="relative flex items-center rounded-md border border-input bg-transparent pr-3"
         ref={triggerContainerRef}
       >
-        {/* {children} */}
         {React.cloneElement(children as React.ReactElement<any>, {
           onFocus: handleInputFocus,
           onBlur: handleInputBlur,

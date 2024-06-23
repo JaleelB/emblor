@@ -58,7 +58,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     [inputFocused],
   );
 
-  const handleInputFocus = () => {
+  const handleInputFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
     // Only set inputFocused to true if the popover is already open.
     // This will prevent the popover from opening due to an input focus if it was initially closed.
     if (isPopoverOpen) {
@@ -69,7 +69,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     if (userOnFocus) userOnFocus(event);
   };
 
-  const handleInputBlur = () => {
+  const handleInputBlur = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
     setInputFocused(false);
 
     // Allow the popover to close if no other interactions keep it open
