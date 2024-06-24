@@ -25,6 +25,11 @@ export const docsConfig: DocsConfig = {
           items: [],
         },
         {
+          title: 'Styling',
+          href: '/styling',
+          items: [],
+        },
+        {
           title: 'Variants',
           href: '/variants',
           items: [],

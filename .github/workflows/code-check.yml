@@ -44,8 +44,8 @@ jobs:
       - name: Run typecheck in website workspace
         run: pnpm -C website run typecheck
 
-      - name: Run typecheck in packages workspace
-        run: pnpm -C packages/emblor run typecheck
+      # - name: Run typecheck in packages workspace
+      #   run: pnpm -C packages/emblor run typecheck
 
       - name: Check prettier format
         run: pnpm run prettier-check

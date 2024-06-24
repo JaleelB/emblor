@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { cn } from '../utils';
-import { TagInputProps, type Tag as TagType } from './tag-input';
+import { TagInputProps, TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 
 import { cva } from 'class-variance-authority';
 
@@ -77,6 +77,7 @@ export type TagProps = {
   textStyle: TagInputProps['textStyle'];
   onRemoveTag: (id: string) => void;
   isActiveTag?: boolean;
+  tagClasses?: TagInputStyleClassesProps['tag'];
 } & Pick<TagInputProps, 'direction' | 'onTagClick' | 'draggable'>;
 
 export const Tag: React.FC<TagProps> = ({
@@ -94,6 +95,7 @@ export const Tag: React.FC<TagProps> = ({
   animation,
   textStyle,
   isActiveTag,
+  tagClasses,
 }) => {
   return (
     <span
@@ -115,6 +117,7 @@ export const Tag: React.FC<TagProps> = ({
           'cursor-pointer': draggable,
           'ring-ring ring-offset-2 ring-2 ring-offset-background': isActiveTag,
         },
+        tagClasses?.body,
       )}
       onClick={() => onTagClick?.(tagObj)}
     >
@@ -126,7 +129,7 @@ export const Tag: React.FC<TagProps> = ({
           e.stopPropagation(); // Prevent event from bubbling up to the tag span
           onRemoveTag(tagObj.id);
         }}
-        className={cn('py-1 px-3 h-full hover:bg-transparent')}
+        className={cn(`py-1 px-3 h-full hover:bg-transparent`, tagClasses?.closeButton)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
