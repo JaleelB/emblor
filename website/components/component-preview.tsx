@@ -36,7 +36,6 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
         setDefaultTags(newTags);
       },
       placeholder: 'Add a tag',
-      // className: 'w-full',
       styleClasses: {
         input: 'w-full',
       },
@@ -122,7 +121,9 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
                           setExampleTags(newTags);
                       }}
                       placeholder="Add a tag"
-                      className="sm:max-w-[350px]"
+                      styleClasses={{
+                        input: 'w-full sm:max-w-[350px]',
+                      }}
                       activeTagIndex={activeTagIndex}
                       setActiveTagIndex={setActiveTagIndex}
                       ${propEntries}
