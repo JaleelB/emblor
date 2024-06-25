@@ -3,10 +3,10 @@ import { Toaster } from '@/components/ui/toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '../config/site-config';
-import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -60,8 +60,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <SiteFooter />
         </ThemeProvider>
-        <Analytics />
         <Toaster />
+        <Script async src={process.env.UMAMI_URL} data-website-id={process.env.UMAMI_DATA_WEBSITE_ID} />
       </body>
     </html>
   );
