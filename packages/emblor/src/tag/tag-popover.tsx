@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popoever';
-import { type Tag as TagType } from './tag-input';
+import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { TagList, TagListProps } from './tag-list';
 import { Button } from '../ui/button';
+import { cn } from '../utils';
 
 type TagPopoverProps = {
   children: React.ReactNode;
@@ -10,6 +11,11 @@ type TagPopoverProps = {
   customTagRenderer?: (tag: TagType, isActiveTag: boolean) => React.ReactNode;
   activeTagIndex?: number | null;
   setActiveTagIndex?: (index: number | null) => void;
+  classStyleProps: {
+    popoverClasses: TagInputStyleClassesProps['tagPopover'];
+    tagListClasses: TagInputStyleClassesProps['tagList'];
+    tagClasses: TagInputStyleClassesProps['tag'];
+  };
 } & TagListProps;
 
 export const TagPopover: React.FC<TagPopoverProps> = ({
@@ -18,6 +24,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   customTagRenderer,
   activeTagIndex,
   setActiveTagIndex,
+  classStyleProps,
   ...tagProps
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
@@ -118,7 +125,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             variant="ghost"
             size="icon"
             role="combobox"
-            className="hover:bg-transparent"
+            className={cn(`hover:bg-transparent`, classStyleProps?.popoverClasses?.popoverTrigger)}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
@@ -140,7 +147,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
       </div>
       <PopoverContent
         ref={popoverContentRef}
-        className="w-full space-y-3"
+        className={cn(`w-full space-y-3`, classStyleProps?.popoverClasses?.popoverContent)}
         style={{
           marginLeft: `-${sideOffset}px`,
           width: `${popoverWidth}px`,
@@ -155,6 +162,10 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
           customTagRenderer={customTagRenderer}
           activeTagIndex={activeTagIndex}
           setActiveTagIndex={setActiveTagIndex}
+          classStyleProps={{
+            tagListClasses: classStyleProps?.tagListClasses,
+            tagClasses: classStyleProps?.tagClasses,
+          }}
           {...tagProps}
         />
       </PopoverContent>

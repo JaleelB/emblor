@@ -200,6 +200,42 @@ type TagInputProps = {
   // Placeholder text when tag limit is reached.
   placeholderWhenFull?: string; // default: ""
 
+  styleClasses?: {
+    // Class name styles for the tag input container (use when inlineTags is set to true).
+    inlineTagsContainer?: string;
+
+    // Class name styles for the tag popover sub components
+    tagPopover?: {
+      popoverTrigger?: string;
+      popoverContent?: string;
+    };
+
+    // Class name styles for the tag list sub components (the tag list renders the tags as a list)
+    tagList?: {
+      container?: string;
+      sortableList?: string;
+    };
+
+    // Class name styles for the autocomplete component sub components
+    autoComplete?: {
+      command?: string;
+      popoverTrigger?: string;
+      popoverContent?: string;
+      commandList?: string;
+      commandGroup?: string;
+      commandItem?: string;
+    };
+
+    // Class name styles for the tag
+    tag?: {
+      body?: string;
+      closeButton?: string;
+    };
+
+    // Class name styles for the main input field
+    input?: string;
+  }; // default: {}
+
   // Sort tags alphabetically.
   sortTags?: boolean; // default: false
 
@@ -266,4 +302,4 @@ enum Delimiter {
 
 ## Documentation
 
-You can find out more about the API and implementation in the [Documentation](https://emblor.jaleelbennett.com/#setup).
+You can find out more about the API and implementation in the [Documentation](https://emblor.jaleelbennett.com/).
