@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popoever';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { TagList, TagListProps } from './tag-list';
 import { Button } from '../ui/button';
@@ -125,7 +125,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             variant="ghost"
             size="icon"
             role="combobox"
-            className={cn(`hover:bg-transparent`, classStyleProps?.popoverClasses?.popoverTrigger)}
+            className={cn(`hover:bg-transparent data-[state=open]:rotate-180`, classStyleProps?.popoverClasses?.popoverTrigger)}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
