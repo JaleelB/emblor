@@ -8,9 +8,9 @@ import { cva } from 'class-variance-authority';
 export const tagVariants = cva('transition-all border inline-flex items-center text-sm pl-2 rounded-md', {
   variants: {
     variant: {
-      default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      primary: 'bg-primary border-primary text-primary-foreground hover:bg-primary/90',
-      destructive: 'bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90',
+      default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:cursor-not-allowed disabled:opacity-50',
+      primary: 'bg-primary border-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50',
+      destructive: 'bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50',
     },
     size: {
       sm: 'text-xs h-7',
@@ -78,6 +78,7 @@ export type TagProps = {
   onRemoveTag: (id: string) => void;
   isActiveTag?: boolean;
   tagClasses?: TagInputStyleClassesProps['tag'];
+  disabled?: boolean;
 } & Pick<TagInputProps, 'direction' | 'onTagClick' | 'draggable'>;
 
 export const Tag: React.FC<TagProps> = ({
@@ -96,6 +97,7 @@ export const Tag: React.FC<TagProps> = ({
   textStyle,
   isActiveTag,
   tagClasses,
+  disabled
 }) => {
   return (
     <span
@@ -129,6 +131,7 @@ export const Tag: React.FC<TagProps> = ({
           e.stopPropagation(); // Prevent event from bubbling up to the tag span
           onRemoveTag(tagObj.id);
         }}
+        disabled={disabled}
         className={cn(`py-1 px-3 h-full hover:bg-transparent`, tagClasses?.closeButton)}
       >
         <svg
