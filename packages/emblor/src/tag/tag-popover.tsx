@@ -127,7 +127,10 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             variant="ghost"
             size="icon"
             role="combobox"
-            className={cn(`hover:bg-transparent data-[state=open]:rotate-180`, classStyleProps?.popoverClasses?.popoverTrigger)}
+            className={cn(
+              `hover:bg-transparent data-[state=open]:rotate-180`,
+              classStyleProps?.popoverClasses?.popoverTrigger,
+            )}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg

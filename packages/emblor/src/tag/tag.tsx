@@ -8,9 +8,12 @@ import { cva } from 'class-variance-authority';
 export const tagVariants = cva('transition-all border inline-flex items-center text-sm pl-2 rounded-md', {
   variants: {
     variant: {
-      default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:cursor-not-allowed disabled:opacity-50',
-      primary: 'bg-primary border-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50',
-      destructive: 'bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50',
+      default:
+        'bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:cursor-not-allowed disabled:opacity-50',
+      primary:
+        'bg-primary border-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50',
+      destructive:
+        'bg-destructive border-destructive text-destructive-foreground hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50',
     },
     size: {
       sm: 'text-xs h-7',
@@ -97,7 +100,7 @@ export const Tag: React.FC<TagProps> = ({
   textStyle,
   isActiveTag,
   tagClasses,
-  disabled
+  disabled,
 }) => {
   return (
     <span
