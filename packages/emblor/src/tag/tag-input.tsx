@@ -139,6 +139,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     activeTagIndex,
     setActiveTagIndex,
     styleClasses = {},
+    disabled,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -326,6 +327,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               tagListClasses: styleClasses?.tagList,
               tagClasses: styleClasses?.tag,
             }}
+            disabled={disabled}
           />
         ) : (
           !enableAutocomplete && (
@@ -359,6 +361,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     tagListClasses: styleClasses?.tagList,
                     tagClasses: styleClasses?.tag,
                   }}
+                  disabled={disabled}
                 />
                 <Input
                   ref={inputRef}
@@ -378,7 +381,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   )}
                   autoComplete={enableAutocomplete ? 'on' : 'off'}
                   list={enableAutocomplete ? 'autocomplete-options' : undefined}
-                  disabled={maxTags !== undefined && tags.length >= maxTags}
+                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                 />
               </div>
             </div>
@@ -409,7 +412,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                   ref={inputRef}
                   value={inputValue}
-                  disabled={maxTags !== undefined && tags.length >= maxTags}
+                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                   onChangeCapture={handleInputChange}
                   onKeyDown={handleKeyDown}
                   onFocus={handleInputFocus}
@@ -450,12 +453,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                       tagListClasses: styleClasses?.tagList,
                       tagClasses: styleClasses?.tag,
                     }}
+                    disabled={disabled}
                   />
                   <CommandInput
                     placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                     ref={inputRef}
                     value={inputValue}
-                    disabled={maxTags !== undefined && tags.length >= maxTags}
+                    disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                     onChangeCapture={handleInputChange}
                     onKeyDown={handleKeyDown}
                     onFocus={handleInputFocus}
@@ -493,12 +497,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                   tagListClasses: styleClasses?.tagList,
                   tagClasses: styleClasses?.tag,
                 }}
+                disabled={disabled}
               >
                 <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                   ref={inputRef}
                   value={inputValue}
-                  disabled={maxTags !== undefined && tags.length >= maxTags}
+                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                   onChangeCapture={handleInputChange}
                   onKeyDown={handleKeyDown}
                   onFocus={handleInputFocus}
@@ -534,7 +539,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 )}
                 autoComplete={enableAutocomplete ? 'on' : 'off'}
                 list={enableAutocomplete ? 'autocomplete-options' : undefined}
-                disabled={maxTags !== undefined && tags.length >= maxTags}
+                disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
               />
             ) : null
           ) : (
@@ -561,6 +566,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 tagListClasses: styleClasses?.tagList,
                 tagClasses: styleClasses?.tag,
               }}
+              disabled={disabled}
             >
               <Input
                 ref={inputRef}
@@ -575,7 +581,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 {...inputProps}
                 autoComplete={enableAutocomplete ? 'on' : 'off'}
                 list={enableAutocomplete ? 'autocomplete-options' : undefined}
-                disabled={maxTags !== undefined && tags.length >= maxTags}
+                disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                 className={cn(
                   'border-0 w-full',
                   styleClasses?.input,

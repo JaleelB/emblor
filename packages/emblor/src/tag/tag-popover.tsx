@@ -16,6 +16,7 @@ type TagPopoverProps = {
     tagListClasses: TagInputStyleClassesProps['tagList'];
     tagClasses: TagInputStyleClassesProps['tag'];
   };
+  disabled?: boolean;
 } & TagListProps;
 
 export const TagPopover: React.FC<TagPopoverProps> = ({
@@ -25,6 +26,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   activeTagIndex,
   setActiveTagIndex,
   classStyleProps,
+  disabled,
   ...tagProps
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
@@ -125,7 +127,10 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             variant="ghost"
             size="icon"
             role="combobox"
-            className={cn(`hover:bg-transparent data-[state=open]:rotate-180`, classStyleProps?.popoverClasses?.popoverTrigger)}
+            className={cn(
+              `hover:bg-transparent data-[state=open]:rotate-180`,
+              classStyleProps?.popoverClasses?.popoverTrigger,
+            )}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
@@ -167,6 +172,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             tagClasses: classStyleProps?.tagClasses,
           }}
           {...tagProps}
+          disabled={disabled}
         />
       </PopoverContent>
     </Popover>

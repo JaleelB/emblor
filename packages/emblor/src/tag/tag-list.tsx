@@ -17,6 +17,7 @@ export type TagListProps = {
     tagListClasses: TagInputStyleClassesProps['tagList'];
     tagClasses: TagInputStyleClassesProps['tag'];
   };
+  disabled?: boolean;
 } & Omit<TagProps, 'tagObj'>;
 
 const DropTarget: React.FC = () => {
@@ -34,6 +35,7 @@ export const TagList: React.FC<TagListProps> = ({
   activeTagIndex,
   setActiveTagIndex,
   classStyleProps,
+  disabled,
   ...tagListProps
 }) => {
   const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
@@ -89,6 +91,7 @@ export const TagList: React.FC<TagListProps> = ({
                         draggable={draggable}
                         tagClasses={classStyleProps?.tagClasses}
                         {...tagListProps}
+                        disabled={disabled}
                       />
                     )}
                   </div>
@@ -108,6 +111,7 @@ export const TagList: React.FC<TagListProps> = ({
                   draggable={draggable}
                   tagClasses={classStyleProps?.tagClasses}
                   {...tagListProps}
+                  disabled={disabled}
                 />
               ),
             )
@@ -139,6 +143,7 @@ export const TagList: React.FC<TagListProps> = ({
                         draggable={draggable}
                         tagClasses={classStyleProps?.tagClasses}
                         {...tagListProps}
+                        disabled={disabled}
                       />
                     )}
                   </div>
@@ -158,6 +163,7 @@ export const TagList: React.FC<TagListProps> = ({
                   draggable={draggable}
                   tagClasses={classStyleProps?.tagClasses}
                   {...tagListProps}
+                  disabled={disabled}
                 />
               ),
             )
