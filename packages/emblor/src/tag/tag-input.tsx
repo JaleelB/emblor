@@ -46,6 +46,7 @@ export interface TagInputStyleClassesProps {
     closeButton?: string;
   };
   input?: string;
+  clearAllButton?: string;
 }
 
 export interface TagInputProps extends OmittedInputProps, VariantProps<typeof tagVariants> {
@@ -146,6 +147,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
   const inputRef = React.useRef<HTMLInputElement>(null);
   // const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+
+  console.log('styling: ', styleClasses);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
@@ -601,7 +604,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         </div>
       )}
       {clearAll && (
-        <Button type="button" onClick={handleClearAll} className="mt-2">
+        <Button type="button" onClick={handleClearAll} className={cn('mt-2', styleClasses?.clearAllButton)}>
           Clear All
         </Button>
       )}

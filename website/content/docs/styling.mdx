@@ -215,6 +215,30 @@ Styles specific to each tag within the list.
 
 <br />
 
+### Clear All Button
+
+Styles for the clear all button that appears when the **clearAll** prop is set to true.
+
+<br />
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Prop</TableHead>
+      <TableHead>Description</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="border-r bg-background">clearAllButton</TableCell>
+      <TableCell className="bg-background">
+        Styles the clear all button that appears when the **clearAll** prop is set to true.
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+<br />
+
 ## Usage
 
 Here's how you can use the **styleClasses** prop to style different subcomponents:
@@ -246,6 +270,7 @@ Here's how you can use the **styleClasses** prop to style different subcomponent
       body: 'flex items-center gap-2',
       closeButton: 'text-red-500 hover:text-red-600',
     },
+    clearAllButton: 'text-red-500 hover:text-red-600',
   }}
   // other props
 />
