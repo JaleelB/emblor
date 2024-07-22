@@ -1,5 +1,13 @@
 # emblor
 
+## 1.4.1
+
+### Patch Changes
+
+- e68ae9d: 🚀 Features:
+
+  - Added styling prop for clear all tags button that appears when clearAll prop is set to true
+
 ## 1.4.0
 
 ### Minor Changes
