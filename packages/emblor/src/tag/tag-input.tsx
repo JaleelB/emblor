@@ -148,8 +148,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   const inputRef = React.useRef<HTMLInputElement>(null);
   // const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
-  console.log('styling: ', styleClasses);
-
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
     // error
