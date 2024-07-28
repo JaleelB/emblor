@@ -186,7 +186,7 @@ export function ComponentPreview({ className, selectOptions, propName, ...otherP
               'items-center': true,
             })}
           >
-            <TagInput {...defaultProps} {...props} disabled={true} />
+            <TagInput {...defaultProps} {...props} />
           </div>
         </TabsContent>
         <TabsContent value="code">
