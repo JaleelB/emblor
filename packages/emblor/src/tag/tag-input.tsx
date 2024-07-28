@@ -90,6 +90,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   activeTagIndex: number | null;
   setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
   styleClasses?: TagInputStyleClassesProps;
+  usePortal?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -101,7 +102,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     variant,
     size,
     shape,
-    // className,
     enableAutocomplete,
     autocompleteOptions,
     maxTags,
@@ -140,13 +140,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     activeTagIndex,
     setActiveTagIndex,
     styleClasses = {},
-    disabled,
+    disabled = false,
+    usePortal = false,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
   const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
   const inputRef = React.useRef<HTMLInputElement>(null);
-  // const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
@@ -398,6 +398,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             onTagAdd={onTagAdd}
             allowDuplicates={allowDuplicates ?? false}
             inlineTags={inlineTags}
+            usePortal={usePortal}
             classStyleProps={{
               command: styleClasses?.autoComplete?.command,
               popoverTrigger: styleClasses?.autoComplete?.popoverTrigger,

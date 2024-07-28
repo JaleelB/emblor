@@ -17,6 +17,7 @@ type TagPopoverProps = {
     tagClasses: TagInputStyleClassesProps['tag'];
   };
   disabled?: boolean;
+  usePortal?: boolean;
 } & TagListProps;
 
 export const TagPopover: React.FC<TagPopoverProps> = ({
@@ -27,6 +28,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   setActiveTagIndex,
   classStyleProps,
   disabled,
+  usePortal,
   ...tagProps
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
@@ -111,7 +113,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
   };
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover open={isPopoverOpen} onOpenChange={handleOpenChange} modal={usePortal}>
       <div
         className="relative flex items-center rounded-md border border-input bg-transparent pr-3"
         ref={triggerContainerRef}
@@ -127,10 +129,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
             variant="ghost"
             size="icon"
             role="combobox"
-            className={cn(
-              `hover:bg-transparent data-[state=open]:rotate-180`,
-              classStyleProps?.popoverClasses?.popoverTrigger,
-            )}
+            className={cn(`hover:bg-transparent`, classStyleProps?.popoverClasses?.popoverTrigger)}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
@@ -143,7 +142,7 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
+              className={`lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50 ${isPopoverOpen ? 'rotate-180' : 'rotate-0'}`}
             >
               <path d="m6 9 6 6 6-6"></path>
             </svg>

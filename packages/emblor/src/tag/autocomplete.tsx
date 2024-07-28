@@ -15,6 +15,7 @@ type AutocompleteProps = {
   children: React.ReactNode;
   inlineTags?: boolean;
   classStyleProps: TagInputStyleClassesProps['autoComplete'];
+  usePortal?: boolean;
 };
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
@@ -27,6 +28,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   inlineTags,
   children,
   classStyleProps,
+  usePortal,
 }) => {
   const triggerContainerRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -133,9 +135,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 
   return (
     <Command className={cn('w-full h-full', classStyleProps.command)}>
-      <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
+      <Popover open={isPopoverOpen} onOpenChange={handleOpenChange} modal={usePortal}>
         <div
-          className="relative h-full flex items-center rounded-md border border-input bg-transparent pr-3"
+          className="relative h-full flex items-center rounded-md border border-green-500 bg-transparent pr-3"
           ref={triggerContainerRef}
         >
           {React.cloneElement(children as React.ReactElement<any>, {
@@ -161,7 +163,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50"
+                className={`lucide lucide-chevron-down h-4 w-4 shrink-0 opacity-50 ${isPopoverOpen ? 'rotate-180' : 'rotate-0'}`}
               >
                 <path d="m6 9 6 6 6-6"></path>
               </svg>
