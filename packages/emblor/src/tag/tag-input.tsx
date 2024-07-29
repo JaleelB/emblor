@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { type VariantProps } from 'class-variance-authority';
@@ -284,9 +284,13 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     onClearAll?.();
   };
 
-  const filteredAutocompleteOptions = autocompleteFilter
-    ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
-    : autocompleteOptions;
+  // const filteredAutocompleteOptions = autocompleteFilter
+  //   ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
+  //   : autocompleteOptions;
+  const filteredAutocompleteOptions = useMemo(
+    () => autocompleteOptions.filter((option) => option.text.toLowerCase().includes(inputValue.toLowerCase())),
+    [inputValue, autocompleteOptions],
+  );
 
   const displayedTags = sortTags ? [...tags].sort() : tags;
 
@@ -410,20 +414,40 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           >
             {!usePopoverForTags ? (
               !inlineTags ? (
-                <CommandInput
-                  placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
+                // <CommandInput
+                //   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
+                //   ref={inputRef}
+                //   value={inputValue}
+                //   disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
+                //   onChangeCapture={handleInputChange}
+                //   onKeyDown={handleKeyDown}
+                //   onFocus={handleInputFocus}
+                //   onBlur={handleInputBlur}
+                //   className={cn(
+                //     'w-full',
+                //     // className,
+                //     styleClasses?.input,
+                //   )}
+                // />
+                <Input
                   ref={inputRef}
+                  id={id}
+                  type="text"
+                  placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                   value={inputValue}
-                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
-                  onChangeCapture={handleInputChange}
+                  onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
+                  {...inputProps}
                   className={cn(
-                    'w-full',
+                    'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
                     // className,
                     styleClasses?.input,
                   )}
+                  autoComplete={enableAutocomplete ? 'on' : 'off'}
+                  list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                 />
               ) : (
                 <div
@@ -457,7 +481,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     }}
                     disabled={disabled}
                   />
-                  <CommandInput
+                  {/* <CommandInput
                     placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                     ref={inputRef}
                     value={inputValue}
@@ -472,6 +496,26 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                       // className,
                       styleClasses?.input,
                     )}
+                  /> */}
+                  <Input
+                    ref={inputRef}
+                    id={id}
+                    type="text"
+                    placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    {...inputProps}
+                    className={cn(
+                      'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
+                      // className,
+                      styleClasses?.input,
+                    )}
+                    autoComplete={enableAutocomplete ? 'on' : 'off'}
+                    list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                    disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                   />
                 </div>
               )
@@ -501,7 +545,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 }}
                 disabled={disabled}
               >
-                <CommandInput
+                {/* <CommandInput
                   placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
                   ref={inputRef}
                   value={inputValue}
@@ -515,6 +559,26 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                     // className,
                     styleClasses?.input,
                   )}
+                /> */}
+                <Input
+                  ref={inputRef}
+                  id={id}
+                  type="text"
+                  placeholder={maxTags !== undefined && tags.length >= maxTags ? placeholderWhenFull : placeholder}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  {...inputProps}
+                  className={cn(
+                    'border-0 h-5 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
+                    // className,
+                    styleClasses?.input,
+                  )}
+                  autoComplete={enableAutocomplete ? 'on' : 'off'}
+                  list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                  disabled={disabled || (maxTags !== undefined && tags.length >= maxTags)}
                 />
               </TagPopover>
             )}

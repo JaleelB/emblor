@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
+// import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
 import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
@@ -114,14 +114,12 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       // Tag exists, remove it
       const newTags = tags.filter((_, i) => i !== index);
       setTags(newTags);
-      console.log('newTags', newTags);
     } else {
       // Tag doesn't exist, add it if allowed
       if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) {
         // If duplicates aren't allowed and a tag with the same text exists, do nothing
         return;
       }
-      console.log('option', option);
 
       // Add the tag if it doesn't exceed max tags, if applicable
       if (!maxTags || tags.length < maxTags) {
@@ -134,10 +132,16 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   };
 
   return (
-    <Command className={cn('w-full h-full', classStyleProps.command)}>
+    // <Command className={cn('w-full h-full', classStyleProps.command)}>
+    <div
+      className={cn(
+        'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
+        classStyleProps.command,
+      )}
+    >
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange} modal={usePortal}>
         <div
-          className="relative h-full flex items-center rounded-md border border-green-500 bg-transparent pr-3"
+          className="relative h-full flex items-center rounded-md border bg-transparent pr-3"
           ref={triggerContainerRef}
         >
           {React.cloneElement(children as React.ReactElement<any>, {
@@ -151,7 +155,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               size="icon"
               role="combobox"
               className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`, classStyleProps.popoverTrigger)}
-              onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+              onClick={() => {
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -174,15 +180,23 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           ref={popoverContentRef}
           side="bottom"
           align="start"
+          forceMount
           className={cn(`p-0 relative`, classStyleProps.popoverContent)}
           style={{
             top: `${popooverContentTop}px`,
             marginLeft: `calc(-${popoverWidth}px + 36px)`,
             width: `${popoverWidth}px`,
+            zIndex: 9999,
           }}
         >
-          <CommandList className={cn(classStyleProps?.commandList)}>
-            <CommandEmpty>No results found.</CommandEmpty>
+          {/* <CommandList
+            className={cn(classStyleProps?.commandList)}
+            style={{
+              minHeight: '68px',
+            }}
+            key={autocompleteOptions.length}
+          > */}
+          {/* <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Suggestions" className={cn('overflow-y-auto', classStyleProps.commandGroup)}>
               {autocompleteOptions.map((option) => (
                 <CommandItem key={option.id} className={cn('cursor-pointer', classStyleProps.commandItem)}>
@@ -207,10 +221,66 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                   </div>
                 </CommandItem>
               ))}
-            </CommandGroup>
-          </CommandList>
+            </CommandGroup> */}
+          <div
+            className={cn('max-h-[300px] overflow-y-auto overflow-x-hidden', classStyleProps?.commandList)}
+            style={{
+              minHeight: '68px',
+            }}
+            key={autocompleteOptions.length}
+          >
+            {autocompleteOptions.length > 0 ? (
+              <div
+                key={autocompleteOptions.length}
+                role="group"
+                className={cn('overflow-y-auto overflow-hidden p-1 text-foreground', classStyleProps.commandGroup)}
+                style={{
+                  minHeight: '68px',
+                }}
+              >
+                <span className="text-muted-foreground font-medium text-sm py-1.5 px-2 pb-2">Suggestions</span>
+                <div role="separator" className="py-0.5" />
+                {autocompleteOptions.map((option) => {
+                  return (
+                    <div
+                      key={option.id}
+                      role="option"
+                      className={cn(
+                        'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent',
+                        classStyleProps.commandItem,
+                      )}
+                      data-value={option.text}
+                      onClick={() => toggleTag(option)}
+                    >
+                      <div className="w-full flex items-center gap-2">
+                        {option.text}
+                        {tags.some((tag) => tag.text === option.text) && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-check"
+                          >
+                            <path d="M20 6 9 17l-5-5"></path>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-6 text-center text-sm">No results found.</div>
+            )}
+          </div>
         </PopoverContent>
       </Popover>
-    </Command>
+    </div>
   );
 };
