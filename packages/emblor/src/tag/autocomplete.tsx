@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 type AutocompleteProps = {
   tags: TagType[];
   setTags: React.Dispatch<React.SetStateAction<TagType[]>>;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
   autocompleteOptions: TagType[];
   maxTags?: number;
   onTagAdd?: (tag: string) => void;
@@ -21,6 +22,7 @@ type AutocompleteProps = {
 export const Autocomplete: React.FC<AutocompleteProps> = ({
   tags,
   setTags,
+  setInputValue,
   autocompleteOptions,
   maxTags,
   onTagAdd,
@@ -124,6 +126,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       // Add the tag if it doesn't exceed max tags, if applicable
       if (!maxTags || tags.length < maxTags) {
         setTags([...tags, option]);
+        setInputValue('');
         if (onTagAdd) {
           onTagAdd(option.text);
         }

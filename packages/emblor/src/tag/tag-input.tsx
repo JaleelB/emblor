@@ -399,6 +399,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           <Autocomplete
             tags={tags}
             setTags={setTags}
+            setInputValue={setInputValue}
             autocompleteOptions={filteredAutocompleteOptions as Tag[]}
             maxTags={maxTags}
             onTagAdd={onTagAdd}
