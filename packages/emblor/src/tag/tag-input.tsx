@@ -91,6 +91,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   setActiveTagIndex: React.Dispatch<React.SetStateAction<number | null>>;
   styleClasses?: TagInputStyleClassesProps;
   usePortal?: boolean;
+  addOnPaste?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -142,6 +143,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     styleClasses = {},
     disabled = false,
     usePortal = false,
+    addOnPaste = false,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -156,7 +158,57 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setInputValue(newValue);
+    if (addOnPaste && newValue.includes(delimiter)) {
+      const splitValues = newValue
+        .split(delimiter)
+        .map((v) => v.trim())
+        .filter((v) => v);
+      splitValues.forEach((value) => {
+        if (!value) return; // Skip empty strings from split
+
+        const newTagText = value.trim();
+
+        // Check if the tag is in the autocomplete options if restrictTagsToAutocomplete is true
+        if (restrictTagsToAutocompleteOptions && !autocompleteOptions?.some((option) => option.text === newTagText)) {
+          console.warn('Tag not allowed as per autocomplete options');
+          return;
+        }
+
+        if (validateTag && !validateTag(newTagText)) {
+          console.warn('Invalid tag as per validateTag');
+          return;
+        }
+
+        if (minLength && newTagText.length < minLength) {
+          console.warn(`Tag "${newTagText}" is too short`);
+          return;
+        }
+
+        if (maxLength && newTagText.length > maxLength) {
+          console.warn(`Tag "${newTagText}" is too long`);
+          return;
+        }
+
+        const newTagId = uuid();
+
+        // Add tag if duplicates are allowed or tag does not already exist
+        if (allowDuplicates || !tags.some((tag) => tag.text === newTagText)) {
+          if (maxTags === undefined || tags.length < maxTags) {
+            // Check for maxTags limit
+            const newTag = { id: newTagId, text: newTagText };
+            setTags((prevTags) => [...prevTags, newTag]);
+            onTagAdd?.(newTagText);
+          } else {
+            console.warn('Reached the maximum number of tags allowed');
+          }
+        } else {
+          console.warn(`Duplicate tag "${newTagText}" not added`);
+        }
+      });
+      setInputValue('');
+    } else {
+      setInputValue(newValue);
+    }
     onInputChange?.(newValue);
   };
 
