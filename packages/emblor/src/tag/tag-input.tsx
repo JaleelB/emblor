@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { type VariantProps } from 'class-variance-authority';
-import { CommandInput } from '../ui/command';
+// import { CommandInput } from '../ui/command';
 import { TagPopover } from './tag-popover';
 import { TagList } from './tag-list';
 import { tagVariants } from './tag';
@@ -287,10 +287,12 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   // const filteredAutocompleteOptions = autocompleteFilter
   //   ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
   //   : autocompleteOptions;
-  const filteredAutocompleteOptions = useMemo(
-    () => autocompleteOptions.filter((option) => option.text.toLowerCase().includes(inputValue.toLowerCase())),
-    [inputValue, autocompleteOptions],
-  );
+  const filteredAutocompleteOptions = useMemo(() => {
+    if (autocompleteFilter) {
+      return autocompleteOptions.filter((option) => autocompleteFilter(option.text));
+    }
+    return autocompleteOptions.filter((option) => option.text.toLowerCase().includes(inputValue.toLowerCase()));
+  }, [inputValue, autocompleteOptions, autocompleteFilter]);
 
   const displayedTags = sortTags ? [...tags].sort() : tags;
 
