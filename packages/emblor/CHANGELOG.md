@@ -1,5 +1,11 @@
 # emblor
 
+## 1.4.4
+
+### Patch Changes
+
+- f0b8bbb: correcting some type issues and removing unused dependencies
+
 ## 1.4.3
 
 ### Patch Changes
