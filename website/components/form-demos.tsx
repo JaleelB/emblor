@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { toast } from '@/components/ui/use-toast';
-import { Tag, TagInput } from 'emblor';
+import { Tag, TagInput } from '../../packages/emblor';
 import { uuid } from '@/lib/utils';
 
 const FormSchema = z.object({

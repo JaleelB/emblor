@@ -30,6 +30,7 @@ pnpm add emblor
 - **Drag and Drop**: Allow users to reorder tags using drag and drop.
 - **Read-only Mode**: Prevent users from editing the tag input.
 - **Delimiters**: Define custom delimiters for separating tags.
+- **Add on Paste**: Automatically add tags when pasting text.
 
 ## Usage
 
