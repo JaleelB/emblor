@@ -57,12 +57,13 @@ export const TagPopover: React.FC<TagPopoverProps> = ({
 
   // Close the popover when clicking outside of it
   useEffect(() => {
-    const handleOutsideClick = (event) => {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
       if (
         isPopoverOpen &&
         triggerContainerRef.current &&
-        !triggerContainerRef.current.contains(event.target) &&
-        !popoverContentRef.current.contains(event.target)
+        popoverContentRef.current &&
+        !triggerContainerRef.current.contains(event.target as Node) &&
+        !popoverContentRef.current.contains(event.target as Node)
       ) {
         setIsPopoverOpen(false);
       }

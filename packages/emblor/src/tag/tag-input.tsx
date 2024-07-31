@@ -340,11 +340,10 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   //   ? autocompleteOptions?.filter((option) => autocompleteFilter(option.text))
   //   : autocompleteOptions;
   const filteredAutocompleteOptions = useMemo(() => {
-    if (autocompleteFilter) {
-      return autocompleteOptions.filter((option) => autocompleteFilter(option.text));
-    }
-    return autocompleteOptions.filter((option) => option.text.toLowerCase().includes(inputValue.toLowerCase()));
-  }, [inputValue, autocompleteOptions, autocompleteFilter]);
+    return (autocompleteOptions || []).filter((option) =>
+      option.text.toLowerCase().includes(inputValue ? inputValue.toLowerCase() : ''),
+    );
+  }, [inputValue, autocompleteOptions]);
 
   const displayedTags = sortTags ? [...tags].sort() : tags;
 

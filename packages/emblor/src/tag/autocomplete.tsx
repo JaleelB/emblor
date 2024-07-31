@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 // import { Command, CommandList, CommandItem, CommandGroup, CommandEmpty } from '../ui/command';
 import { TagInputStyleClassesProps, type Tag as TagType } from './tag-input';
 import { cn } from '../utils';
@@ -52,12 +52,13 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 
   // Close the popover when clicking outside of it
   useEffect(() => {
-    const handleOutsideClick = (event) => {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
       if (
         isPopoverOpen &&
         triggerContainerRef.current &&
-        !triggerContainerRef.current.contains(event.target) &&
-        !popoverContentRef.current.contains(event.target)
+        popoverContentRef.current &&
+        !triggerContainerRef.current.contains(event.target as Node) &&
+        !popoverContentRef.current.contains(event.target as Node)
       ) {
         setIsPopoverOpen(false);
       }
@@ -139,7 +140,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     <div
       className={cn(
         'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-        classStyleProps.command,
+        classStyleProps?.command,
       )}
     >
       <Popover open={isPopoverOpen} onOpenChange={handleOpenChange} modal={usePortal}>
@@ -157,7 +158,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               variant="ghost"
               size="icon"
               role="combobox"
-              className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`, classStyleProps.popoverTrigger)}
+              className={cn(`hover:bg-transparent ${!inlineTags ? 'ml-auto' : ''}`, classStyleProps?.popoverTrigger)}
               onClick={() => {
                 setIsPopoverOpen(!isPopoverOpen);
               }}
@@ -184,7 +185,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           side="bottom"
           align="start"
           forceMount
-          className={cn(`p-0 relative`, classStyleProps.popoverContent)}
+          className={cn(`p-0 relative`, classStyleProps?.popoverContent)}
           style={{
             top: `${popooverContentTop}px`,
             marginLeft: `calc(-${popoverWidth}px + 36px)`,
@@ -236,7 +237,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               <div
                 key={autocompleteOptions.length}
                 role="group"
-                className={cn('overflow-y-auto overflow-hidden p-1 text-foreground', classStyleProps.commandGroup)}
+                className={cn('overflow-y-auto overflow-hidden p-1 text-foreground', classStyleProps?.commandGroup)}
                 style={{
                   minHeight: '68px',
                 }}
@@ -250,7 +251,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                       role="option"
                       className={cn(
                         'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent',
-                        classStyleProps.commandItem,
+                        classStyleProps?.commandItem,
                       )}
                       data-value={option.text}
                       onClick={() => toggleTag(option)}
