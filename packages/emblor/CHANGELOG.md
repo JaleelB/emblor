@@ -1,5 +1,13 @@
 # emblor
 
+## 1.4.5
+
+### Patch Changes
+
+- da8b11b: 🚀 Features
+
+  - Added multi-tag paste support with delimiter handling
+
 ## 1.4.4
 
 ### Patch Changes
