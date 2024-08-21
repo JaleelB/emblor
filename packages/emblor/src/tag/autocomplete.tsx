@@ -9,9 +9,11 @@ type AutocompleteProps = {
   tags: TagType[];
   setTags: React.Dispatch<React.SetStateAction<TagType[]>>;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  setTagCount: React.Dispatch<React.SetStateAction<number>>;
   autocompleteOptions: TagType[];
   maxTags?: number;
   onTagAdd?: (tag: string) => void;
+  onTagRemove?: (tag: string) => void;
   allowDuplicates: boolean;
   children: React.ReactNode;
   inlineTags?: boolean;
@@ -23,9 +25,11 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   tags,
   setTags,
   setInputValue,
+  setTagCount,
   autocompleteOptions,
   maxTags,
   onTagAdd,
+  onTagRemove,
   allowDuplicates,
   inlineTags,
   children,
@@ -117,6 +121,10 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       // Tag exists, remove it
       const newTags = tags.filter((_, i) => i !== index);
       setTags(newTags);
+      setTagCount((prevCount) => prevCount - 1);
+      if (onTagRemove) {
+        onTagRemove(option.text);
+      }
     } else {
       // Tag doesn't exist, add it if allowed
       if (!allowDuplicates && tags.some((tag) => tag.text === option.text)) {
@@ -127,6 +135,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       // Add the tag if it doesn't exceed max tags, if applicable
       if (!maxTags || tags.length < maxTags) {
         setTags([...tags, option]);
+        setTagCount((prevCount) => prevCount + 1);
         setInputValue('');
         if (onTagAdd) {
           onTagAdd(option.text);
