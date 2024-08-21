@@ -45,6 +45,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [popooverContentTop, setPopoverContentTop] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   // Dynamically calculate the top position for the popover content
   useEffect(() => {
@@ -113,6 +114,28 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     if (userOnBlur) userOnBlur(event);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isPopoverOpen) return;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex <= 0 ? autocompleteOptions.length - 1 : prevIndex - 1));
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => (prevIndex === autocompleteOptions.length - 1 ? 0 : prevIndex + 1));
+        break;
+      case 'Enter':
+        event.preventDefault();
+        if (selectedIndex !== -1) {
+          toggleTag(autocompleteOptions[selectedIndex]);
+          setSelectedIndex(-1);
+        }
+        break;
+    }
+  };
+
   const toggleTag = (option: TagType) => {
     // Check if the tag already exists in the array
     const index = tags.findIndex((tag) => tag.text === option.text);
@@ -142,10 +165,17 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
         }
       }
     }
+    setSelectedIndex(-1);
   };
 
+  const childrenWithProps = React.cloneElement(children as React.ReactElement<any>, {
+    onKeyDown: handleKeyDown,
+    onFocus: handleInputFocus,
+    onBlur: handleInputBlur,
+    ref: inputRef,
+  });
+
   return (
-    // <Command className={cn('w-full h-full', classStyleProps.command)}>
     <div
       className={cn(
         'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
@@ -157,11 +187,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           className="relative h-full flex items-center rounded-md border bg-transparent pr-3"
           ref={triggerContainerRef}
         >
-          {React.cloneElement(children as React.ReactElement<any>, {
-            onFocus: handleInputFocus,
-            onBlur: handleInputBlur,
-            ref: inputRef,
-          })}
+          {childrenWithProps}
           <PopoverTrigger asChild ref={triggerRef}>
             <Button
               variant="ghost"
@@ -202,39 +228,6 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
             zIndex: 9999,
           }}
         >
-          {/* <CommandList
-            className={cn(classStyleProps?.commandList)}
-            style={{
-              minHeight: '68px',
-            }}
-            key={autocompleteOptions.length}
-          > */}
-          {/* <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions" className={cn('overflow-y-auto', classStyleProps.commandGroup)}>
-              {autocompleteOptions.map((option) => (
-                <CommandItem key={option.id} className={cn('cursor-pointer', classStyleProps.commandItem)}>
-                  <div className="w-full flex items-center gap-2" onClick={() => toggleTag(option)}>
-                    {option.text}
-                    {tags.some((tag) => tag.text === option.text) && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-check"
-                      >
-                        <path d="M20 6 9 17l-5-5"></path>
-                      </svg>
-                    )}
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup> */}
           <div
             className={cn('max-h-[300px] overflow-y-auto overflow-x-hidden', classStyleProps?.commandList)}
             style={{
@@ -253,13 +246,16 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
               >
                 <span className="text-muted-foreground font-medium text-sm py-1.5 px-2 pb-2">Suggestions</span>
                 <div role="separator" className="py-0.5" />
-                {autocompleteOptions.map((option) => {
+                {autocompleteOptions.map((option, index) => {
+                  const isSelected = index === selectedIndex;
                   return (
                     <div
                       key={option.id}
                       role="option"
+                      aria-selected={isSelected}
                       className={cn(
                         'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent',
+                        isSelected && 'bg-accent text-accent-foreground',
                         classStyleProps?.commandItem,
                       )}
                       data-value={option.text}
