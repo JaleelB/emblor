@@ -272,6 +272,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             setActiveTagIndex((prev) =>
               newTags.length === 0 ? null : prev! >= newTags.length ? newTags.length - 1 : prev,
             );
+            setTagCount((prevTagCount) => prevTagCount - 1);
+            onTagRemove?.(tags[activeTagIndex].text);
           }
           break;
         case 'Backspace':
@@ -281,6 +283,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             newTags.splice(activeTagIndex, 1);
             setTags(newTags);
             setActiveTagIndex((prev) => (prev! === 0 ? null : prev! - 1));
+            setTagCount((prevTagCount) => prevTagCount - 1);
+            onTagRemove?.(tags[activeTagIndex].text);
           }
           break;
         case 'ArrowRight':
