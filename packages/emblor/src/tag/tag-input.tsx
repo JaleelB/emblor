@@ -92,6 +92,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   styleClasses?: TagInputStyleClassesProps;
   usePortal?: boolean;
   addOnPaste?: boolean;
+  addTagsOnBlur?: boolean;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -138,6 +139,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     inputProps = {},
     restrictTagsToAutocompleteOptions,
     inlineTags = true,
+    addTagsOnBlur = false,
     activeTagIndex,
     setActiveTagIndex,
     styleClasses = {},
@@ -218,6 +220,35 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   };
 
   const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (addTagsOnBlur && inputValue.trim()) {
+      const newTagText = inputValue.trim();
+
+      if (validateTag && !validateTag(newTagText)) {
+        return;
+      }
+
+      if (minLength && newTagText.length < minLength) {
+        console.warn('Tag is too short');
+        return;
+      }
+
+      if (maxLength && newTagText.length > maxLength) {
+        console.warn('Tag is too long');
+        return;
+      }
+
+      if (
+        (allowDuplicates || !tags.some((tag) => tag.text === newTagText)) &&
+        (maxTags === undefined || tags.length < maxTags)
+      ) {
+        const newTagId = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+        setTags([...tags, { id: newTagId, text: newTagText }]);
+        onTagAdd?.(newTagText);
+        setTagCount((prevTagCount) => prevTagCount + 1);
+        setInputValue('');
+      }
+    }
+
     onBlur?.(event);
   };
 

@@ -10,11 +10,7 @@ description: Detailed documentation of all the properties, types, and options av
   Enable or disable the autocomplete feature for the tag input.
 </p>
 
-<ComponentPreview
-
-enableAutocomplete
-restrictTagsToAutocompleteOptions
-/>
+<ComponentPreview enableAutocomplete restrictTagsToAutocompleteOptions />
 
 <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Include Tags In Input</h3>
 <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
@@ -90,6 +86,11 @@ return (
 </p>
 
 <ComponentPreview allowDuplicates />
+
+<h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Add tags on blur</h3>
+<p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">Add tags when the input field loses focus.</p>
+
+<ComponentPreview addTagsOnBlur />
 
 <h3 className="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight">Input field position</h3>
 <p className="leading-7 [&amp;:not(:first-child)]:mt-4 text-normal">
@@ -284,6 +285,13 @@ return (
         Changes the layout of the tag list either as a row or as a column. ***This only works when inlineTags is set to
         false and the tags are rendered as a separate list above/below the input field.***
       </TableCell>
+      <TableCell>No</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="border-r">addTagsOnBlur</TableCell>
+      <TableCell className="border-r">false</TableCell>
+      <TableCell className="border-r">boolean</TableCell>
+      <TableCell className="border-r">Adds tags when the input field loses focus.</TableCell>
       <TableCell>No</TableCell>
     </TableRow>
     <TableRow>
