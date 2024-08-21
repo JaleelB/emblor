@@ -37,7 +37,10 @@
     "shadcn tag input component",
     "input",
     "radix ui",
-    "react tag input"
+    "react tag input",
+    "tag input component",
+    "emblor",
+    "emblor tag input component"
   ],
   "author": "Jaleel Bennett <jaleelcodes@gmail.com>",
   "license": "MIT",
@@ -69,7 +72,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "react-easy-sort": "^1.6.0",
-    "tailwind-merge": "^1.14.0",
+    "tailwind-merge": "latest",
     "tsup": "^6.5.0"
   }
 }
