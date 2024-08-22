@@ -49,10 +49,10 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.2.21)(react@18.2.0)
       class-variance-authority:
-        specifier: ^0.7.0
+        specifier: latest
         version: 0.7.0
       clsx:
-        specifier: ^2.0.0
+        specifier: latest
         version: 2.1.1
       cmdk:
         specifier: ^0.2.0

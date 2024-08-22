@@ -92,6 +92,12 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   );
 
   const handleInputFocus = (event: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
+    if (triggerContainerRef.current) {
+      const { width } = triggerContainerRef.current.getBoundingClientRect();
+      setPopoverWidth(width);
+      setIsPopoverOpen(true);
+    }
+
     // Only set inputFocused to true if the popover is already open.
     // This will prevent the popover from opening due to an input focus if it was initially closed.
     if (isPopoverOpen) {
@@ -225,6 +231,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
             top: `${popooverContentTop}px`,
             marginLeft: `calc(-${popoverWidth}px + 36px)`,
             width: `${popoverWidth}px`,
+            minWidth: `${popoverWidth}px`,
             zIndex: 9999,
           }}
         >
