@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { type VariantProps } from 'class-variance-authority';
@@ -157,6 +157,14 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     // error
     return null;
   }
+
+  useEffect(() => {
+      if (inputValue === "") {
+        setActiveTagIndex(tags.length - 1);
+      } else {
+        setActiveTagIndex(null);
+      }
+    }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
