@@ -9,16 +9,31 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "release": "pnpm run build && changeset publish",
-    "copy-readme": "cp README.md packages/*"
+    "copy-readme": "cp README.md packages/*",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@types/node": "18",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
     "prettier": "^3.2.5",
+    "tsc-files": "^1.1.4",
     "tsup": "^6.5.0",
     "turbo": "latest",
     "typescript": "5.4.5",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "eslint": "^9.9.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,md,mdx}": [
+      "eslint --fix",
+      "prettier --write",
+      "tsc-files --noEmit"
+    ],
+    "*.{js,jsx,json}": [
+      "prettier --write"
+    ]
   },
   "trustedDependencies": [
     "npm-run-all"
