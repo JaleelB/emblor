@@ -60,6 +60,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   onClearAll?: () => void;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   restrictTagsToAutocompleteOptions?: boolean;
+  generateTagId?: () => string;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -106,6 +107,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     usePopoverForTags = false,
     inputProps = {},
     restrictTagsToAutocompleteOptions,
+    generateTagId = crypto.getRandomValues(new Uint32Array(1))[0].toString,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -168,7 +170,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         return;
       }
 
-      const newTagId = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+      const newTagId = generateTagId();
 
       if (
         newTagText &&

@@ -287,6 +287,9 @@ type TagInputProps = {
 
   // Use a popover to display tags instead of inline.
   usePopoverForTags?: boolean; // default: false
+
+  // A callback function that generates an id for a newly created tag.
+  generateTagId?: () => string; // default: crypto.getRandomValues(new Uint32Array(1))[0].toString
 };
 ```
 

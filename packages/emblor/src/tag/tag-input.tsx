@@ -93,6 +93,7 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   usePortal?: boolean;
   addOnPaste?: boolean;
   addTagsOnBlur?: boolean;
+  generateTagId?: () => string;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
@@ -146,6 +147,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     disabled = false,
     usePortal = false,
     addOnPaste = false,
+    generateTagId = uuid,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -191,7 +193,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           return;
         }
 
-        const newTagId = uuid();
+        const newTagId = generateTagId();
 
         // Add tag if duplicates are allowed or tag does not already exist
         if (allowDuplicates || !tags.some((tag) => tag.text === newTagText)) {
@@ -241,7 +243,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         (allowDuplicates || !tags.some((tag) => tag.text === newTagText)) &&
         (maxTags === undefined || tags.length < maxTags)
       ) {
-        const newTagId = crypto.getRandomValues(new Uint32Array(1))[0].toString();
+        const newTagId = generateTagId();
         setTags([...tags, { id: newTagId, text: newTagText }]);
         onTagAdd?.(newTagText);
         setTagCount((prevTagCount) => prevTagCount + 1);
@@ -280,7 +282,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         return;
       }
 
-      const newTagId = uuid();
+      const newTagId = generateTagId();
 
       if (
         newTagText &&
