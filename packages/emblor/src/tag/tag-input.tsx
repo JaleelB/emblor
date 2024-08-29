@@ -147,7 +147,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     disabled = false,
     usePortal = false,
     addOnPaste = false,
-    generateTagId = uuid
+    generateTagId = uuid,
   } = props;
 
   const [inputValue, setInputValue] = React.useState('');

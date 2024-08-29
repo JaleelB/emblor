@@ -240,7 +240,7 @@ type TagInputProps = {
 
   // Use a popover to display tags instead of inline.
   usePopoverForTags?: boolean; // default: false
-  
+
   // A callback function to generate an id for a newly created tag
   generateTagId?: () => string; // default: utils/uuid
 };
