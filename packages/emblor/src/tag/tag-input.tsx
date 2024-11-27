@@ -545,7 +545,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               ) : (
                 <div
                   className={cn(
-                    `flex flex-row flex-wrap items-center p-2 gap-2 h-fit w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+                    `flex flex-row flex-wrap items-center p-2 gap-2 h-fit rounded-md w-full bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
                     styleClasses?.inlineTagsContainer,
                   )}
                 >
