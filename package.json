@@ -9,6 +9,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "release": "pnpm run build && changeset publish",
+    "local-release": "changeset version && changeset publish",
+    "prepublishOnly": "npm run ci",
     "copy-readme": "cp README.md packages/*",
     "prepare": "husky"
   },
@@ -27,7 +29,6 @@
   },
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [
-      "eslint --fix",
       "prettier --write",
       "tsc-files --noEmit"
     ],
