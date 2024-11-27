@@ -1,5 +1,11 @@
 # emblor
 
+## 1.4.7
+
+### Patch Changes
+
+- ed59389: custom function to generate a tag id
+
 ## 1.4.6
 
 ### Patch Changes
