@@ -30,21 +30,6 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
       setActiveIndex,
     } = useTagsInputContext();
 
-    const onCustomKeydown = React.useCallback(
-      (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.defaultPrevented) return;
-        const value = event.currentTarget.value;
-        if (!value) return;
-
-        const isAdded = onTagAdd?.(value);
-        if (isAdded) {
-          event.currentTarget.value = '';
-          setActiveIndex?.(null);
-        }
-      },
-      [onTagAdd, setActiveIndex],
-    );
-
     React.useEffect(() => {
       if (!autoFocus) return;
       const id = requestAnimationFrame(() => inputRef?.current?.focus());
@@ -71,7 +56,6 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
           const target = event.target as HTMLInputElement;
           if (delimiter === target.value.slice(-1)) {
             const value = target.value.slice(0, -1);
-            target.value = '';
             if (value) {
               onTagAdd?.(value);
               setActiveIndex?.(null);
@@ -80,7 +64,18 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
           onInputChange?.(event);
         })}
         onKeyDown={composeEventHandlers(props.onKeyDown, (event) => {
-          if (event.key === 'Enter') onCustomKeydown(event);
+          const isDelimiterKey = Array.isArray(delimiter)
+            ? delimiter.includes(event.key)
+            : event.key === delimiter || event.key === 'Enter';
+
+          if (isDelimiterKey) {
+            event.preventDefault();
+            const value = event.currentTarget.value;
+            if (value) {
+              const isAdded = onTagAdd?.(value);
+              if (isAdded) setActiveIndex?.(null);
+            }
+          }
           onKeyDown?.(event);
           if (event.key.length === 1) setActiveIndex?.(null);
         })}
@@ -89,11 +84,14 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
             const value = event.target.value;
             if (value) {
               const isAdded = onTagAdd?.(value);
-              if (isAdded) event.target.value = '';
+              if (isAdded) setActiveIndex?.(null);
             }
           }
           if (blurBehavior === 'clear') {
-            event.target.value = '';
+            onInputChange?.({
+              ...event,
+              target: { ...event.target, value: '' },
+            } as React.ChangeEvent<HTMLInputElement>);
           }
           onBlur?.(event);
         })}

@@ -103,6 +103,7 @@ const TagsInputRoot = React.forwardRef<HTMLDivElement, Props<'div', TagsInputRoo
         setTags((prev) => [...(prev ?? []), newTag]);
         onTagAdd?.(text);
         setIsInvalidInput(false);
+        setInputValue('');
         return true;
       },
       [

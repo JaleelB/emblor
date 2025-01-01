@@ -1,29 +1,35 @@
 import * as React from 'react';
 
-export interface Tag {
+export type Tag = {
   id: string;
   text: string;
-}
+};
 
-export type Props<T extends React.ElementType, P = {}> = {
-  as?: T;
-} & Omit<React.ComponentPropsWithRef<T>, keyof P | 'as'> &
-  P;
+/**
+ * Props that can be passed to any polymorphic component
+ */
+export type Props<Element extends React.ElementType, Props = {}> = Props & {
+  as?: Element;
+} & Omit<React.ComponentPropsWithoutRef<Element>, keyof Props | 'as'>;
 
+/**
+ * Props for the TagsInputRoot component
+ * @typedef {Object} TagsInputRootProps
+ */
 export interface TagsInputRootProps {
-  /** Current value - controlled */
+  /** Current value of tags. Use with onValueChange for controlled state */
   value?: Tag[];
-  /** Default value - uncontrolled */
+  /** Initial value of tags for uncontrolled state */
   defaultValue?: Tag[];
-  /** Change handler for controlled mode */
-  onValueChange?: (value: Tag[]) => void;
+  /** Callback when tags change */
+  onValueChange?: (tags: Tag[]) => void;
   /** Maximum number of tags allowed */
   maxTags?: number;
   /** Minimum number of tags required */
   minTags?: number;
-  /** Whether to allow duplicate tags */
+  /** Whether to allow duplicate tag values */
   allowDuplicates?: boolean;
-  /** Custom validation function */
+  /** Custom validation function for new tags */
   validateTag?: (text: string) => boolean;
   /** Callback when a tag is added */
   onTagAdd?: (text: string) => void;
@@ -31,21 +37,21 @@ export interface TagsInputRootProps {
   onTagRemove?: (text: string) => void;
   /** Callback when all tags are cleared */
   onClearAll?: () => void;
-  /** Keys that trigger tag creation */
+  /** Characters that trigger tag creation */
   delimiter?: string | string[];
-  /** Whether to add tags when text is pasted */
+  /** Whether to create tags from pasted text */
   addOnPaste?: boolean;
-  /** Whether to add tags on blur */
+  /** Whether to create tags on input blur */
   addTagsOnBlur?: boolean;
   /** Whether the input is read-only */
   readOnly?: boolean;
   /** Whether the input is disabled */
   disabled?: boolean;
-  /** Placeholder text when max tags is reached */
+  /** Placeholder shown when max tags is reached */
   placeholderWhenFull?: string;
-  /** Minimum length for a tag */
+  /** Minimum length for new tags */
   minLength?: number;
-  /** Maximum length for a tag */
+  /** Maximum length for new tags */
   maxLength?: number;
   /** Callback when a tag is clicked */
   onTagClick?: (tag: Tag) => void;
@@ -55,14 +61,14 @@ export interface TagsInputRootProps {
   onInputKeydown?: (event: React.KeyboardEvent) => void;
   /** Currently focused tag index */
   focusedIndex?: number | null;
-  /** Set focused tag index */
+  /** Callback to set focused tag index */
   setFocusedIndex?: (index: number | null) => void;
   /** Currently active/selected tag index */
   activeIndex?: number | null;
-  /** Set active/selected tag index */
+  /** Callback to set active tag index */
   setActiveIndex?: (index: number | null) => void;
   /** Behavior when input loses focus */
   blurBehavior?: 'add' | 'clear' | 'none';
-  /** ID of the associated label element */
+  /** ID for accessibility labelling */
   labelId?: string;
 }
