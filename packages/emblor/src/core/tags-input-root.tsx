@@ -76,15 +76,19 @@ const TagsInputRoot = React.forwardRef<HTMLDivElement, Props<'div', TagsInputRoo
 
         const tag = currentTags.find((t) => t.id === id);
         if (tag) {
-          setTags((prev) => (prev ?? []).filter((t) => t.id !== id));
+          setTags((prev) => {
+            const newTags = (prev ?? []).filter((t) => t.id !== id);
+            onValueChange?.(newTags);
+            return newTags;
+          });
           onTagRemove?.(tag.text);
         }
       },
-      [currentTags, minTags, readOnly, disabled, setTags, onTagRemove],
+      [currentTags, minTags, readOnly, disabled, setTags, onTagRemove, onValueChange],
     );
 
     const handleTagAdd = React.useCallback(
-      (text: string) => {
+      (text: string, options?: { viaPaste?: boolean }) => {
         if (readOnly || disabled) return false;
         if (maxTags && currentTags.length >= maxTags) return false;
         if (minLength && text.length < minLength) return false;
@@ -101,7 +105,7 @@ const TagsInputRoot = React.forwardRef<HTMLDivElement, Props<'div', TagsInputRoo
         };
 
         setTags((prev) => [...(prev ?? []), newTag]);
-        onTagAdd?.(text);
+        onTagAdd?.(text, options);
         setIsInvalidInput(false);
         setInputValue('');
         return true;
