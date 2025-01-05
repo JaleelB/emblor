@@ -32,7 +32,7 @@ export interface TagsInputRootProps {
   /** Custom validation function for new tags */
   validateTag?: (text: string) => boolean;
   /** Callback when a tag is added */
-  onTagAdd?: (text: string) => void;
+  onTagAdd?: (text: string, options?: { viaPaste?: boolean }) => void;
   /** Callback when a tag is removed */
   onTagRemove?: (text: string) => void;
   /** Callback when all tags are cleared */
