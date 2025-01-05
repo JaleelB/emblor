@@ -12,20 +12,28 @@
     "local-release": "changeset version && changeset publish",
     "prepublishOnly": "npm run ci",
     "copy-readme": "cp README.md packages/*",
-    "prepare": "husky"
+    "prepare": "husky && husky install",
+    "test": "turbo run test",
+    "test:watch": "vitest watch"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.5.2",
     "@types/node": "18",
-    "husky": "^9.1.5",
+    "eslint": "^9.9.1",
+    "husky": "^8.0.0",
+    "jsdom": "^25.0.1",
     "lint-staged": "^15.2.9",
     "prettier": "^3.2.5",
     "tsc-files": "^1.1.4",
     "tsup": "^6.5.0",
     "turbo": "latest",
     "typescript": "5.4.5",
-    "zod": "^3.22.4",
-    "eslint": "^9.9.1"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.1.8",
+    "zod": "^3.22.4"
   },
   "lint-staged": {
     "*.{ts,tsx,md,mdx}": [

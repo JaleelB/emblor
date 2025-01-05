@@ -26,20 +26,18 @@
     "dev": "tsup --watch --dts",
     "format": "prettier --write .",
     "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
-    "release": "pnpm run build && changeset publish"
+    "release": "pnpm run build && changeset publish",
+    "test": "vitest",
+    "test:watch": "vitest watch"
   },
   "keywords": [
-    "shadcn",
     "react",
     "tag input",
-    "shadcn/ui",
     "tag input component",
-    "shadcn tag input component",
-    "input",
-    "radix ui",
+    "radix ui tag input",
     "react tag input",
-    "tag input component",
     "emblor",
+    "emblor tag input",
     "emblor tag input component"
   ],
   "author": "Jaleel Bennett <jaleelcodes@gmail.com>",
@@ -54,25 +52,38 @@
     "url": "https://github.com/JaleelB/emblor/issues"
   },
   "devDependencies": {
-    "@types/node": "^18.11.13",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.0.26",
-    "react": "^18.2.0",
-    "typescript": "^4.8.4"
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^23.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "packageManager": "pnpm@9.0.2",
   "dependencies": {
+    "@radix-ui/react-collection": "^1.1.1",
+    "@radix-ui/react-compose-refs": "^1.1.1",
+    "@radix-ui/react-context": "^1.1.1",
     "@radix-ui/react-dialog": "1.0.4",
+    "@radix-ui/react-direction": "^1.1.0",
     "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-primitive": "^2.0.1",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-use-callback-ref": "^1.1.0",
+    "@radix-ui/react-use-controllable-state": "^1.1.0",
     "class-variance-authority": "latest",
     "clsx": "latest",
-    "cmdk": "^0.2.0",
-    "react-easy-sort": "^1.6.0",
-    "tailwind-merge": "latest",
-    "tsup": "^6.5.0"
+    "cmdk": "latest",
+    "react-easy-sort": "latest",
+    "tailwind-merge": "latest"
   }
 }

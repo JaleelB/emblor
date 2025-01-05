@@ -39,3 +39,10 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+.cursorrules
+
+project-docs/
+project-status/
+
+.env.local

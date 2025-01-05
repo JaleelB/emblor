@@ -10,4 +10,5 @@ export default defineConfig({
   dts: true,
   format: ['esm', 'cjs'],
   injectStyle: true,
+  clean: true,
 });
