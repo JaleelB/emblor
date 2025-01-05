@@ -1,35 +1,47 @@
 import * as React from 'react';
 import { Primitive } from '@radix-ui/react-primitive';
+
+import { Props } from '../utils/types';
 import { useTagsInputItem } from './tags-input-item';
 import { useTagsInputContext } from './tags-input-context';
-import { composeEventHandlers } from '../utils/compose-event-handlers';
 
 const ITEM_DELETE_NAME = 'TagsInputItemDelete';
+interface TagsInputItemDeleteProps extends Props<'button'> {
+  children?: React.ReactNode;
+}
 
-interface TagsInputItemDeleteProps extends React.ComponentPropsWithoutRef<typeof Primitive.button> {}
+const TagsInputItemDelete = React.forwardRef<HTMLButtonElement, TagsInputItemDeleteProps>(
+  ({ as: Component = 'button', className, children, ...props }, ref) => {
+    const { tag, textId, disabled } = useTagsInputItem('TagsInputItemDelete');
+    const { handleRemoveTag } = useTagsInputContext();
 
-const TagsInputItemDelete = React.forwardRef<HTMLButtonElement, TagsInputItemDeleteProps>((props, ref) => {
-  const { handleRemoveTag } = useTagsInputContext();
-  const { tag, textId, disabled } = useTagsInputItem(ITEM_DELETE_NAME);
-
-  return (
-    <Primitive.button
-      type="button"
-      tabIndex={-1}
-      aria-labelledby={textId}
-      aria-label={`Remove ${tag.text}`}
-      data-disabled={disabled ? '' : undefined}
-      {...props}
-      ref={ref}
-      onClick={composeEventHandlers(props.onClick, (event) => {
+    const handleClick = React.useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         if (!disabled) {
           handleRemoveTag(tag.id);
         }
-      })}
-    />
-  );
-});
+      },
+      [disabled, handleRemoveTag, tag.id],
+    );
+
+    return (
+      <Primitive.button
+        type="button"
+        ref={ref}
+        className={className}
+        aria-label={`Remove ${tag.text}`}
+        aria-labelledby={textId}
+        tabIndex={-1}
+        disabled={disabled}
+        {...props}
+        onClick={handleClick}
+      >
+        {children}
+      </Primitive.button>
+    );
+  },
+);
 
 TagsInputItemDelete.displayName = ITEM_DELETE_NAME;
 
