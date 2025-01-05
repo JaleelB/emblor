@@ -7,7 +7,6 @@ import { composeEventHandlers } from '../utils/compose-event-handlers';
 const ITEM_NAME = 'TagsInputItem';
 
 interface TagsInputItemContextValue {
-  id: string;
   tag: Tag;
   index: number;
   isHighlighted: boolean;
@@ -26,50 +25,93 @@ export const useTagsInputItem = (componentName: string) => {
   return context;
 };
 
-interface TagsInputItemProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
+interface TagsInputItemProps extends React.ComponentPropsWithoutRef<typeof Primitive.li> {
   tag: Tag;
   index: number;
   disabled?: boolean;
+  children: React.ReactNode;
 }
 
-const TagsInputItem = React.forwardRef<HTMLDivElement, TagsInputItemProps>(
-  ({ tag, index, disabled, ...props }, ref) => {
-    const id = React.useId();
-    const textId = `${id}-text`;
-    const { activeIndex, setActiveIndex, readOnly, disabled: contextDisabled } = useTagsInputContext();
-    const isHighlighted = index === activeIndex;
-    const itemDisabled = disabled || readOnly || contextDisabled;
+const TagsInputItem = React.forwardRef<HTMLLIElement, TagsInputItemProps>(
+  ({ tag, index, disabled: itemDisabled, children, ...props }, ref) => {
+    const textId = React.useId();
+    const {
+      focusedIndex,
+      activeIndex,
+      setActiveIndex,
+      readOnly,
+      disabled: contextDisabled,
+      onTagClick,
+      handleRemoveTag,
+    } = useTagsInputContext();
+    const isHighlighted = index === focusedIndex;
+    const isActive = index === activeIndex;
+    const disabled = itemDisabled || readOnly || contextDisabled;
 
     const contextValue = React.useMemo(
       () => ({
-        id,
         tag,
         index,
         isHighlighted,
         isEditing: false,
-        disabled: itemDisabled,
+        disabled,
         textId,
       }),
-      [id, tag, index, isHighlighted, itemDisabled, textId],
+      [tag, index, isHighlighted, disabled, textId],
+    );
+
+    const handleClick = React.useCallback(
+      (event: React.MouseEvent<HTMLLIElement>) => {
+        event.stopPropagation();
+        if (!disabled) {
+          setActiveIndex(index);
+          onTagClick?.(tag);
+        }
+      },
+      [disabled, index, onTagClick, setActiveIndex, tag],
+    );
+
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLLIElement>) => {
+        if (disabled) return;
+
+        switch (event.key) {
+          case 'Delete':
+          case 'Backspace': {
+            event.preventDefault();
+            handleRemoveTag(tag.id);
+            break;
+          }
+          case 'Space':
+          case ' ':
+          case 'Enter': {
+            event.preventDefault();
+            onTagClick?.(tag);
+            break;
+          }
+        }
+      },
+      [disabled, handleRemoveTag, tag.id, onTagClick, tag],
     );
 
     return (
       <TagsInputItemContext.Provider value={contextValue}>
-        <Primitive.div
+        <Primitive.li
           role="listitem"
+          tabIndex={0}
+          aria-selected={isActive}
           aria-labelledby={textId}
-          aria-selected={isHighlighted}
           data-highlighted={isHighlighted ? '' : undefined}
-          data-disabled={itemDisabled ? '' : undefined}
+          data-active={isActive ? '' : undefined}
+          data-disabled={disabled ? '' : undefined}
+          data-readonly={readOnly ? '' : undefined}
           {...props}
           ref={ref}
-          onClick={composeEventHandlers(props.onClick, (event) => {
-            event.stopPropagation();
-            if (!itemDisabled) {
-              setActiveIndex(index);
-            }
-          })}
-        />
+          onClick={composeEventHandlers(props.onClick, handleClick)}
+          onKeyDown={composeEventHandlers(props.onKeyDown, handleKeyDown)}
+        >
+          {children}
+        </Primitive.li>
       </TagsInputItemContext.Provider>
     );
   },
