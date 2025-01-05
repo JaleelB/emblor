@@ -51,6 +51,7 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
         readOnly={readOnly}
         value={inputValue}
         placeholder={placeholder || contextPlaceholder}
+        className={className}
         {...props}
         onChange={composeEventHandlers(props.onChange, (event) => {
           const target = event.target as HTMLInputElement;
@@ -99,8 +100,10 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
           if (addOnPaste) {
             event.preventDefault();
             const value = event.clipboardData.getData('text');
-            onTagAdd?.(value, { viaPaste: true });
-            setActiveIndex?.(null);
+            if (value) {
+              onTagAdd?.(value, { viaPaste: true });
+              setActiveIndex?.(null);
+            }
           }
         })}
       />
