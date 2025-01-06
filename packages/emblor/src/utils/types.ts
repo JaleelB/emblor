@@ -68,7 +68,7 @@ export interface TagsInputRootProps {
   /** Callback to set active tag index */
   setActiveIndex?: (index: number | null) => void;
   /** Behavior when input loses focus */
-  blurBehavior?: 'add' | 'clear' | 'none';
+  inputBlurBehavior?: 'add' | 'clear' | 'none';
   /** ID for accessibility labelling */
   labelId?: string;
 }

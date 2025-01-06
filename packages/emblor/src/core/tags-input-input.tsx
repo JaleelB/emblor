@@ -24,7 +24,7 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
       onTagAdd,
       delimiter,
       addOnPaste,
-      blurBehavior,
+      inputBlurBehavior,
       labelId,
       isInvalidInput,
       setActiveIndex,
@@ -81,14 +81,14 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
           if (event.key.length === 1) setActiveIndex?.(null);
         })}
         onBlur={composeEventHandlers(props.onBlur, (event) => {
-          if (blurBehavior === 'add') {
+          if (inputBlurBehavior === 'add') {
             const value = event.target.value;
             if (value) {
               const isAdded = onTagAdd?.(value);
               if (isAdded) setActiveIndex?.(null);
             }
           }
-          if (blurBehavior === 'clear') {
+          if (inputBlurBehavior === 'clear') {
             onInputChange?.({
               ...event,
               target: { ...event.target, value: '' },

@@ -7,13 +7,13 @@ export interface TagsInputContextValue {
   inputRef: React.RefObject<HTMLInputElement>;
   inputValue: string;
   placeholder: string;
-  onKeyDown: (event: React.KeyboardEvent) => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent) => void;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onTagAdd?: (text: string, options?: { viaPaste?: boolean }) => boolean;
   delimiter?: string;
   addOnPaste?: boolean;
-  blurBehavior?: 'add' | 'clear' | 'none';
+  inputBlurBehavior?: 'add' | 'clear' | 'none';
   labelId?: string;
   isInvalidInput?: boolean;
   activeIndex: number | null;
