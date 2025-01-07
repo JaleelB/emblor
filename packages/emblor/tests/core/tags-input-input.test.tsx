@@ -72,7 +72,8 @@ describe('TagsInputInput', () => {
       await user.click(input);
       await user.paste('Tag 1, Tag 2');
 
-      expect(onTagAdd).toHaveBeenCalledWith('Tag 1, Tag 2', { viaPaste: true });
+      expect(onTagAdd).toHaveBeenCalledWith('Tag 1', { viaPaste: true });
+      expect(onTagAdd).toHaveBeenCalledWith('Tag 2', { viaPaste: true });
     });
   });
 
@@ -111,7 +112,7 @@ describe('TagsInputInput', () => {
     it('adds tag on blur when blurBehavior is "add"', async () => {
       const user = userEvent.setup();
       const onTagAdd = vi.fn();
-      renderInput({}, { blurBehavior: 'add', onTagAdd });
+      renderInput({}, { inputBlurBehavior: 'add', onTagAdd });
 
       const input = screen.getByRole('textbox');
       await user.type(input, 'New Tag');
@@ -122,7 +123,7 @@ describe('TagsInputInput', () => {
 
     it('clears input on blur when blurBehavior is "clear"', async () => {
       const user = userEvent.setup();
-      renderInput({}, { blurBehavior: 'clear' });
+      renderInput({}, { inputBlurBehavior: 'clear' });
 
       const input = screen.getByRole('textbox');
       await user.type(input, 'New Tag');
@@ -133,7 +134,7 @@ describe('TagsInputInput', () => {
 
     it('maintains input value on blur when blurBehavior is "maintain"', async () => {
       const user = userEvent.setup();
-      renderInput({}, { blurBehavior: 'maintain' });
+      renderInput({}, { inputBlurBehavior: 'maintain' });
 
       const input = screen.getByRole('textbox');
       await user.type(input, 'New Tag');

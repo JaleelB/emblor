@@ -20,6 +20,7 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
       placeholder: contextPlaceholder,
       onKeyDown,
       onBlur,
+      onFocus,
       onInputChange,
       onTagAdd,
       delimiter,
@@ -53,6 +54,7 @@ const TagsInputInput = React.forwardRef<HTMLInputElement, Props<'input', TagsInp
         placeholder={placeholder || contextPlaceholder}
         className={className}
         {...props}
+        onFocus={composeEventHandlers(props.onFocus, onFocus)}
         onChange={composeEventHandlers(props.onChange, (event) => {
           const target = event.target as HTMLInputElement;
           if (delimiter === target.value.slice(-1)) {

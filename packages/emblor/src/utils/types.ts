@@ -71,4 +71,8 @@ export interface TagsInputRootProps {
   inputBlurBehavior?: 'add' | 'clear' | 'none';
   /** ID for accessibility labelling */
   labelId?: string;
+  /** Callback when input is focused */
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  /** Callback when input loses focus */
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }

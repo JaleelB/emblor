@@ -1,0 +1,21 @@
+export { Root, TagsInputRoot } from './tags-input-root';
+export { Control, TagsInputControl } from './tags-input-control';
+export { Label, TagsInputLabel } from './tags-input-label';
+export { TagsInputList } from './tags-input-list';
+export { Item, TagsInputItem } from './tags-input-item';
+export { Input, TagsInputInput } from './tags-input-input';
+export { Clear, TagsInputClear } from './tags-input-clear';
+export { Count, TagsInputCount } from './tags-input-count';
+export { ItemText, TagsInputItemText } from './tags-input-item-text';
+export { ItemDelete, TagsInputItemDelete } from './tags-input-item-delete';
+
+export type { TagsInputRootProps } from '../utils/types';
+export type { TagsInputControlProps } from './tags-input-control';
+export type { TagsInputLabelProps } from './tags-input-label';
+export type { TagsInputListProps } from './tags-input-list';
+export type { TagsInputItemProps } from './tags-input-item';
+export type { TagsInputItemTextProps } from './tags-input-item-text';
+export type { TagsInputItemDeleteProps } from './tags-input-item-delete';
+export type { TagsInputInputProps } from './tags-input-input';
+export type { TagsInputClearProps } from './tags-input-clear';
+export type { TagsInputCountProps } from './tags-input-count';

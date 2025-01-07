@@ -8,7 +8,8 @@ export interface TagsInputContextValue {
   inputValue: string;
   placeholder: string;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  onBlur: (event: React.FocusEvent) => void;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus: (event: React.FocusEvent<HTMLInputElement>) => void;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onTagAdd?: (text: string, options?: { viaPaste?: boolean }) => boolean;
   delimiter?: string;

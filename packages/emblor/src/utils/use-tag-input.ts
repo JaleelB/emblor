@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { Tag, TagsInputRootProps } from '../utils/types';
 
@@ -15,7 +15,6 @@ export function useTagInput({
   onClearAll,
   delimiter = [',', 'Enter'],
   addOnPaste = false,
-  addTagsOnBlur = false,
   readOnly = false,
   disabled = false,
   placeholderWhenFull = '',
@@ -26,7 +25,12 @@ export function useTagInput({
   onInputKeydown,
   focusedIndex: focusedIndexProp = null,
   setFocusedIndex: setFocusedIndexProp,
-  blurBehavior = 'none',
+  activeIndex: activeIndexProp = null,
+  setActiveIndex: setActiveIndexProp,
+  inputBlurBehavior = 'none',
+  labelId,
+  onBlur,
+  onFocus,
 }: TagsInputRootProps) {
   const [tags, setTags] = useControllableState({
     prop: value,
@@ -34,23 +38,26 @@ export function useTagInput({
     onChange: onValueChange,
   });
 
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(focusedIndexProp);
-  const [inputValue, setInputValue] = useState('');
-  const [placeholder, setPlaceholder] = useState(placeholderWhenFull);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const currentTags = tags ?? [];
 
-  useEffect(() => {
-    if (maxTags && (tags ?? []).length >= maxTags) {
-      setPlaceholder(placeholderWhenFull);
-    }
-  }, [tags?.length, maxTags, placeholderWhenFull]);
+  const [inputValue, setInputValue] = useState('');
+  const placeholder = useMemo(
+    () => (maxTags && currentTags.length >= maxTags ? placeholderWhenFull : ''),
+    [currentTags.length, maxTags, placeholderWhenFull],
+  );
+  const [activeIndex, setActiveIndex] = useState<number | null>(activeIndexProp);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(focusedIndexProp);
+  const [isInvalidInput, setIsInvalidInput] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleTagClick = useCallback(
     (tag: Tag) => {
       if (readOnly || disabled) return;
+      const index = currentTags.findIndex((t) => t.id === tag.id);
+      setActiveIndex(index);
       onTagClick?.(tag);
     },
-    [readOnly, disabled, onTagClick],
+    [currentTags, readOnly, disabled, onTagClick],
   );
 
   const getDelimiter = useCallback(
@@ -64,14 +71,14 @@ export function useTagInput({
     [delimiter],
   );
 
-  const onAddTag = useCallback(
+  const handleAddTag = useCallback(
     (text: string, options?: { viaPaste?: boolean }) => {
       if (readOnly || disabled) return false;
       if (maxTags && (tags ?? []).length >= maxTags) return false;
       if (minLength && text.length < minLength) return false;
       if (maxLength && text.length > maxLength) return false;
       if (validateTag && !validateTag(text)) return false;
-      if (!allowDuplicates && (tags ?? []).some((t) => t.text === text)) return false;
+      if (!allowDuplicates && currentTags.some((t) => t.text === text)) return false;
 
       if (addOnPaste && options?.viaPaste) {
         const splitDelimiter = getDelimiter(true);
@@ -80,17 +87,19 @@ export function useTagInput({
           .map((v) => v.trim())
           .filter(Boolean);
 
-        if ((tags ?? []).length + splitValues.length > maxTags) return false;
+        if (currentTags.length + splitValues.length > maxTags) return false;
 
         const newTags = splitValues
-          .filter((v) => !(tags ?? []).some((t) => t.text === v))
+          .filter((v) => !currentTags.some((t) => t.text === v))
           .filter((v) => !validateTag || validateTag(v))
           .map((text) => ({ id: generateTagId(), text }));
 
         if (newTags.length === 0) return false;
 
         setTags((prev) => [...(prev ?? []), ...newTags]);
-        newTags.forEach((tag) => onTagAdd?.(tag.text));
+        newTags.forEach((tag) => onTagAdd?.(tag.text, { viaPaste: true }));
+        setIsInvalidInput(false);
+        setInputValue('');
         return true;
       }
 
@@ -100,12 +109,13 @@ export function useTagInput({
       };
 
       setTags((prev) => [...(prev ?? []), newTag]);
-      onTagAdd?.(text);
+      onTagAdd?.(text, options);
+      setIsInvalidInput(false);
       setInputValue('');
       return true;
     },
     [
-      tags,
+      currentTags,
       maxTags,
       minLength,
       maxLength,
@@ -121,21 +131,25 @@ export function useTagInput({
     ],
   );
 
-  const onRemoveTag = useCallback(
+  const handleRemoveTag = useCallback(
     (id: string) => {
       if (readOnly || disabled) return;
-      if (minTags && (tags ?? []).length <= minTags) return;
+      if (minTags && currentTags.length <= minTags) return;
 
-      const tag = (tags ?? []).find((t) => t.id === id);
+      const tag = currentTags.find((t) => t.id === id);
       if (tag) {
-        setTags((prev) => (prev ?? []).filter((t) => t.id !== id));
+        setTags((prev) => {
+          const newTags = (prev ?? []).filter((t) => t.id !== id);
+          onValueChange?.(newTags);
+          return newTags;
+        });
         onTagRemove?.(tag.text);
       }
     },
-    [tags, minTags, readOnly, disabled, setTags, onTagRemove],
+    [currentTags, minTags, readOnly, disabled, setTags, onTagRemove, onValueChange],
   );
 
-  const onClearTags = useCallback(() => {
+  const handleClearTags = useCallback(() => {
     if (readOnly || disabled) return;
     if (minTags > 0) return;
 
@@ -155,7 +169,7 @@ export function useTagInput({
 
       if (isDelimiterKey && target.value) {
         event.preventDefault();
-        onAddTag(target.value);
+        handleAddTag(target.value);
         target.value = '';
         return;
       }
@@ -165,22 +179,22 @@ export function useTagInput({
         case 'Delete': {
           if (target.value) return;
           if (focusedIndex !== null) {
-            const tag = (tags ?? [])[focusedIndex];
+            const tag = currentTags[focusedIndex];
             if (tag) {
-              onRemoveTag(tag.id);
+              handleRemoveTag(tag.id);
               setFocusedIndex(event.key === 'Backspace' ? focusedIndex - 1 : focusedIndex);
             }
-          } else if (event.key === 'Backspace' && (tags ?? []).length > 0) {
-            setFocusedIndex((tags ?? []).length - 1);
+          } else if (event.key === 'Backspace' && currentTags.length > 0) {
+            setFocusedIndex(currentTags.length - 1);
           }
           break;
         }
         case 'ArrowLeft': {
           if (target.selectionStart !== 0) return;
           if (focusedIndex === null) {
-            setFocusedIndex((tags ?? []).length - 1);
+            setFocusedIndex(currentTags.length - 1);
           } else {
-            setFocusedIndex(focusedIndex === 0 ? (tags ?? []).length - 1 : focusedIndex - 1);
+            setFocusedIndex(focusedIndex === 0 ? currentTags.length - 1 : focusedIndex - 1);
           }
           break;
         }
@@ -188,7 +202,7 @@ export function useTagInput({
           if (focusedIndex === null) {
             setFocusedIndex(0);
           } else {
-            setFocusedIndex(focusedIndex === (tags ?? []).length - 1 ? 0 : focusedIndex + 1);
+            setFocusedIndex(focusedIndex === currentTags.length - 1 ? 0 : focusedIndex + 1);
           }
           break;
         }
@@ -197,7 +211,7 @@ export function useTagInput({
           break;
         }
         case 'End': {
-          setFocusedIndex((tags ?? []).length - 1);
+          setFocusedIndex(currentTags.length - 1);
           break;
         }
         case 'Escape': {
@@ -207,27 +221,28 @@ export function useTagInput({
         }
       }
     },
-    [tags, focusedIndex, delimiter, onAddTag, onRemoveTag, onInputKeydown],
+    [currentTags, focusedIndex, delimiter, handleAddTag, handleRemoveTag, onInputKeydown],
   );
 
-  const onBlur = useCallback(
+  const handleInputBlur = useCallback(
     (event: React.FocusEvent<HTMLInputElement>) => {
       const value = event.target.value.trim();
-      if (!value) return;
-
-      if (blurBehavior === 'add') {
-        onAddTag(value);
+      if (value && inputBlurBehavior === 'add') {
+        handleAddTag(value);
         event.target.value = '';
-      } else if (blurBehavior === 'clear') {
+      } else if (inputBlurBehavior === 'clear') {
         event.target.value = '';
       }
-
-      if (addTagsOnBlur) {
-        onAddTag(value);
-        event.target.value = '';
-      }
+      onBlur?.(event);
     },
-    [blurBehavior, addTagsOnBlur, onAddTag],
+    [inputBlurBehavior, handleAddTag, onBlur],
+  );
+
+  const handleInputFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement>) => {
+      onFocus?.(event);
+    },
+    [onFocus],
   );
 
   const onInputChange = useCallback(
@@ -238,28 +253,41 @@ export function useTagInput({
       if (addOnPaste) {
         const splitDelimiter = getDelimiter(true);
         if (newValue.includes(splitDelimiter)) {
-          onAddTag(newValue, { viaPaste: true });
+          handleAddTag(newValue, { viaPaste: true });
           event.target.value = '';
+          setIsInvalidInput(false);
         }
       }
     },
-    [addOnPaste, getDelimiter, onAddTag],
+    [addOnPaste, getDelimiter, handleAddTag],
   );
 
   return {
-    tags: tags ?? [],
+    disabled,
+    readOnly,
+    tags: currentTags,
     inputValue,
     setInputValue,
     placeholder,
     focusedIndex,
+    delimiter: Array.isArray(delimiter) ? delimiter[0] : delimiter,
     setFocusedIndex: setFocusedIndexProp ?? setFocusedIndex,
     inputRef,
-    onAddTag,
-    onRemoveTag,
-    onClearTags,
     onKeyDown,
-    onBlur,
+    onBlur: handleInputBlur,
+    onFocus: handleInputFocus,
     onInputChange,
     onTagClick: handleTagClick,
+    activeIndex: activeIndexProp ?? activeIndex,
+    setActiveIndex: setActiveIndexProp ?? setActiveIndex,
+    isInvalidInput,
+    setIsInvalidInput,
+    inputBlurBehavior,
+    labelId,
+    addOnPaste,
+    maxTags,
+    handleRemoveTag,
+    onTagAdd: handleAddTag,
+    onClearTags: handleClearTags,
   };
 }

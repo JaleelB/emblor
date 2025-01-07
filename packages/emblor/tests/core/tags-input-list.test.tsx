@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import { TagsInputProvider } from '../../src/core/tags-input-context';
+import { TagsInputProvider, TagsInputContextValue } from '../../src/core/tags-input-context';
 import { TagsInputList } from '../../src/core/tags-input-list';
 import { TagsInputItem } from '../../src/core/tags-input-item';
 import { TagsInputItemDelete } from '../../src/core/tags-input-item-delete';
@@ -16,7 +16,7 @@ const mockTags: Tag[] = [
 ];
 
 const renderList = (props = {}, contextProps = {}) => {
-  const defaultContext = {
+  const defaultContext: TagsInputContextValue = {
     disabled: false,
     readOnly: false,
     focusedIndex: null,
@@ -26,20 +26,19 @@ const renderList = (props = {}, contextProps = {}) => {
     inputRef: { current: null },
     inputValue: '',
     placeholder: '',
-    onKeyDown: vi.fn(),
-    onBlur: vi.fn(),
-    onInputChange: vi.fn(),
-    onTagAdd: vi.fn(),
+    onKeyDown: () => {},
+    onBlur: () => {},
+    onFocus: () => {},
+    onInputChange: () => {},
+    onTagAdd: () => true,
     delimiter: ',',
     addOnPaste: false,
-    blurBehavior: 'none' as const,
-    labelId: 'test-label',
-    isInvalidInput: false,
+    inputBlurBehavior: 'none',
     tags: mockTags,
-    maxTags: Infinity,
-    onClearTags: vi.fn(),
-    setActiveIndex: vi.fn(),
+    maxTags: 5,
     setFocusedIndex: vi.fn(),
+    setActiveIndex: vi.fn(),
+    onClearTags: vi.fn(),
     ...contextProps,
   };
 
