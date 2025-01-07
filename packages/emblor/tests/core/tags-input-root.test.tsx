@@ -206,4 +206,13 @@ describe('TagsInputRoot', () => {
       expect(onChange).toHaveBeenCalled();
     });
   });
+
+  it('applies className to root element', () => {
+    render(
+      <TagsInputRoot className="test-class">
+        <TagsInputInput />
+      </TagsInputRoot>,
+    );
+    expect(document.querySelector('.test-class')).toBeInTheDocument();
+  });
 });
