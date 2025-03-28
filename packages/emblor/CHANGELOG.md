@@ -1,5 +1,11 @@
 # emblor
 
+## 1.4.8
+
+### Patch Changes
+
+- 465c7ce: remove duplicate tailwind-merge entry in peerDependencies
+
 ## 1.4.7
 
 ### Patch Changes

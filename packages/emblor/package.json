@@ -1,6 +1,6 @@
 {
   "name": "emblor",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "A full featured, unstyled tag input component for React",
   "private": false,
   "publishConfig": {
