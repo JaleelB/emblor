@@ -162,6 +162,12 @@ type TagInputProps = {
   // List of autocomplete options.
   autocompleteOptions?: Array<{ id: string; text: string }>; // default: []
 
+  // Title displayed for the autocomplete suggestions.
+  autoCompleteTitle?: string; // default: "Suggestions"
+
+  // Message displayed when no autocomplete results are found.
+  autoCompleteNotFound?: string; // default: "No results found."
+
   // Maximum number of tags allowed.
   maxTags?: number; // default: null
 

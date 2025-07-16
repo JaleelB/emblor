@@ -29,6 +29,8 @@ export interface TagInputProps extends OmittedInputProps, VariantProps<typeof ta
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
   enableAutocomplete?: boolean;
   autocompleteOptions?: Tag[];
+  autocompleteTitle?: string;
+  autocompleteNotFound?: string;
   maxTags?: number;
   minTags?: number;
   readOnly?: boolean;
@@ -75,6 +77,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     className,
     enableAutocomplete,
     autocompleteOptions,
+    autocompleteNotFound = 'No results found.',
+    autocompleteTitle = "Suggestions",
     maxTags,
     delimiter = Delimiter.Comma,
     onTagAdd,
@@ -249,6 +253,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
             tags={tags}
             setTags={setTags}
             autocompleteOptions={filteredAutocompleteOptions as Tag[]}
+            autocompleteNotFound={autocompleteNotFound}
+            autocompleteTitle={autocompleteTitle}
             maxTags={maxTags}
             onTagAdd={onTagAdd}
             allowDuplicates={allowDuplicates ?? false}

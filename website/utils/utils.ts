@@ -37,6 +37,18 @@ export const tagInputProps: propOption[] = [
     description: 'List of options for autocomplete. Must be used with enableAutocomplete.',
   },
   {
+    option: 'autocompleteTitle',
+    type: 'string',
+    default: '"Suggestions"',
+    description: 'Title displayed for the autocomplete suggestions.',
+  },
+  {
+    option: 'autocompleteNotFound',
+    type: 'string',
+    default: '"No results found."',
+    description: 'Message displayed when no autocomplete results are found.',
+  },
+  {
     option: 'maxTags',
     type: 'number',
     default: 'null',

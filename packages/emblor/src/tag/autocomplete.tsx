@@ -19,6 +19,8 @@ type AutocompleteProps = {
   inlineTags?: boolean;
   classStyleProps: TagInputStyleClassesProps['autoComplete'];
   usePortal?: boolean;
+  autocompleteTitle?: string;
+  autocompleteNotFound?: string;
 };
 
 export const Autocomplete: React.FC<AutocompleteProps> = ({
@@ -27,6 +29,8 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   setInputValue,
   setTagCount,
   autocompleteOptions,
+  autocompleteTitle = 'Suggestions',
+  autocompleteNotFound = 'No results found.',
   maxTags,
   onTagAdd,
   onTagRemove,
@@ -251,7 +255,9 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                   minHeight: '68px',
                 }}
               >
-                <span className="text-muted-foreground font-medium text-sm py-1.5 px-2 pb-2">Suggestions</span>
+                <span className="text-muted-foreground font-medium text-sm py-1.5 px-2 pb-2">
+                  {autocompleteTitle}
+                </span>
                 <div role="separator" className="py-0.5" />
                 {autocompleteOptions.map((option, index) => {
                   const isSelected = index === selectedIndex;
@@ -292,7 +298,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
                 })}
               </div>
             ) : (
-              <div className="py-6 text-center text-sm">No results found.</div>
+              <div className="py-6 text-center text-sm">{autocompleteNotFound}</div>
             )}
           </div>
         </PopoverContent>
