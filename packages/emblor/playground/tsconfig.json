@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "types": ["react", "react-dom"],
     "jsx": "react-jsx",
+    "noEmit": true,
     "paths": {
       "emblor": ["../dist/index.d.ts"],
       "emblor/core": ["../dist/core/index.d.ts"],

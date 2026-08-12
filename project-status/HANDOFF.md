@@ -62,7 +62,7 @@ v2: plain `string[]` via `value` / `defaultValue` / `onValueChange`. Ids are gen
 - All previously uncommitted v2 work is now committed as `4a338d2` on `feat/emblor-v2-refactor`.
 - The branch is **1 commit ahead** of `origin/feat/emblor-v2-refactor`. Nothing has been pushed.
 - `origin/main` is 4 commits ahead of the branch point (React 19 peer support, version bumps). We are deliberately **not** rebasing.
-- `.husky/pre-commit` was deleted in the WIP; `.husky/pre-commit.bak` is left untracked on disk. Husky needs to be restored or removed intentionally.
+- Husky was intentionally removed during Step 2 in favor of the accepted CI-only quality-enforcement policy.
 
 ### What exists and works
 
@@ -81,14 +81,14 @@ Supporting code:
 - `packages/emblor/tests/core/` — 5 vitest files covering render, delimiter commit, remove, backspace focus, clear, `minTags` guard, `readOnly` guard
 - `packages/emblor/playground/` — Vite app with core, addons, cmdk, and Radix popover examples
 
-### What is in the tree but should not survive
+### Packaging cleanup completed
 
-- `packages/core`, `packages/addons`, `packages/sortable`, `packages/types`, `packages/utils`, `packages/playground` — the abandoned `@emblor/*` multi-package layout. Not in `pnpm-workspace.yaml`, drifted from `packages/emblor`, pure confusion.
-- `packages/emblor/src/addons/` (`TagCount`, `ClearButton`) — fold `ClearButton` into core, drop the subpath.
-- `packages/emblor/src/sortable/` (`reorderArray`, `useKeyboardSortable`) — cut.
-- `packages/emblor/src/testing/` — an empty `export {}` stub behind a public subpath.
-- Build artifacts committed alongside source in `packages/emblor/playground/src/` (`.js`, `.d.ts`, `.map`).
-- `@radix-ui/react-context` is a declared dependency but unused in source.
+- Removed the abandoned `packages/core`, `packages/addons`, `packages/sortable`, `packages/types`, `packages/utils`, and `packages/playground` tracked trees.
+- Confirmed the workspace contains only `packages/emblor`, `packages/emblor/playground`, and `website`.
+- Verified that no generated `.js`, `.d.ts`, or source-map artifacts remain in `packages/emblor/playground/src/`; repository ignore rules cover package outputs and browser-test artifacts, and the playground typecheck now uses `noEmit`.
+- Removed the unused direct `@radix-ui/react-context` dependency.
+- Removed the unused Husky, lint-staged, and `tsc-files` setup under the accepted CI-only policy.
+- The remaining `packages/emblor/src/addons`, `src/sortable`, `src/testing`, and their public subpaths belong to Step 3 API reshaping.
 
 ### Known gaps in core
 
@@ -108,16 +108,16 @@ Supporting code:
 
 Step 1 (protect the WIP) is **done**. Everything below is open.
 
-### Step 2 — Packaging cleanup
+### Step 2 — Packaging cleanup — done
 
 Goal: exactly one answer to "how do I install this."
 
-- Delete `packages/{core,addons,sortable,types,utils,playground}`
-- Confirm `pnpm-workspace.yaml` covers `packages/emblor`, `packages/emblor/playground`, and `website`
-- Remove committed build artifacts from `packages/emblor/playground/src/`; make sure they are gitignored
-- Restore `packages/emblor/.gitignore` (it was deleted in the WIP) or fold its rules into the root ignore
-- Drop `@radix-ui/react-context` if it stays unused
-- Decide on husky: restore `.husky/pre-commit` from the `.bak`, or delete both and drop the hook
+- [x] Delete `packages/{core,addons,sortable,types,utils,playground}`
+- [x] Confirm `pnpm-workspace.yaml` covers `packages/emblor`, `packages/emblor/playground`, and `website`
+- [x] Verify generated artifacts are absent from `packages/emblor/playground/src/` and keep them gitignored
+- [x] Fold the deleted package ignore rules into the root ignore
+- [x] Drop unused direct `@radix-ui/react-context`
+- [x] Remove Husky and related unused hook tooling under the CI-only decision
 
 ### Step 3 — API reshape
 
