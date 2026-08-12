@@ -1,0 +1,18 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "types": ["react", "react-dom"],
+    "jsx": "react-jsx",
+    "paths": {
+      "emblor": ["../dist/index.d.ts"],
+      "emblor/core": ["../dist/core/index.d.ts"],
+      "emblor/addons": ["../dist/addons/index.d.ts"],
+      "emblor/sortable": ["../dist/sortable/index.d.ts"],
+      "emblor/utils": ["../dist/utils/index.d.ts"],
+      "emblor/types": ["../dist/types/index.d.ts"],
+      "emblor/testing": ["../dist/testing/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}
