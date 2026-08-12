@@ -1,3 +1,4 @@
 packages:
-  - "packages/*"
+  - "packages/emblor"
+  - "packages/emblor/playground"
   - "website"

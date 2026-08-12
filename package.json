@@ -11,7 +11,7 @@
     "release": "pnpm run build && changeset publish",
     "local-release": "changeset version && changeset publish",
     "prepublishOnly": "npm run ci",
-    "copy-readme": "cp README.md packages/*",
+    "copy-readme": "cp README.md packages/emblor",
     "prepare": "husky"
   },
   "devDependencies": {
