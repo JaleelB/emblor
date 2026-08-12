@@ -1,0 +1,6 @@
+playground/
+tests/
+**/*.test.*
+**/*.spec.*
+.vscode/
+*.map

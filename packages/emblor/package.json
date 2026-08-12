@@ -1,78 +1,87 @@
 {
   "name": "emblor",
-  "version": "1.4.7",
-  "description": "A full featured, unstyled tag input component for React",
+  "version": "2.0.0",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.js"
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.cjs",
+      "default": "./dist/core/index.js"
+    },
+    "./addons": {
+      "types": "./dist/addons/index.d.ts",
+      "import": "./dist/addons/index.js",
+      "require": "./dist/addons/index.cjs",
+      "default": "./dist/addons/index.js"
+    },
+    "./sortable": {
+      "types": "./dist/sortable/index.d.ts",
+      "import": "./dist/sortable/index.js",
+      "require": "./dist/sortable/index.cjs",
+      "default": "./dist/sortable/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs",
+      "default": "./dist/utils/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs",
+      "default": "./dist/types/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "import": "./dist/testing/index.js",
+      "require": "./dist/testing/index.cjs",
+      "default": "./dist/testing/index.js"
+    }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "prepare": "pnpm turbo build --filter emblor",
-    "typecheck": "tsc --noEmit",
-    "build": "run-p build:*",
-    "build:tsup": "tsup --dts --minify",
-    "clean": "rimraf dist",
-    "dev": "tsup --watch --dts",
-    "format": "prettier --write .",
-    "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
-    "release": "pnpm run build && changeset publish"
-  },
-  "keywords": [
-    "shadcn",
-    "react",
-    "tag input",
-    "shadcn/ui",
-    "tag input component",
-    "shadcn tag input component",
-    "input",
-    "radix ui",
-    "react tag input",
-    "tag input component",
-    "emblor",
-    "emblor tag input component"
-  ],
-  "author": "Jaleel Bennett <jaleelcodes@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://emblor.jaleelbennett.com",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/JaleelB/emblor",
-    "directory": "packages/emblor"
-  },
-  "bugs": {
-    "url": "https://github.com/JaleelB/emblor/issues"
-  },
-  "devDependencies": {
-    "@types/node": "^18.11.13",
-    "@types/react": "^18.0.26",
-    "react": "^18.2.0",
-    "tsup": "^6.5.0",
-    "typescript": "^4.8.4"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
-  "packageManager": "pnpm@9.0.2",
   "dependencies": {
-    "@radix-ui/react-dialog": "1.0.4",
-    "@radix-ui/react-popover": "^1.0.7",
-    "@radix-ui/react-slot": "^1.0.2",
-    "class-variance-authority": "latest",
-    "clsx": "latest",
-    "cmdk": "^0.2.0",
-    "react-easy-sort": "^1.6.0",
-    "tailwind-merge": "latest"
+    "@radix-ui/react-context": "^1.1.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@vitejs/plugin-react": "^4.3.0",
+    "@types/react": "^18.2.40",
+    "@types/react-dom": "^18.2.17",
+    "eslint": "^9.0.0",
+    "jsdom": "^24.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
   }
 }
