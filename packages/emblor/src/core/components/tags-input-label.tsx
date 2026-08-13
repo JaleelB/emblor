@@ -22,11 +22,11 @@ const EmblorLabelImpl = React.forwardRef<HTMLElement, EmblorLabelProps<any>>(fun
   const resolvedHtmlFor = automaticallyAssociated ? inputId : htmlFor;
   const labelTokenRef = React.useRef(Symbol());
   const boundaryCleanupRef = React.useRef<(() => void) | null>(null);
-  const labelNodeRef = React.useRef<HTMLElement | null>(null);
+  const [labelNode, setLabelNode] = React.useState<HTMLElement | null>(null);
   const assignRef = React.useMemo(
     function createLabelRef() {
       return mergeRefs(forwardedRef as React.Ref<HTMLElement>, function capture(node: HTMLElement | null) {
-        labelNodeRef.current = node;
+        setLabelNode(node);
       });
     },
     [forwardedRef],
@@ -34,16 +34,18 @@ const EmblorLabelImpl = React.forwardRef<HTMLElement, EmblorLabelProps<any>>(fun
 
   React.useLayoutEffect(
     function registerLabelPart() {
-      const unregisterLabel = automaticallyAssociated ? registerLabel(labelTokenRef.current, labelId) : undefined;
+      const unregisterLabel = automaticallyAssociated
+        ? registerLabel(labelTokenRef.current, labelNode, labelId)
+        : undefined;
       boundaryCleanupRef.current?.();
-      boundaryCleanupRef.current = registerBoundaryNode(labelNodeRef.current);
+      boundaryCleanupRef.current = registerBoundaryNode(labelNode);
       return function cleanupLabelPart() {
         unregisterLabel?.();
         boundaryCleanupRef.current?.();
         boundaryCleanupRef.current = null;
       };
     },
-    [automaticallyAssociated, labelId, registerBoundaryNode, registerLabel],
+    [automaticallyAssociated, labelId, labelNode, registerBoundaryNode, registerLabel],
   );
 
   const handleClick = React.useCallback(

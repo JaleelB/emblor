@@ -137,6 +137,38 @@ type QueuedAnnouncement = {
   message: string;
 };
 
+type RegisteredLabel = {
+  node: HTMLElement;
+  id: string;
+  order: number;
+};
+
+function getDocumentOrderedLabelIds(
+  labels: Map<symbol, RegisteredLabel>,
+  ownerDocument: Document | undefined,
+): string[] {
+  return Array.from(labels.values())
+    .filter(function keepConnectedLabel(label) {
+      return label.node.isConnected && (!ownerDocument || label.node.ownerDocument === ownerDocument);
+    })
+    .sort(function compareLabels(first, second) {
+      if (first.node.ownerDocument !== second.node.ownerDocument) {
+        return first.order - second.order;
+      }
+      const position = first.node.compareDocumentPosition(second.node);
+      if (position & 4) {
+        return -1;
+      }
+      if (position & 2) {
+        return 1;
+      }
+      return first.order - second.order;
+    })
+    .map(function getLabelId(label) {
+      return label.id;
+    });
+}
+
 const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(function EmblorRoot(props, forwardedRef) {
   const {
     as,
@@ -230,10 +262,11 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
   const tagRegistryRef = React.useRef(new Map<number, { node: HTMLElement; token: symbol }>());
   const tagListRegistrationRef = React.useRef<HTMLElement | null>(null);
   const boundaryNodesRef = React.useRef(new Set<HTMLElement>());
-  const labelRegistryRef = React.useRef(new Map<symbol, string>());
+  const labelRegistryRef = React.useRef(new Map<symbol, RegisteredLabel>());
   const [rootElement, setRootElement] = React.useState<HTMLElement | null>(null);
   const [inputId, setInputId] = React.useState(generatedInputId);
   const [labelIds, setLabelIds] = React.useState<string[]>([]);
+  const labelIdsRef = React.useRef<string[]>([]);
   const [actualFocusedIndex, setActualFocusedIndex] = React.useState<number | null>(null);
   const [focusWithin, setFocusWithin] = React.useState(false);
   const [lastRejection, setLastRejection] = React.useState<EmblorRejection | null>(null);
@@ -241,11 +274,13 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
   const [liveSequence, setLiveSequence] = React.useState(0);
   const [announcementQueue, setAnnouncementQueue] = React.useState<QueuedAnnouncement[]>([]);
   const [registryVersion, setRegistryVersion] = React.useState(0);
+  const [labelRegistryVersion, setLabelRegistryVersion] = React.useState(0);
   const mountedRef = React.useRef(true);
   const pendingFocusRef = React.useRef<PendingFocus | null>(null);
   const blurSequenceRef = React.useRef(0);
   const announcementIdRef = React.useRef(0);
   const displayedAnnouncementIdRef = React.useRef<number | null>(null);
+  const labelOrderRef = React.useRef(0);
 
   const transientInvalid = lastRejection !== null;
   const requiredInvalid = required && !disabled && values.length === 0;
@@ -374,15 +409,40 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
     };
   }, []);
 
-  const registerLabel = React.useCallback(function registerLabel(token: symbol, id: string): () => void {
-    labelRegistryRef.current.set(token, id);
-    setLabelIds(Array.from(labelRegistryRef.current.values()));
-    return function unregisterLabel() {
-      if (labelRegistryRef.current.delete(token)) {
-        setLabelIds(Array.from(labelRegistryRef.current.values()));
-      }
-    };
+  const refreshLabelIds = React.useCallback(function refreshLabelIds() {
+    const nextLabelIds = getDocumentOrderedLabelIds(labelRegistryRef.current, rootRef.current?.ownerDocument);
+    if (arraysEqual(labelIdsRef.current, nextLabelIds)) {
+      return;
+    }
+    labelIdsRef.current = nextLabelIds;
+    setLabelIds(nextLabelIds);
   }, []);
+
+  const registerLabel = React.useCallback(
+    function registerLabel(token: symbol, node: HTMLElement | null, id: string): () => void {
+      if (!node) {
+        return function noop() {};
+      }
+      labelRegistryRef.current.set(token, {
+        node,
+        id,
+        order: labelOrderRef.current++,
+      });
+      setLabelRegistryVersion(function increment(version) {
+        return version + 1;
+      });
+      refreshLabelIds();
+      return function unregisterLabel() {
+        if (labelRegistryRef.current.delete(token)) {
+          setLabelRegistryVersion(function increment(version) {
+            return version + 1;
+          });
+          refreshLabelIds();
+        }
+      };
+    },
+    [refreshLabelIds],
+  );
 
   const getMountedTagIndexes = React.useCallback(function getMountedTagIndexes(): number[] {
     return Array.from(tagRegistryRef.current.keys()).sort(function ascending(first, second) {
@@ -411,10 +471,23 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
 
   const setDraft = React.useCallback(
     function setRootDraft(next: string) {
+      if (next === draft) {
+        return;
+      }
       setLastRejection(null);
       draftState.set(next);
     },
-    [draftState],
+    [draft, draftState],
+  );
+
+  const clearDraftAfterSuccessfulAddition = React.useCallback(
+    function clearDraftAfterSuccessfulAdditionTransition() {
+      setLastRejection(null);
+      if (draft.length > 0) {
+        draftState.set('');
+      }
+    },
+    [draft, draftState],
   );
 
   const announce = React.useCallback(
@@ -456,7 +529,7 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
 
   const commitDraft = React.useCallback(
     function commitRootDraft(rawValue: string, source: 'keyboard' | 'blur'): boolean {
-      if (disabled || readOnly || rawValue.trim().length === 0) {
+      if (disabled || readOnly || rawValue.length === 0) {
         return false;
       }
       const result = evaluateCandidate({
@@ -483,8 +556,7 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
         source,
       };
       setTags(nextValues, details);
-      setDraft('');
-      setLastRejection(null);
+      clearDraftAfterSuccessfulAddition();
       announce({ type: 'add', value: result.value });
       return true;
     },
@@ -492,12 +564,12 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
       allowDuplicates,
       announce,
       announceRejection,
+      clearDraftAfterSuccessfulAddition,
       disabled,
       maxLength,
       maxTags,
       minLength,
       readOnly,
-      setDraft,
       setTags,
       transform,
       validate,
@@ -549,8 +621,7 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
         source: 'paste',
       };
       setTags([...values, ...batch.values], details);
-      setDraft('');
-      setLastRejection(null);
+      clearDraftAfterSuccessfulAddition();
       announce({ type: 'add-many', values: batch.values });
       void sourceDraft;
       return { accepted: true, rejected: batch.rejections.length > 0 };
@@ -559,13 +630,13 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
       allowDuplicates,
       announce,
       announceRejection,
+      clearDraftAfterSuccessfulAddition,
       delimiters,
       disabled,
       maxLength,
       maxTags,
       minLength,
       readOnly,
-      setDraft,
       setTags,
       transform,
       validate,
@@ -593,7 +664,6 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
         origin: (rootRef.current?.ownerDocument.activeElement as HTMLElement | null) ?? null,
       };
       setTags(nextValues, { type: 'remove', value: removedValue, index, source });
-      setLastRejection(null);
       announce({ type: 'remove', value: removedValue });
     },
     [announce, disabled, minTags, readOnly, setTags, values],
@@ -612,7 +682,6 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
       };
       setTags([], { type: 'clear', values: [...values], source });
       setDraft('');
-      setLastRejection(null);
       announce({ type: 'clear', values: [...values] });
     },
     [announce, disabled, minTags, readOnly, setDraft, setTags, values],
@@ -778,6 +847,28 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
   );
 
   React.useLayoutEffect(
+    function observeLabelOrder() {
+      if (!rootElement || labelRegistryRef.current.size === 0) {
+        return;
+      }
+      refreshLabelIds();
+      const ownerDocument = rootElement.ownerDocument;
+      const MutationObserverConstructor = ownerDocument.defaultView?.MutationObserver;
+      if (!MutationObserverConstructor) {
+        return;
+      }
+      const observer = new MutationObserverConstructor(function handleDomMutation() {
+        refreshLabelIds();
+      });
+      observer.observe(ownerDocument, { childList: true, subtree: true });
+      return function disconnectLabelObserver() {
+        observer.disconnect();
+      };
+    },
+    [labelRegistryVersion, refreshLabelIds, rootElement],
+  );
+
+  React.useLayoutEffect(
     function verifyInputRegistration() {
       if (!inputRegistrationRef.current) {
         throw new Error('EmblorRoot requires exactly one EmblorInput.');
@@ -803,9 +894,9 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
       const focusStayedOnOrigin = Boolean(pending.origin && documentActiveElement === pending.origin);
       const focusFellAwayWithOrigin = Boolean(
         pending.origin &&
-          !pending.origin.isConnected &&
           ownerDocument &&
-          (documentActiveElement === ownerDocument.body || documentActiveElement === ownerDocument.documentElement),
+          (documentActiveElement === ownerDocument.body || documentActiveElement === ownerDocument.documentElement) &&
+          (!pending.origin.isConnected || (pending.type === 'clear' && pending.origin.matches(':disabled'))),
       );
       if (!focusStayedOnOrigin && !focusFellAwayWithOrigin) {
         pendingFocusRef.current = null;

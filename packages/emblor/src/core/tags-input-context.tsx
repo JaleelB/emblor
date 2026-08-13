@@ -58,7 +58,7 @@ export type EmblorContextValue = {
   registerTagListNode: (node: HTMLElement | null) => () => void;
   registerTagNode: (index: number, node: HTMLElement | null, token: symbol) => () => void;
   registerBoundaryNode: (node: HTMLElement | null) => () => void;
-  registerLabel: (token: symbol, id: string) => () => void;
+  registerLabel: (token: symbol, node: HTMLElement | null, id: string) => () => void;
   announce: (announcement: EmblorAnnouncement) => void;
   announceRejection: (rejection: EmblorRejection) => void;
   onValueChange?: (value: string[], details: EmblorValueChangeDetails) => void;

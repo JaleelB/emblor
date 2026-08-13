@@ -1,25 +1,16 @@
 import * as React from 'react';
 import type { EmblorInputComponent, EmblorInputElementType, EmblorInputProps } from '../../types';
-import { composeEventHandlers, isComposingEvent, mergeRefs } from '../../utils';
+import { isComposingEvent, mergeRefs } from '../../utils';
 import { useEmblorContext } from '../tags-input-context';
 
-function restoreSelection(node: HTMLInputElement | HTMLTextAreaElement, start: number, end: number): void {
-  const restore = function restore() {
-    if (node.ownerDocument.activeElement !== node) {
-      return;
-    }
-    try {
-      node.setSelectionRange(start, end);
-    } catch {
-      // A compatible custom input may not support selection restoration in every browser.
-    }
-  };
-  if (typeof requestAnimationFrame === 'function') {
-    requestAnimationFrame(restore);
-  } else {
-    setTimeout(restore, 0);
-  }
-}
+type SelectionIntent = {
+  node: HTMLInputElement | HTMLTextAreaElement;
+  sourceDraft: string;
+  start: number;
+  end: number;
+  frameId: number | null;
+  timeoutId: ReturnType<typeof setTimeout> | null;
+};
 
 const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(function EmblorInput(props, forwardedRef) {
   const {
@@ -37,6 +28,10 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
     onFocus,
     onBlur,
     onInvalid,
+    onSelect,
+    onPointerDown,
+    onMouseDown,
+    onTouchStart,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-invalid': consumerAriaInvalid,
@@ -48,6 +43,10 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
     onFocus?: React.FocusEventHandler<HTMLElement>;
     onBlur?: React.FocusEventHandler<HTMLElement>;
     onInvalid?: (event: React.InvalidEvent<HTMLElement>) => void;
+    onSelect?: React.ReactEventHandler<HTMLElement>;
+    onPointerDown?: React.PointerEventHandler<HTMLElement>;
+    onMouseDown?: React.MouseEventHandler<HTMLElement>;
+    onTouchStart?: React.TouchEventHandler<HTMLElement>;
     'aria-label'?: string;
     'aria-labelledby'?: string;
     'aria-invalid'?: React.AriaAttributes['aria-invalid'];
@@ -89,6 +88,102 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
     ariaLabelledBy ?? (ariaLabel ? undefined : labelIds.length > 0 ? labelIds.join(' ') : undefined);
   const resolvedPlaceholder = maxReached && placeholderWhenFull ? placeholderWhenFull : rest.placeholder;
   const inputNodeRef = React.useRef<HTMLElement | null>(null);
+  const draftRef = React.useRef(draft);
+  const selectionIntentRef = React.useRef<SelectionIntent | null>(null);
+
+  const cancelSelectionIntent = React.useCallback(function cancelSelectionIntentWork() {
+    const intent = selectionIntentRef.current;
+    if (!intent) {
+      return;
+    }
+    const window = intent.node.ownerDocument.defaultView;
+    if (intent.frameId !== null) {
+      window?.cancelAnimationFrame(intent.frameId);
+    }
+    if (intent.timeoutId !== null) {
+      clearTimeout(intent.timeoutId);
+    }
+    selectionIntentRef.current = null;
+  }, []);
+
+  const scheduleSelectionIntent = React.useCallback(
+    function scheduleSelectionIntentWork(
+      node: HTMLInputElement | HTMLTextAreaElement,
+      sourceDraft: string,
+      start: number,
+      end: number,
+    ) {
+      cancelSelectionIntent();
+      const intent: SelectionIntent = {
+        node,
+        sourceDraft,
+        start,
+        end,
+        frameId: null,
+        timeoutId: null,
+      };
+      selectionIntentRef.current = intent;
+      const restore = function restoreCurrentSelection() {
+        if (selectionIntentRef.current !== intent) {
+          return;
+        }
+        selectionIntentRef.current = null;
+        if (
+          inputNodeRef.current !== node ||
+          draftRef.current !== sourceDraft ||
+          node.value !== sourceDraft ||
+          !node.isConnected ||
+          node.ownerDocument.activeElement !== node
+        ) {
+          return;
+        }
+        try {
+          node.setSelectionRange(start, end);
+        } catch {
+          // A compatible custom input may not support selection restoration in every browser.
+        }
+      };
+      const ownerWindow = node.ownerDocument.defaultView;
+      if (ownerWindow && typeof ownerWindow.requestAnimationFrame === 'function') {
+        intent.frameId = ownerWindow.requestAnimationFrame(restore);
+      } else {
+        intent.timeoutId = setTimeout(restore, 0);
+      }
+    },
+    [cancelSelectionIntent],
+  );
+
+  React.useLayoutEffect(
+    function trackDraftForSelectionIntent() {
+      const intent = selectionIntentRef.current;
+      if (intent && draft !== intent.sourceDraft) {
+        cancelSelectionIntent();
+      }
+      draftRef.current = draft;
+    },
+    [cancelSelectionIntent, draft],
+  );
+
+  React.useEffect(function listenForSelectionChanges() {
+    const node = inputNodeRef.current as HTMLInputElement | HTMLTextAreaElement | null;
+    if (!node) {
+      return;
+    }
+    const ownerDocument = node.ownerDocument;
+    const handleSelectionChange = function handleSelectionChange() {
+      const intent = selectionIntentRef.current;
+      if (!intent || intent.node !== node || ownerDocument.activeElement !== node) {
+        return;
+      }
+      if (node.selectionStart !== intent.start || node.selectionEnd !== intent.end) {
+        cancelSelectionIntent();
+      }
+    };
+    ownerDocument.addEventListener('selectionchange', handleSelectionChange);
+    return function cleanupSelectionChangeListener() {
+      ownerDocument.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  });
 
   const assignRef = React.useMemo(
     function createInputRef() {
@@ -96,12 +191,15 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
         inputRef as React.Ref<HTMLElement>,
         forwardedRef as React.Ref<HTMLElement>,
         function register(node: HTMLElement | null) {
+          if (inputNodeRef.current !== node) {
+            cancelSelectionIntent();
+          }
           inputNodeRef.current = node;
           registerInputNode(node, resolvedId);
         },
       );
     },
-    [forwardedRef, inputRef, registerInputNode, resolvedId],
+    [cancelSelectionIntent, forwardedRef, inputRef, registerInputNode, resolvedId],
   );
 
   React.useLayoutEffect(
@@ -132,20 +230,22 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
   const handleChange = React.useCallback(
     function handleChange(event: React.ChangeEvent<HTMLElement>) {
       onChange?.(event);
+      cancelSelectionIntent();
       setDraft((event.target as HTMLInputElement | HTMLTextAreaElement).value);
     },
-    [onChange, setDraft],
+    [cancelSelectionIntent, onChange, setDraft],
   );
 
   const handleKeyDown = React.useCallback(
     function handleKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+      cancelSelectionIntent();
       if (isComposingEvent(event)) {
         return;
       }
 
       const currentTarget = event.currentTarget as HTMLInputElement | HTMLTextAreaElement;
       const currentValue = currentTarget.value;
-      const hasText = currentValue.trim().length > 0;
+      const hasText = currentValue.length > 0;
       const isDelimiter = delimiters.includes(event.key);
       const shouldCommit = event.key === 'Enter' || (event.key === 'Tab' && addOnTab) || isDelimiter;
 
@@ -182,12 +282,24 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
         focusTag(entersFromStart ? mountedIndexes[mountedIndexes.length - 1] : mountedIndexes[0]);
       }
     },
-    [addOnTab, commitDraft, delimiters, focusTag, getDirection, getMountedTagIndexes],
+    [addOnTab, cancelSelectionIntent, commitDraft, delimiters, focusTag, getDirection, getMountedTagIndexes],
+  );
+
+  const handleComposedKeyDown = React.useCallback(
+    function handleComposedKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+      onKeyDown?.(event);
+      cancelSelectionIntent();
+      if (!event.defaultPrevented) {
+        handleKeyDown(event);
+      }
+    },
+    [cancelSelectionIntent, handleKeyDown, onKeyDown],
   );
 
   const handlePaste = React.useCallback(
     function handlePaste(event: React.ClipboardEvent<HTMLElement>) {
       onPaste?.(event);
+      cancelSelectionIntent();
       if (event.defaultPrevented || !addOnPaste) {
         return;
       }
@@ -207,27 +319,29 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
         return;
       }
       event.preventDefault();
-      if (!result.accepted) {
-        restoreSelection(currentTarget, selectionStart, selectionEnd);
+      if (!result.accepted && result.rejected) {
+        scheduleSelectionIntent(currentTarget, currentTarget.value, selectionStart, selectionEnd);
       }
     },
-    [addOnPaste, onPaste, pasteDraft],
+    [addOnPaste, cancelSelectionIntent, onPaste, pasteDraft, scheduleSelectionIntent],
   );
 
   const handleFocus = React.useCallback(
     function handleFocus(event: React.FocusEvent<HTMLElement>) {
       onFocus?.(event);
+      cancelSelectionIntent();
       setInputFocused();
     },
-    [onFocus, setInputFocused],
+    [cancelSelectionIntent, onFocus, setInputFocused],
   );
 
   const handleBlur = React.useCallback(
     function handleBlur(event: React.FocusEvent<HTMLElement>) {
       onBlur?.(event);
+      cancelSelectionIntent();
       handleInputBlur(event, event.defaultPrevented);
     },
-    [handleInputBlur, onBlur],
+    [cancelSelectionIntent, handleInputBlur, onBlur],
   );
 
   const handleInvalid = React.useCallback(
@@ -236,6 +350,47 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
       focusInput();
     },
     [focusInput, onInvalid],
+  );
+
+  const handleSelect = React.useCallback(
+    function handleInputSelect(event: React.SyntheticEvent<HTMLElement>) {
+      onSelect?.(event);
+      cancelSelectionIntent();
+    },
+    [cancelSelectionIntent, onSelect],
+  );
+
+  const handlePointerDown = React.useCallback(
+    function handleInputPointerDown(event: React.PointerEvent<HTMLElement>) {
+      onPointerDown?.(event);
+      cancelSelectionIntent();
+    },
+    [cancelSelectionIntent, onPointerDown],
+  );
+
+  const handleMouseDown = React.useCallback(
+    function handleInputMouseDown(event: React.MouseEvent<HTMLElement>) {
+      onMouseDown?.(event);
+      cancelSelectionIntent();
+    },
+    [cancelSelectionIntent, onMouseDown],
+  );
+
+  const handleTouchStart = React.useCallback(
+    function handleInputTouchStart(event: React.TouchEvent<HTMLElement>) {
+      onTouchStart?.(event);
+      cancelSelectionIntent();
+    },
+    [cancelSelectionIntent, onTouchStart],
+  );
+
+  React.useEffect(
+    function cancelSelectionOnUnmount() {
+      return function cleanupSelectionIntent() {
+        cancelSelectionIntent();
+      };
+    },
+    [cancelSelectionIntent],
   );
 
   const boundaryCleanupRef = React.useRef<(() => void) | null>(null);
@@ -269,10 +424,14 @@ const EmblorInputImpl = React.forwardRef<HTMLElement, EmblorInputProps<any>>(fun
       required={required && !disabled && values.length === 0}
       value={draft}
       onChange={handleChange}
-      onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown, { checkForDefaultPrevented: true })}
+      onKeyDown={handleComposedKeyDown}
       onPaste={handlePaste}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onSelect={handleSelect}
+      onPointerDown={handlePointerDown}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       onInvalid={handleInvalid}
       placeholder={resolvedPlaceholder}
       data-disabled={disabled ? '' : undefined}

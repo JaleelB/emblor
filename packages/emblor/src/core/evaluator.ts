@@ -31,10 +31,6 @@ export function evaluateCandidate(options: CandidateOptions): CandidateEvaluatio
   const { rawValue, values, source, minLength, maxLength, maxTags, allowDuplicates, transform, validate } = options;
   let value = rawValue.trim();
 
-  if (value.length === 0) {
-    return rejected(rawValue, value, 'empty', source);
-  }
-
   if (transform) {
     value = transform(value);
     if (typeof value !== 'string') {
@@ -77,7 +73,7 @@ export function evaluateBatch(
   const rejections: EmblorRejection[] = [];
 
   options.candidates.forEach(function evaluate(rawValue) {
-    if (rawValue.trim().length === 0) {
+    if (rawValue.length === 0) {
       return;
     }
 
