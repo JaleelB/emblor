@@ -1,99 +1,185 @@
-import type React from 'react';
+import type * as React from 'react';
 
 export type TagValue = string;
 
-export type EmblorTag = {
-  id: string;
-  value: TagValue;
+export type EmblorMutationSource = 'keyboard' | 'pointer' | 'blur';
+
+export type EmblorValueChangeDetails =
+  | {
+      type: 'add';
+      value: string;
+      index: number;
+      source: 'keyboard' | 'blur';
+    }
+  | {
+      type: 'add-many';
+      values: string[];
+      startIndex: number;
+      source: 'paste';
+    }
+  | {
+      type: 'remove';
+      value: string;
+      index: number;
+      source: 'keyboard' | 'pointer';
+    }
+  | {
+      type: 'clear';
+      values: string[];
+      source: 'keyboard' | 'pointer';
+    };
+
+export type EmblorRejectReason = 'empty' | 'min-length' | 'max-length' | 'duplicate' | 'max-tags' | 'custom';
+
+export type EmblorRejection = {
+  rawValue: string;
+  value: string;
+  reason: EmblorRejectReason;
+  source: 'keyboard' | 'paste' | 'blur';
 };
 
-export type EmblorTagValidationResult = boolean | string;
+export type EmblorAnnouncement =
+  | { type: 'add'; value: string }
+  | { type: 'add-many'; values: string[] }
+  | { type: 'remove'; value: string }
+  | { type: 'clear'; values: string[] }
+  | { type: 'reject'; rejection: EmblorRejection };
 
-export type EmblorDelimiter = string;
+export type EmblorAnnouncementFormatter = (announcement: EmblorAnnouncement) => string;
 
-export type EmblorRootPublicProps = {
-  as?: React.ElementType;
+export type EmblorBlurBehavior = 'commit' | 'discard' | 'noop';
+
+export type PolymorphicRef<ElementType extends React.ElementType> = React.ComponentPropsWithRef<ElementType>['ref'];
+
+export type PolymorphicProps<ElementType extends React.ElementType, OwnProps extends object = object> = OwnProps & {
+  as?: ElementType;
+} & Omit<React.ComponentPropsWithoutRef<ElementType>, keyof OwnProps | 'as'> & {
+    ref?: PolymorphicRef<ElementType>;
+  };
+
+export type PolymorphicComponent<DefaultElement extends React.ElementType, OwnProps extends object> = {
+  <ElementType extends React.ElementType = DefaultElement>(
+    props: PolymorphicProps<ElementType, OwnProps>,
+  ): React.ReactElement | null;
+};
+
+export type EmblorRootOwnProps = {
   children?: React.ReactNode;
-  onFocus?: (event: React.FocusEvent<HTMLElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLElement>) => void;
-  className?: string;
-  value?: Array<TagValue>;
-  defaultValue?: Array<TagValue>;
-  onValueChange?: (next: Array<TagValue>) => void;
+  value?: string[];
+  defaultValue?: string[];
+  onValueChange?: (value: string[], details: EmblorValueChangeDetails) => void;
+  inputValue?: string;
+  defaultInputValue?: string;
+  onInputValueChange?: (value: string) => void;
+  transform?: (value: string) => string;
+  validate?: (value: string) => boolean;
+  invalid?: boolean;
+  onReject?: (rejection: EmblorRejection) => void;
   maxTags?: number;
   minTags?: number;
   allowDuplicates?: boolean;
-  validateTag?: (text: string) => EmblorTagValidationResult;
-  onTagAdd?: (tag: TagValue, index: number) => void;
-  onTagRemove?: (tag: TagValue, index: number) => void;
-  onClearAll?: () => void;
-  delimiter?: Array<EmblorDelimiter>;
-  addOnPaste?: boolean;
-  readOnly?: boolean;
-  disabled?: boolean;
-  placeholderWhenFull?: string;
   minLength?: number;
   maxLength?: number;
-  onTagClick?: (tag: TagValue, index: number) => void;
-  generateTagId?: (tag: TagValue, index: number) => string;
-  onInputKeydown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  focusedIndex?: number;
-  setFocusedIndex?: (next: number | null) => void;
-  activeIndex?: number;
-  setActiveIndex?: (next: number | null) => void;
-  inputBlurBehavior?: 'commit' | 'discard' | 'noop';
-  labelId?: string;
+  delimiters?: string[];
+  addOnPaste?: boolean;
+  addOnTab?: boolean;
+  blurBehavior?: EmblorBlurBehavior;
+  placeholderWhenFull?: string;
+  name?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  disabled?: boolean;
+  getAnnouncement?: EmblorAnnouncementFormatter;
+  dir?: 'ltr' | 'rtl';
 };
 
-export type EmblorRootProps = EmblorRootPublicProps & {
-  id?: string;
-};
+export type EmblorRootProps<ElementType extends React.ElementType = 'div'> = PolymorphicProps<
+  ElementType,
+  EmblorRootOwnProps
+>;
+export type EmblorRootComponent = PolymorphicComponent<'div', EmblorRootOwnProps>;
 
-export type EmblorInputProps = Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'defaultValue' | 'onChange'
-> & {
-  as?: React.ElementType;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  placeholder?: string;
-  ariaDescribedBy?: string;
-};
-
-export type EmblorTagListProps = Omit<React.HTMLAttributes<HTMLElement>, 'children'> & {
-  as?: React.ElementType;
-  id?: string;
+export type EmblorLabelOwnProps = {
   children?: React.ReactNode;
 };
 
-export type EmblorTagProps = Omit<React.HTMLAttributes<HTMLElement>, 'children'> & {
-  as?: React.ElementType;
+export type EmblorLabelProps<ElementType extends React.ElementType = 'label'> = PolymorphicProps<
+  ElementType,
+  EmblorLabelOwnProps
+>;
+export type EmblorLabelComponent = PolymorphicComponent<'label', EmblorLabelOwnProps>;
+
+export type EmblorTagListOwnProps = {
+  children?: React.ReactNode | ((tag: string, index: number) => React.ReactNode);
+};
+
+export type EmblorTagListProps<ElementType extends React.ElementType = 'div'> = PolymorphicProps<
+  ElementType,
+  EmblorTagListOwnProps
+>;
+export type EmblorTagListComponent = PolymorphicComponent<'div', EmblorTagListOwnProps>;
+
+export type EmblorTagOwnProps = {
   index: number;
   children?: React.ReactNode;
 };
 
-export type EmblorTagRemoveProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
-  as?: React.ElementType;
-  index: number;
+export type EmblorTagProps<ElementType extends React.ElementType = 'div'> = PolymorphicProps<
+  ElementType,
+  EmblorTagOwnProps
+>;
+export type EmblorTagComponent = PolymorphicComponent<'div', EmblorTagOwnProps>;
+
+export type EmblorTagTextOwnProps = {
   children?: React.ReactNode;
-  ariaLabel?: string;
 };
 
-export type EmblorClearTriggerProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
-  as?: React.ElementType;
+export type EmblorTagTextProps<ElementType extends React.ElementType = 'span'> = PolymorphicProps<
+  ElementType,
+  EmblorTagTextOwnProps
+>;
+export type EmblorTagTextComponent = PolymorphicComponent<'span', EmblorTagTextOwnProps>;
+
+export type EmblorInputElementType = 'input' | 'textarea' | React.JSXElementConstructor<any>;
+
+export type EmblorInputOwnProps = {
+  children?: never;
+};
+
+export type EmblorInputProps<ElementType extends EmblorInputElementType = 'input'> = EmblorInputOwnProps & {
+  as?: ElementType;
+} & Omit<
+    React.ComponentPropsWithoutRef<ElementType>,
+    keyof EmblorInputOwnProps | 'as' | 'value' | 'defaultValue' | 'name' | 'required' | 'disabled' | 'readOnly'
+  > & {
+    ref?: PolymorphicRef<ElementType>;
+  };
+export type EmblorInputComponent = {
+  <ElementType extends EmblorInputElementType = 'input'>(
+    props: EmblorInputProps<ElementType>,
+  ): React.ReactElement | null;
+};
+
+export type EmblorTagRemoveOwnProps = {
   children?: React.ReactNode;
-  ariaLabel?: string;
+  disabled?: boolean;
 };
 
-export type EmblorKeyboardNavigationProps = {
-  type: 'list' | 'input';
+export type EmblorTagRemoveProps<ElementType extends React.ElementType = 'button'> = EmblorTagRemoveOwnProps & {
+  as?: ElementType;
+} & Omit<React.ComponentPropsWithoutRef<ElementType>, keyof EmblorTagRemoveOwnProps | 'as' | 'type'> & {
+    ref?: PolymorphicRef<ElementType>;
+  };
+export type EmblorTagRemoveComponent = PolymorphicComponent<'button', EmblorTagRemoveOwnProps>;
+
+export type EmblorClearOwnProps = {
+  children?: React.ReactNode;
+  disabled?: boolean;
 };
 
-export type EmblorTagCountMode = 'total' | 'remaining';
-
-export type EmblorTagCountProps = Omit<React.HTMLAttributes<HTMLElement>, 'children'> & {
-  as?: React.ElementType;
-  mode?: EmblorTagCountMode;
-  maxTags?: number;
-  formatter?: (count: number, max?: number) => string;
-};
+export type EmblorClearProps<ElementType extends React.ElementType = 'button'> = EmblorClearOwnProps & {
+  as?: ElementType;
+} & Omit<React.ComponentPropsWithoutRef<ElementType>, keyof EmblorClearOwnProps | 'as' | 'type'> & {
+    ref?: PolymorphicRef<ElementType>;
+  };
+export type EmblorClearComponent = PolymorphicComponent<'button', EmblorClearOwnProps>;

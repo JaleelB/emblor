@@ -1,127 +1,11 @@
 import * as React from 'react';
 
-export type ControllableStateOptions<Value> = {
-  value?: Value;
-  defaultValue: Value;
-  onChange?: (value: Value) => void;
-};
-
-export function useControllableState<Value>(options: ControllableStateOptions<Value>): [Value, (next: Value) => void] {
-  const { value, defaultValue, onChange } = options;
-  const [uncontrolledValue, setUncontrolledValue] = React.useState<Value>(defaultValue);
-  const isControlled = value !== undefined;
-  const currentValue = isControlled ? (value as Value) : uncontrolledValue;
-  const onChangeRef = React.useRef(onChange);
-
-  React.useEffect(
-    function syncOnChangeRef() {
-      onChangeRef.current = onChange;
-    },
-    [onChange],
-  );
-
-  const setValue = React.useCallback(
-    function updateValue(next: Value) {
-      if (!isControlled) {
-        setUncontrolledValue(next);
-      }
-      if (onChangeRef.current) {
-        onChangeRef.current(next);
-      }
-    },
-    [isControlled],
-  );
-
-  return [currentValue, setValue];
-}
-
-export type EmblorStore<State> = {
-  getState: () => State;
-  setState: (updater: (state: State) => State) => void;
-  subscribe: (listener: () => void) => () => void;
-};
-
-export function createStore<State>(initialState: State): EmblorStore<State> {
-  let state = initialState;
-  const listeners = new Set<() => void>();
-
-  function getState(): State {
-    return state;
-  }
-
-  function setState(updater: (state: State) => State): void {
-    state = updater(state);
-    listeners.forEach(function notify(listener) {
-      listener();
-    });
-  }
-
-  function subscribe(listener: () => void): () => void {
-    listeners.add(listener);
-    return function unsubscribe() {
-      listeners.delete(listener);
-    };
-  }
-
-  return { getState, setState, subscribe };
-}
-
-export type EqualityChecker<Value> = (a: Value, b: Value) => boolean;
-
-export function useStoreSelector<State, Selection>(
-  store: EmblorStore<State>,
-  selector: (state: State) => Selection,
-  equalityFn: EqualityChecker<Selection> = Object.is,
-): Selection {
-  const subscription = React.useCallback(
-    function subscribe(listener: () => void) {
-      return store.subscribe(listener);
-    },
-    [store],
-  );
-
-  const getSnapshot = React.useCallback(
-    function snapshot() {
-      return selector(store.getState());
-    },
-    [selector, store],
-  );
-
-  const prevSelectionRef = React.useRef<Selection>(getSnapshot());
-  const selection = React.useSyncExternalStore(subscription, getSnapshot, getSnapshot);
-
-  const isEqual = equalityFn(prevSelectionRef.current, selection);
-  if (!isEqual) {
-    prevSelectionRef.current = selection;
-  }
-
-  return isEqual ? prevSelectionRef.current : selection;
-}
-
-export function useStableCallback<Args extends Array<unknown>, Result>(
-  callback: (...args: Args) => Result,
-): (...args: Args) => Result {
-  const callbackRef = React.useRef(callback);
-  React.useEffect(
-    function syncCallback() {
-      callbackRef.current = callback;
-    },
-    [callback],
-  );
-
-  return React.useCallback(function invoke(...args: Args) {
-    return callbackRef.current(...args);
-  }, []);
-}
-
 export function mergeRefs<ElementType>(...refs: Array<React.Ref<ElementType>>): (node: ElementType | null) => void {
   return function assign(node: ElementType | null) {
-    refs.forEach(function setRef(ref) {
+    refs.forEach(function assignRef(ref) {
       if (typeof ref === 'function') {
         ref(node);
-        return;
-      }
-      if (ref && typeof ref === 'object') {
+      } else if (ref && typeof ref === 'object') {
         (ref as React.MutableRefObject<ElementType | null>).current = node;
       }
     });
@@ -129,27 +13,96 @@ export function mergeRefs<ElementType>(...refs: Array<React.Ref<ElementType>>): 
 }
 
 export function composeEventHandlers<EventType extends { defaultPrevented: boolean }>(
-  first?: (event: EventType) => void,
-  second?: (event: EventType) => void,
+  consumerHandler: ((event: EventType) => void) | undefined,
+  internalHandler: (event: EventType) => void,
   options: { checkForDefaultPrevented?: boolean } = {},
 ): (event: EventType) => void {
-  return function handle(event: EventType) {
-    if (first) {
-      first(event);
-    }
+  return function composedHandler(event: EventType) {
+    consumerHandler?.(event);
     if (options.checkForDefaultPrevented && event.defaultPrevented) {
       return;
     }
-    if (second) {
-      second(event);
-    }
+    internalHandler(event);
   };
 }
 
-export function isInputEventValueEmpty(value: string): boolean {
-  return value.trim().length === 0;
+export function countCodePoints(value: string): number {
+  return Array.from(value).length;
 }
 
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
+export function arraysEqual(first: string[], second: string[]): boolean {
+  if (first === second) {
+    return true;
+  }
+  if (first.length !== second.length) {
+    return false;
+  }
+  return first.every(function same(value, index) {
+    return value === second[index];
+  });
+}
+
+export function isStringArray(value: unknown): value is string[] {
+  return (
+    Array.isArray(value) &&
+    value.every(function isString(item) {
+      return typeof item === 'string';
+    })
+  );
+}
+
+export function isComposingEvent(event: { isComposing?: boolean; nativeEvent?: { isComposing?: boolean } }): boolean {
+  return Boolean(event.isComposing || event.nativeEvent?.isComposing);
+}
+
+export function isInputLikeNode(node: unknown): node is HTMLInputElement | HTMLTextAreaElement {
+  if (!(node instanceof HTMLElement)) {
+    return false;
+  }
+  const tagName = node.tagName.toLowerCase();
+  return (
+    (tagName === 'input' || tagName === 'textarea') &&
+    typeof (node as HTMLInputElement).focus === 'function' &&
+    'value' in node &&
+    'selectionStart' in node &&
+    'selectionEnd' in node
+  );
+}
+
+export function isNativeButtonNode(node: unknown): node is HTMLButtonElement {
+  return Boolean(
+    node &&
+      typeof node === 'object' &&
+      'tagName' in node &&
+      typeof (node as { tagName?: unknown }).tagName === 'string' &&
+      (node as { tagName: string }).tagName.toLowerCase() === 'button',
+  );
+}
+
+export function resolveDirection(node: HTMLElement | null): 'ltr' | 'rtl' {
+  let current: HTMLElement | null = node;
+  while (current) {
+    const explicit = current.getAttribute('dir');
+    if (explicit === 'rtl' || explicit === 'ltr') {
+      return explicit;
+    }
+    current = current.parentElement;
+  }
+  const documentDirection = node?.ownerDocument.documentElement.getAttribute('dir');
+  return documentDirection === 'rtl' ? 'rtl' : 'ltr';
+}
+
+export function defaultAnnouncement(announcement: import('../types').EmblorAnnouncement): string {
+  switch (announcement.type) {
+    case 'add':
+      return `Added tag ${announcement.value}`;
+    case 'add-many':
+      return `Added tags ${announcement.values.join(', ')}`;
+    case 'remove':
+      return `Removed tag ${announcement.value}`;
+    case 'clear':
+      return `Cleared tags ${announcement.values.join(', ')}`;
+    case 'reject':
+      return `Could not add ${announcement.rejection.value || 'tag'}: ${announcement.rejection.reason}`;
+  }
 }

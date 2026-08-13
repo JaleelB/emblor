@@ -1,541 +1,1018 @@
 import * as React from 'react';
-import type { EmblorRootProps, TagValue } from '../../types';
+import type {
+  EmblorAnnouncement,
+  EmblorRejection,
+  EmblorRootProps,
+  EmblorRootComponent,
+  EmblorValueChangeDetails,
+} from '../../types';
 import {
+  arraysEqual,
   composeEventHandlers,
-  createStore,
+  defaultAnnouncement,
+  isInputLikeNode,
   mergeRefs,
-  useControllableState,
-  useStableCallback,
-  useStoreSelector,
+  resolveDirection,
 } from '../../utils';
-import { EmblorProvider, type EmblorAnnouncement, type EmblorStoreState } from '../tags-input-context';
+import { evaluateBatch, evaluateCandidate } from '../evaluator';
+import { EmblorProvider, type EmblorContextValue, type EmblorInputNode } from '../tags-input-context';
 
-const DEFAULT_DELIMITERS: Array<string> = [',', 'Enter'];
-const DEFAULT_INPUT_BLUR_BEHAVIOR: 'commit' | 'discard' | 'noop' = 'commit';
+const DEFAULT_DELIMITERS = [','];
+const DEFAULT_BLUR_BEHAVIOR = 'noop' as const;
+const ANNOUNCEMENT_INTERVAL_MS = 100;
 
-export const EmblorRoot = React.forwardRef<HTMLElement, EmblorRootProps>(function EmblorRoot(props, forwardedRef) {
+type OwnedState<T> = {
+  value: T;
+  controlled: boolean;
+  set: (value: T) => void;
+  reset: () => void;
+};
+
+function useOwnedState<T>({
+  controlledValue,
+  defaultValue,
+  onChange,
+  label,
+}: {
+  controlledValue: T | undefined;
+  defaultValue: T;
+  onChange?: (value: T) => void;
+  label: string;
+}): OwnedState<T> {
+  const controlled = controlledValue !== undefined;
+  const modeRef = React.useRef(controlled);
+  const defaultRef = React.useRef(defaultValue);
+  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+
+  if (modeRef.current !== controlled) {
+    throw new Error(`EmblorRoot ${label} state cannot switch between controlled and uncontrolled after mount.`);
+  }
+
+  const set = React.useCallback(
+    function setOwnedValue(next: T) {
+      if (!controlled) {
+        setUncontrolledValue(next);
+      }
+      onChange?.(next);
+    },
+    [controlled, onChange],
+  );
+
+  const reset = React.useCallback(
+    function resetOwnedValue() {
+      if (!controlled) {
+        setUncontrolledValue(defaultRef.current);
+      }
+    },
+    [controlled],
+  );
+
+  return {
+    value: controlled ? (controlledValue as T) : uncontrolledValue,
+    controlled,
+    set,
+    reset,
+  };
+}
+
+function assertStringArray(value: unknown, propName: string): asserts value is string[] {
+  if (
+    !Array.isArray(value) ||
+    value.some(function isNotString(item) {
+      return typeof item !== 'string';
+    })
+  ) {
+    throw new Error(`EmblorRoot ${propName} must be an array containing only strings.`);
+  }
+}
+
+function assertBound(value: number | undefined, propName: string): void {
+  if (value === undefined) {
+    return;
+  }
+  if (!Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+    throw new Error(`EmblorRoot ${propName} must be a finite, non-negative integer.`);
+  }
+}
+
+function resolveDelimiters(value: string[] | undefined): string[] {
+  const input = value ?? DEFAULT_DELIMITERS;
+  if (!Array.isArray(input)) {
+    throw new Error('EmblorRoot delimiters must be an array of single Unicode code points.');
+  }
+
+  const unique: string[] = [];
+  input.forEach(function validateDelimiter(delimiter) {
+    if (typeof delimiter !== 'string' || Array.from(delimiter).length !== 1) {
+      throw new Error('EmblorRoot delimiters must contain exactly one Unicode code point per entry.');
+    }
+    if (!unique.includes(delimiter)) {
+      unique.push(delimiter);
+    }
+  });
+  return unique;
+}
+
+function getDefaultAnnouncement(announcement: EmblorAnnouncement): string {
+  return defaultAnnouncement(announcement);
+}
+
+type PendingFocus =
+  | {
+      type: 'remove';
+      previous: string[];
+      requested: string[];
+      removedIndex: number;
+      origin: HTMLElement | null;
+    }
+  | {
+      type: 'clear';
+      previous: string[];
+      requested: string[];
+      origin: HTMLElement | null;
+    };
+
+type QueuedAnnouncement = {
+  id: number;
+  message: string;
+};
+
+const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(function EmblorRoot(props, forwardedRef) {
   const {
     as,
     children,
-    className,
-    onFocus,
-    onBlur,
     value,
     defaultValue,
     onValueChange,
+    inputValue,
+    defaultInputValue = '',
+    onInputValueChange,
+    transform,
+    validate,
+    invalid = false,
+    onReject,
     maxTags,
     minTags,
     allowDuplicates = false,
-    validateTag,
-    onTagAdd,
-    onTagRemove,
-    onClearAll,
-    delimiter = DEFAULT_DELIMITERS,
-    addOnPaste = true,
-    readOnly = false,
-    disabled = false,
-    placeholderWhenFull,
     minLength,
     maxLength,
-    onTagClick,
-    generateTagId,
-    onInputKeydown,
-    focusedIndex,
-    setFocusedIndex,
-    activeIndex,
-    setActiveIndex,
-    inputBlurBehavior = DEFAULT_INPUT_BLUR_BEHAVIOR,
-    labelId,
-    id,
+    delimiters: delimiterProp,
+    addOnPaste = true,
+    addOnTab = false,
+    blurBehavior = DEFAULT_BLUR_BEHAVIOR,
+    placeholderWhenFull,
+    name,
+    required = false,
+    readOnly = false,
+    disabled = false,
+    getAnnouncement,
+    dir,
+    id: consumerRootId,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    onFocusCapture,
+    onBlurCapture,
+    onInvalidCapture,
+    onReset,
+    ...rest
   } = props;
 
+  if (value !== undefined) {
+    assertStringArray(value, 'value');
+  }
+  if (defaultValue !== undefined) {
+    assertStringArray(defaultValue, 'defaultValue');
+  }
+  if (typeof inputValue !== 'undefined' && typeof inputValue !== 'string') {
+    throw new Error('EmblorRoot inputValue must be a string.');
+  }
+  if (typeof defaultInputValue !== 'string') {
+    throw new Error('EmblorRoot defaultInputValue must be a string.');
+  }
+
+  assertBound(maxTags, 'maxTags');
+  assertBound(minTags, 'minTags');
+  assertBound(minLength, 'minLength');
+  assertBound(maxLength, 'maxLength');
+  if (minTags !== undefined && maxTags !== undefined && minTags > maxTags) {
+    throw new Error('EmblorRoot minTags cannot be greater than maxTags.');
+  }
+  if (minLength !== undefined && maxLength !== undefined && minLength > maxLength) {
+    throw new Error('EmblorRoot minLength cannot be greater than maxLength.');
+  }
+
+  const delimiters = React.useMemo(() => resolveDelimiters(delimiterProp), [delimiterProp]);
   const Component = (as ?? 'div') as React.ElementType;
-  const reactId = React.useId();
-  const sanitizedReactId = React.useMemo(
-    function memoizeId() {
-      return reactId.replace(/:/g, '');
-    },
-    [reactId],
-  );
-  const rootId = React.useMemo(
-    function resolveRootId() {
-      return id ?? `emblor-${sanitizedReactId}`;
-    },
-    [id, sanitizedReactId],
-  );
-  const inputId = `${rootId}-input`;
-  const listId = `${rootId}-list`;
+  const reactId = React.useId().replace(/:/g, '');
+  const rootId = consumerRootId ?? `emblor-${reactId}`;
+  const generatedInputId = `${rootId}-input`;
 
-  const [tagValues, setTagValues] = useControllableState<Array<TagValue>>({
-    value,
+  const tagsState = useOwnedState<string[]>({
+    controlledValue: value,
     defaultValue: defaultValue ?? [],
-    onChange: onValueChange,
+    onChange: undefined,
+    label: 'value',
   });
-
-  const [focusedIndexState, setFocusedIndexState] = useControllableState<number | null>({
-    value: focusedIndex !== undefined ? focusedIndex : undefined,
-    defaultValue: null,
-    onChange: setFocusedIndex,
+  const draftState = useOwnedState<string>({
+    controlledValue: inputValue,
+    defaultValue: defaultInputValue,
+    onChange: onInputValueChange,
+    label: 'inputValue',
   });
+  const values = tagsState.value;
+  const draft = draftState.value;
 
-  const [activeIndexState, setActiveIndexState] = useControllableState<number | null>({
-    value: activeIndex !== undefined ? activeIndex : undefined,
-    defaultValue: null,
-    onChange: setActiveIndex,
-  });
-
-  const storeRef = React.useRef(
-    createStore<EmblorStoreState>({
-      tags: [],
-      inputValue: '',
-      isFocusWithin: false,
-      focusedIndex: focusedIndexState,
-      activeIndex: activeIndexState,
-      isInputFocused: false,
-      lastAction: { type: 'none' },
-      validationError: null,
-    }),
-  );
-  const store = storeRef.current;
-
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const listRef = React.useRef<HTMLElement | null>(null);
   const rootRef = React.useRef<HTMLElement | null>(null);
-  const tagRefs = React.useRef<Map<number, HTMLElement | null>>(new Map());
+  const inputRef = React.useRef<EmblorInputNode | null>(null);
+  const inputIdRef = React.useRef(generatedInputId);
+  const tagListRef = React.useRef<HTMLElement | null>(null);
+  const inputRegistrationRef = React.useRef<EmblorInputNode | null>(null);
+  const tagRegistryRef = React.useRef(new Map<number, { node: HTMLElement; token: symbol }>());
+  const tagListRegistrationRef = React.useRef<HTMLElement | null>(null);
+  const boundaryNodesRef = React.useRef(new Set<HTMLElement>());
+  const labelRegistryRef = React.useRef(new Map<symbol, string>());
+  const [rootElement, setRootElement] = React.useState<HTMLElement | null>(null);
+  const [inputId, setInputId] = React.useState(generatedInputId);
+  const [labelIds, setLabelIds] = React.useState<string[]>([]);
+  const [actualFocusedIndex, setActualFocusedIndex] = React.useState<number | null>(null);
+  const [focusWithin, setFocusWithin] = React.useState(false);
+  const [lastRejection, setLastRejection] = React.useState<EmblorRejection | null>(null);
+  const [liveMessage, setLiveMessage] = React.useState('');
+  const [liveSequence, setLiveSequence] = React.useState(0);
+  const [announcementQueue, setAnnouncementQueue] = React.useState<QueuedAnnouncement[]>([]);
+  const [registryVersion, setRegistryVersion] = React.useState(0);
+  const mountedRef = React.useRef(true);
+  const pendingFocusRef = React.useRef<PendingFocus | null>(null);
+  const blurSequenceRef = React.useRef(0);
+  const announcementIdRef = React.useRef(0);
+  const displayedAnnouncementIdRef = React.useRef<number | null>(null);
 
-  const getTagValue = React.useCallback(
-    function resolveTagValue(index: number): string | null {
-      return tagValues[index] ?? null;
+  const transientInvalid = lastRejection !== null;
+  const requiredInvalid = required && !disabled && values.length === 0;
+  const hasInvalid = Boolean(invalid || transientInvalid || requiredInvalid);
+  const maxReached = maxTags !== undefined && values.length >= maxTags;
+
+  const setRootNode = React.useCallback(function setRootNode(node: HTMLElement | null) {
+    rootRef.current = node;
+    setRootElement(node);
+  }, []);
+
+  const rootMergedRef = React.useMemo(
+    function createRootRef() {
+      return mergeRefs(setRootNode, forwardedRef);
     },
-    [tagValues],
+    [forwardedRef, setRootNode],
   );
 
-  const generateTagIdCallback = useStableCallback(function resolveTagId(tag: string, index: number): string {
-    if (generateTagId) {
-      return generateTagId(tag, index);
+  const getDirection = React.useCallback(function getRootDirection(): 'ltr' | 'rtl' {
+    return resolveDirection(rootRef.current);
+  }, []);
+
+  const registerBoundaryNode = React.useCallback(function registerBoundaryNode(node: HTMLElement | null): () => void {
+    if (!node) {
+      return function noop() {};
     }
-    return `${rootId}-tag-${index}`;
-  });
+    boundaryNodesRef.current.add(node);
+    return function unregisterBoundaryNode() {
+      boundaryNodesRef.current.delete(node);
+    };
+  }, []);
 
-  const getTagId = React.useCallback(
-    function computeTagId(index: number): string {
-      const tag = tagValues[index];
-      if (tag === undefined) {
-        return `${rootId}-tag-${index}`;
-      }
-      return generateTagIdCallback(tag, index);
-    },
-    [generateTagIdCallback, rootId, tagValues],
-  );
-
-  const setInputValue = React.useCallback(
-    function updateInputValue(next: string) {
-      store.setState(function apply(prev) {
-        if (prev.inputValue === next) {
-          return prev;
-        }
-        return { ...prev, inputValue: next };
-      });
-    },
-    [store],
-  );
-
-  const setInputFocused = React.useCallback(
-    function updateInputFocused(next: boolean) {
-      store.setState(function apply(prev) {
-        if (prev.isInputFocused === next) {
-          return prev;
-        }
-        return { ...prev, isInputFocused: next };
-      });
-    },
-    [store],
-  );
-
-  const setFocusWithin = React.useCallback(
-    function updateFocusWithin(next: boolean) {
-      store.setState(function apply(prev) {
-        if (prev.isFocusWithin === next) {
-          return prev;
-        }
-        return { ...prev, isFocusWithin: next };
-      });
-    },
-    [store],
-  );
-
-  React.useEffect(
-    function syncFocusIndex() {
-      store.setState(function apply(prev) {
-        if (prev.focusedIndex === focusedIndexState) {
-          return prev;
-        }
-        return { ...prev, focusedIndex: focusedIndexState };
-      });
-    },
-    [focusedIndexState, store],
-  );
-
-  React.useEffect(
-    function syncActiveIndex() {
-      store.setState(function apply(prev) {
-        if (prev.activeIndex === activeIndexState) {
-          return prev;
-        }
-        return { ...prev, activeIndex: activeIndexState };
-      });
-    },
-    [activeIndexState, store],
-  );
-
-  const syncTags = React.useCallback(
-    function createTagRecords(values: Array<string>) {
-      return values.map(function mapToTag(value: string, index: number) {
-        return { id: generateTagIdCallback(value, index), value };
-      });
-    },
-    [generateTagIdCallback],
-  );
-
-  React.useEffect(
-    function updateTagsInStore() {
-      store.setState(function apply(prev) {
-        const nextTags = syncTags(tagValues);
-        return { ...prev, tags: nextTags };
-      });
-    },
-    [store, syncTags, tagValues],
-  );
-
-  const validateTagText = useStableCallback(function runValidation(text: string): { valid: boolean; value: string } {
-    let normalized = text.trim();
-    if (normalized.length === 0) {
-      return { valid: false, value: normalized };
+  const isWithinRoot = React.useCallback(function isWithinRoot(node: Node | null): boolean {
+    if (!node) {
+      return false;
     }
-    if (minLength !== undefined && normalized.length < minLength) {
-      return { valid: false, value: normalized };
+    if (rootRef.current?.contains(node)) {
+      return true;
     }
-    if (maxLength !== undefined && normalized.length > maxLength) {
-      return { valid: false, value: normalized.slice(0, maxLength) };
-    }
-    if (validateTag) {
-      const result = validateTag(normalized);
-      if (typeof result === 'string') {
-        normalized = result;
-      } else if (!result) {
-        return { valid: false, value: normalized };
+    for (const boundary of boundaryNodesRef.current) {
+      if (boundary.contains(node)) {
+        return true;
       }
     }
-    if (!allowDuplicates) {
-      const exists = tagValues.some(function compare(existing) {
-        return existing === normalized;
-      });
-      if (exists) {
-        return { valid: false, value: normalized };
-      }
-    }
-    if (maxTags !== undefined && tagValues.length >= maxTags) {
-      return { valid: false, value: normalized };
-    }
-    return { valid: true, value: normalized };
-  });
+    return false;
+  }, []);
 
-  const commitTag = React.useCallback(
-    function handleCommit(rawValue: string, meta?: { source: 'keyboard' | 'paste' | 'blur' }): boolean {
-      if (disabled || readOnly) {
-        return false;
+  const registerInputNode = React.useCallback(function registerInputNode(node: HTMLElement | null, id: string) {
+    if (node) {
+      if (!isInputLikeNode(node)) {
+        throw new Error(
+          'EmblorInput must render an input-like element or a ref-forwarding compatible custom component.',
+        );
       }
-      const validation = validateTagText(rawValue);
-      if (!validation.valid) {
-        store.setState(function apply(prev) {
-          return { ...prev, validationError: 'invalid' };
+      if (inputRegistrationRef.current && inputRegistrationRef.current !== node) {
+        throw new Error('EmblorRoot allows exactly one EmblorInput.');
+      }
+      inputRegistrationRef.current = node;
+      inputRef.current = node;
+      inputIdRef.current = id;
+      boundaryNodesRef.current.add(node);
+      setInputId(function updateInputId(previous) {
+        return previous === id ? previous : id;
+      });
+      return;
+    }
+
+    inputRegistrationRef.current = null;
+    inputRef.current = null;
+    setRegistryVersion(function increment(version) {
+      return version + 1;
+    });
+  }, []);
+
+  const registerTagListNode = React.useCallback(function registerTagListNode(node: HTMLElement | null): () => void {
+    if (!node) {
+      return function noop() {};
+    }
+    if (tagListRegistrationRef.current && tagListRegistrationRef.current !== node) {
+      throw new Error('EmblorRoot allows at most one EmblorTagList.');
+    }
+    tagListRegistrationRef.current = node;
+    tagListRef.current = node;
+    boundaryNodesRef.current.add(node);
+    setRegistryVersion(function increment(version) {
+      return version + 1;
+    });
+    return function unregisterTagList() {
+      if (tagListRegistrationRef.current === node) {
+        tagListRegistrationRef.current = null;
+        tagListRef.current = null;
+        boundaryNodesRef.current.delete(node);
+        setRegistryVersion(function increment(version) {
+          return version + 1;
         });
+      }
+    };
+  }, []);
+
+  const registerTagNode = React.useCallback(function registerTagNode(
+    index: number,
+    node: HTMLElement | null,
+    token: symbol,
+  ): () => void {
+    if (!node) {
+      return function noop() {};
+    }
+    const existing = tagRegistryRef.current.get(index);
+    if (existing && existing.token !== token) {
+      throw new Error(`EmblorTag index ${index} is registered more than once.`);
+    }
+    tagRegistryRef.current.set(index, { node, token });
+    boundaryNodesRef.current.add(node);
+    setRegistryVersion(function increment(version) {
+      return version + 1;
+    });
+    return function unregisterTag() {
+      const current = tagRegistryRef.current.get(index);
+      if (current?.token === token) {
+        tagRegistryRef.current.delete(index);
+        boundaryNodesRef.current.delete(node);
+        setRegistryVersion(function increment(version) {
+          return version + 1;
+        });
+      }
+    };
+  }, []);
+
+  const registerLabel = React.useCallback(function registerLabel(token: symbol, id: string): () => void {
+    labelRegistryRef.current.set(token, id);
+    setLabelIds(Array.from(labelRegistryRef.current.values()));
+    return function unregisterLabel() {
+      if (labelRegistryRef.current.delete(token)) {
+        setLabelIds(Array.from(labelRegistryRef.current.values()));
+      }
+    };
+  }, []);
+
+  const getMountedTagIndexes = React.useCallback(function getMountedTagIndexes(): number[] {
+    return Array.from(tagRegistryRef.current.keys()).sort(function ascending(first, second) {
+      return first - second;
+    });
+  }, []);
+
+  const focusTag = React.useCallback(
+    function focusTagByIndex(index: number) {
+      const node = tagRegistryRef.current.get(index)?.node;
+      if (!node || disabled) {
+        return;
+      }
+      pendingFocusRef.current = null;
+      node.focus();
+      setActualFocusedIndex(index);
+    },
+    [disabled],
+  );
+
+  const focusInput = React.useCallback(function focusInputNode() {
+    pendingFocusRef.current = null;
+    inputRef.current?.focus();
+    setActualFocusedIndex(null);
+  }, []);
+
+  const setDraft = React.useCallback(
+    function setRootDraft(next: string) {
+      setLastRejection(null);
+      draftState.set(next);
+    },
+    [draftState],
+  );
+
+  const announce = React.useCallback(
+    function announceMutation(announcement: EmblorAnnouncement) {
+      const message = getAnnouncement ? getAnnouncement(announcement) : getDefaultAnnouncement(announcement);
+      if (typeof message !== 'string') {
+        throw new Error('EmblorRoot getAnnouncement must return a string.');
+      }
+      if (message.length === 0) {
+        return;
+      }
+      const id = announcementIdRef.current + 1;
+      announcementIdRef.current = id;
+      setAnnouncementQueue(function enqueue(queue) {
+        return [...queue, { id, message }];
+      });
+    },
+    [getAnnouncement],
+  );
+
+  const announceRejection = React.useCallback(
+    function announceRejectionEvent(rejection: EmblorRejection) {
+      setLastRejection(rejection);
+      onReject?.(rejection);
+      announce({ type: 'reject', rejection });
+    },
+    [announce, onReject],
+  );
+
+  const setTags = React.useCallback(
+    function setRootTags(next: string[], details: EmblorValueChangeDetails) {
+      if (!tagsState.controlled) {
+        tagsState.set(next);
+      }
+      onValueChange?.(next, details);
+    },
+    [onValueChange, tagsState],
+  );
+
+  const commitDraft = React.useCallback(
+    function commitRootDraft(rawValue: string, source: 'keyboard' | 'blur'): boolean {
+      if (disabled || readOnly || rawValue.trim().length === 0) {
         return false;
       }
-      const committedValue = validation.value;
-      const nextValues = [...tagValues, committedValue];
-      const committedIndex = nextValues.length - 1;
-      setTagValues(nextValues);
-      setInputValue('');
-      setFocusedIndexState(committedIndex);
-      setActiveIndexState(committedIndex);
-      store.setState(function apply(prev) {
-        const announcement: EmblorAnnouncement = {
-          type: 'tag-added',
-          value: committedValue,
-          index: committedIndex,
-        };
-        return {
-          ...prev,
-          inputValue: '',
-          focusedIndex: committedIndex,
-          activeIndex: committedIndex,
-          lastAction: announcement,
-          validationError: null,
-        };
+      const result = evaluateCandidate({
+        rawValue,
+        values,
+        source,
+        minLength,
+        maxLength,
+        maxTags,
+        allowDuplicates,
+        transform,
+        validate,
       });
-      if (onTagAdd) {
-        onTagAdd(committedValue, committedIndex);
+      if (!result.accepted) {
+        announceRejection(result.rejection);
+        return false;
       }
+
+      const nextValues = [...values, result.value];
+      const details: EmblorValueChangeDetails = {
+        type: 'add',
+        value: result.value,
+        index: values.length,
+        source,
+      };
+      setTags(nextValues, details);
+      setDraft('');
+      setLastRejection(null);
+      announce({ type: 'add', value: result.value });
       return true;
     },
     [
       allowDuplicates,
+      announce,
+      announceRejection,
       disabled,
-      onTagAdd,
+      maxLength,
+      maxTags,
+      minLength,
       readOnly,
-      setActiveIndexState,
-      setFocusedIndexState,
-      setInputValue,
-      setTagValues,
-      store,
-      tagValues,
-      validateTagText,
+      setDraft,
+      setTags,
+      transform,
+      validate,
+      values,
+    ],
+  );
+
+  const pasteDraft = React.useCallback(
+    function pasteRootDraft(
+      prospectiveDraft: string,
+      sourceDraft: string,
+    ): { accepted: boolean; rejected: boolean } | null {
+      if (disabled || readOnly) {
+        return null;
+      }
+      const pattern =
+        delimiters.length > 0
+          ? new RegExp(
+              delimiters
+                .map(function escape(delimiter) {
+                  return delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                })
+                .join('|'),
+            )
+          : null;
+      const candidates = pattern ? prospectiveDraft.split(pattern) : [prospectiveDraft];
+      const batch = evaluateBatch({
+        candidates,
+        values,
+        minLength,
+        maxLength,
+        maxTags,
+        allowDuplicates,
+        transform,
+        validate,
+        source: 'paste',
+      });
+      batch.rejections.forEach(function report(rejection) {
+        announceRejection(rejection);
+      });
+      if (batch.values.length === 0) {
+        return { accepted: false, rejected: batch.rejections.length > 0 };
+      }
+
+      const details: EmblorValueChangeDetails = {
+        type: 'add-many',
+        values: batch.values,
+        startIndex: values.length,
+        source: 'paste',
+      };
+      setTags([...values, ...batch.values], details);
+      setDraft('');
+      setLastRejection(null);
+      announce({ type: 'add-many', values: batch.values });
+      void sourceDraft;
+      return { accepted: true, rejected: batch.rejections.length > 0 };
+    },
+    [
+      allowDuplicates,
+      announce,
+      announceRejection,
+      delimiters,
+      disabled,
+      maxLength,
+      maxTags,
+      minLength,
+      readOnly,
+      setDraft,
+      setTags,
+      transform,
+      validate,
+      values,
     ],
   );
 
   const removeTag = React.useCallback(
-    function handleRemove(indexToRemove: number) {
-      if (disabled || readOnly) {
+    function removeRootTag(index: number, source: 'keyboard' | 'pointer') {
+      if (disabled || readOnly || (minTags !== undefined && values.length <= minTags)) {
         return;
       }
-      if (minTags !== undefined && tagValues.length <= minTags) {
+      const removedValue = values[index];
+      if (removedValue === undefined) {
         return;
       }
-      const existing = tagValues[indexToRemove];
-      if (existing === undefined) {
-        return;
-      }
-      const nextValues = tagValues.filter(function filterValue(_, index) {
-        return index !== indexToRemove;
+      const nextValues = values.filter(function keep(_, valueIndex) {
+        return valueIndex !== index;
       });
-      setTagValues(nextValues);
-      const nextLength = nextValues.length;
-      const resolvedFocused = focusedIndexState !== null ? Math.min(focusedIndexState, nextLength - 1) : null;
-      const resolvedActive = activeIndexState !== null ? Math.min(activeIndexState, nextLength - 1) : null;
-      const nextFocused = resolvedFocused !== null && resolvedFocused >= 0 ? resolvedFocused : null;
-      const nextActive = resolvedActive !== null && resolvedActive >= 0 ? resolvedActive : null;
-      setFocusedIndexState(nextFocused);
-      setActiveIndexState(nextActive);
-      store.setState(function apply(prev) {
-        const announcement: EmblorAnnouncement = {
-          type: 'tag-removed',
-          value: existing,
-          index: indexToRemove,
-        };
-        return {
-          ...prev,
-          focusedIndex: nextFocused,
-          activeIndex: nextActive,
-          lastAction: announcement,
-          validationError: null,
-        };
-      });
-      if (onTagRemove) {
-        onTagRemove(existing, indexToRemove);
-      }
+      pendingFocusRef.current = {
+        type: 'remove',
+        previous: [...values],
+        requested: nextValues,
+        removedIndex: index,
+        origin: (rootRef.current?.ownerDocument.activeElement as HTMLElement | null) ?? null,
+      };
+      setTags(nextValues, { type: 'remove', value: removedValue, index, source });
+      setLastRejection(null);
+      announce({ type: 'remove', value: removedValue });
     },
-    [
-      activeIndexState,
-      disabled,
-      focusedIndexState,
-      minTags,
-      onTagRemove,
-      readOnly,
-      setActiveIndexState,
-      setFocusedIndexState,
-      setTagValues,
-      store,
-      tagValues,
-    ],
+    [announce, disabled, minTags, readOnly, setTags, values],
   );
 
   const clearTags = React.useCallback(
-    function handleClear() {
-      if (disabled || readOnly) {
+    function clearRootTags(source: 'keyboard' | 'pointer') {
+      if (disabled || readOnly || values.length === 0 || (minTags !== undefined && minTags > 0)) {
         return;
       }
-      setTagValues([]);
-      setFocusedIndexState(null);
-      setActiveIndexState(null);
-      store.setState(function apply(prev) {
-        const announcement: EmblorAnnouncement = { type: 'cleared' };
-        return {
-          ...prev,
-          inputValue: '',
-          focusedIndex: null,
-          activeIndex: null,
-          lastAction: announcement,
-          validationError: null,
-        };
-      });
-      if (onClearAll) {
-        onClearAll();
-      }
+      pendingFocusRef.current = {
+        type: 'clear',
+        previous: [...values],
+        requested: [],
+        origin: (rootRef.current?.ownerDocument.activeElement as HTMLElement | null) ?? null,
+      };
+      setTags([], { type: 'clear', values: [...values], source });
+      setDraft('');
+      setLastRejection(null);
+      announce({ type: 'clear', values: [...values] });
     },
-    [disabled, onClearAll, readOnly, setActiveIndexState, setFocusedIndexState, setTagValues, store],
+    [announce, disabled, minTags, readOnly, setDraft, setTags, values],
   );
 
-  const focusTag = React.useCallback(
-    function focusByIndex(index: number) {
-      const node = tagRefs.current.get(index);
-      if (node) {
-        node.focus();
+  const setInputFocused = React.useCallback(function setInputFocusedState() {
+    setActualFocusedIndex(null);
+  }, []);
+
+  const setTagFocused = React.useCallback(function setTagFocusedState(index: number | null) {
+    setActualFocusedIndex(index);
+  }, []);
+
+  const handleInputBlur = React.useCallback(
+    function handleRootInputBlur(event: React.FocusEvent<HTMLElement>, cancelled: boolean) {
+      setActualFocusedIndex(null);
+      if (cancelled || disabled || readOnly || blurBehavior === 'noop') {
+        return;
       }
-      setFocusedIndexState(index);
-      setActiveIndexState(index);
-      store.setState(function apply(prev) {
-        return { ...prev, focusedIndex: index, activeIndex: index };
-      });
+      const sequence = blurSequenceRef.current + 1;
+      blurSequenceRef.current = sequence;
+      const relatedTarget = event.relatedTarget as Node | null;
+      if (relatedTarget && isWithinRoot(relatedTarget)) {
+        return;
+      }
+      const runAfterFocusSettles = function runAfterFocusSettles() {
+        if (!mountedRef.current || blurSequenceRef.current !== sequence) {
+          return;
+        }
+        const activeElement = rootRef.current?.ownerDocument.activeElement;
+        if (activeElement && isWithinRoot(activeElement)) {
+          return;
+        }
+        if (blurBehavior === 'commit') {
+          commitDraft(draft, 'blur');
+        } else if (blurBehavior === 'discard') {
+          setDraft('');
+        }
+      };
+      if (typeof queueMicrotask === 'function') {
+        queueMicrotask(runAfterFocusSettles);
+      } else {
+        setTimeout(runAfterFocusSettles, 0);
+      }
     },
-    [setActiveIndexState, setFocusedIndexState, store],
+    [blurBehavior, commitDraft, disabled, draft, isWithinRoot, readOnly, setDraft],
   );
 
-  const focusInput = React.useCallback(function focusInputNode() {
-    if (inputRef.current) {
-      inputRef.current.focus();
+  const resetUncontrolledState = React.useCallback(
+    function resetUncontrolledState() {
+      pendingFocusRef.current = null;
+      setLastRejection(null);
+      setLiveMessage('');
+      setAnnouncementQueue([]);
+      if (!tagsState.controlled) {
+        tagsState.reset();
+      }
+      if (!draftState.controlled) {
+        draftState.reset();
+      }
+    },
+    [draftState, tagsState],
+  );
+
+  const handleFocusCapture = React.useCallback(function handleFocusCapture(event: React.FocusEvent<HTMLElement>) {
+    setFocusWithin(true);
+    const pending = pendingFocusRef.current;
+    if (pending && event.target !== pending.origin) {
+      pendingFocusRef.current = null;
     }
   }, []);
 
-  const registerTagNode = React.useCallback(function register(index: number, node: HTMLElement | null) {
-    if (node) {
-      tagRefs.current.set(index, node);
-      return;
-    }
-    tagRefs.current.delete(index);
+  const handleBlurCapture = React.useCallback(
+    function handleBlurCapture(event: React.FocusEvent<HTMLElement>) {
+      const relatedTarget = event.relatedTarget as Node | null;
+      if (relatedTarget && isWithinRoot(relatedTarget)) {
+        return;
+      }
+      const settle = function settleRootFocus() {
+        const activeElement = rootRef.current?.ownerDocument.activeElement;
+        if (!activeElement || !isWithinRoot(activeElement)) {
+          setFocusWithin(false);
+          setActualFocusedIndex(null);
+        }
+      };
+      if (typeof queueMicrotask === 'function') {
+        queueMicrotask(settle);
+      } else {
+        setTimeout(settle, 0);
+      }
+    },
+    [isWithinRoot],
+  );
+
+  const handleInvalidCapture = React.useCallback(
+    function handleInvalidCapture(event: React.InvalidEvent<HTMLElement>) {
+      if (event.target === inputRef.current || !isWithinRoot(event.target)) {
+        inputRef.current?.focus();
+      }
+    },
+    [isWithinRoot],
+  );
+
+  const handleReset = React.useCallback(
+    function handleReset(event: React.FormEvent<HTMLElement>) {
+      if (!event.defaultPrevented) {
+        resetUncontrolledState();
+      }
+    },
+    [resetUncontrolledState],
+  );
+
+  React.useEffect(function markMounted() {
+    mountedRef.current = true;
+    return function markUnmounted() {
+      mountedRef.current = false;
+    };
   }, []);
 
-  const providerValue = React.useMemo(
-    function memoizeContext() {
+  React.useLayoutEffect(
+    function drainAnnouncementQueue() {
+      const next = announcementQueue[0];
+      if (!next) {
+        return;
+      }
+      if (displayedAnnouncementIdRef.current !== next.id) {
+        displayedAnnouncementIdRef.current = next.id;
+        setLiveMessage(next.message);
+        setLiveSequence(function increment(sequence) {
+          return sequence + 1;
+        });
+      }
+      const timer = setTimeout(function advanceAnnouncementQueue() {
+        setAnnouncementQueue(function removeDisplayed(queue) {
+          return queue[0]?.id === next.id ? queue.slice(1) : queue;
+        });
+      }, ANNOUNCEMENT_INTERVAL_MS);
+      return function cancelAdvance() {
+        clearTimeout(timer);
+      };
+    },
+    [announcementQueue],
+  );
+
+  React.useEffect(
+    function listenForNativeFormReset() {
+      const root = rootRef.current;
+      const form = root instanceof HTMLFormElement ? root : root?.closest('form');
+      if (!form) {
+        return;
+      }
+      const resetListener = function resetListener(event: Event) {
+        if (!event.defaultPrevented) {
+          resetUncontrolledState();
+        }
+      };
+      form.addEventListener('reset', resetListener);
+      return function cleanupResetListener() {
+        form.removeEventListener('reset', resetListener);
+      };
+    },
+    [resetUncontrolledState, rootElement],
+  );
+
+  React.useLayoutEffect(
+    function verifyInputRegistration() {
+      if (!inputRegistrationRef.current) {
+        throw new Error('EmblorRoot requires exactly one EmblorInput.');
+      }
+    },
+    [children, registryVersion, rootElement],
+  );
+
+  React.useLayoutEffect(
+    function restorePendingFocus() {
+      const pending = pendingFocusRef.current;
+      if (!pending) {
+        return;
+      }
+      if (!arraysEqual(values, pending.requested)) {
+        if (tagsState.controlled && !arraysEqual(values, pending.previous)) {
+          pendingFocusRef.current = null;
+        }
+        return;
+      }
+      const ownerDocument = rootRef.current?.ownerDocument;
+      const documentActiveElement = ownerDocument?.activeElement as HTMLElement | null;
+      const focusStayedOnOrigin = Boolean(pending.origin && documentActiveElement === pending.origin);
+      const focusFellAwayWithOrigin = Boolean(
+        pending.origin &&
+          !pending.origin.isConnected &&
+          ownerDocument &&
+          (documentActiveElement === ownerDocument.body || documentActiveElement === ownerDocument.documentElement),
+      );
+      if (!focusStayedOnOrigin && !focusFellAwayWithOrigin) {
+        pendingFocusRef.current = null;
+        return;
+      }
+      if (pending.type === 'clear') {
+        pendingFocusRef.current = null;
+        inputRef.current?.focus();
+        setActualFocusedIndex(null);
+        return;
+      }
+      const mountedIndexes = getMountedTagIndexes();
+      const nextIndex =
+        mountedIndexes.find(function findNext(index) {
+          return index >= pending.removedIndex;
+        }) ??
+        [...mountedIndexes].reverse().find(function findPrevious(index) {
+          return index < pending.removedIndex;
+        });
+      pendingFocusRef.current = null;
+      if (nextIndex === undefined) {
+        inputRef.current?.focus();
+        setActualFocusedIndex(null);
+      } else {
+        const node = tagRegistryRef.current.get(nextIndex)?.node;
+        node?.focus();
+        setActualFocusedIndex(nextIndex);
+      }
+    },
+    [getMountedTagIndexes, registryVersion, tagsState.controlled, values],
+  );
+
+  const providerValue = React.useMemo<EmblorContextValue>(
+    function createProviderValue() {
       return {
-        store,
+        values,
+        draft,
         disabled,
         readOnly,
-        allowDuplicates,
+        required,
+        requiredInvalid,
+        invalid,
+        transientInvalid,
+        hasInvalid,
+        maxReached,
         maxTags,
         minTags,
-        placeholderWhenFull,
         minLength,
         maxLength,
-        delimiter,
+        allowDuplicates,
+        delimiters,
         addOnPaste,
-        inputBlurBehavior,
-        rootId,
-        listId,
+        addOnTab,
+        blurBehavior,
+        placeholderWhenFull,
+        name,
         inputId,
-        labelId,
-        getTagId,
-        setInputValue,
-        commitTag,
+        labelIds,
+        actualFocusedIndex,
+        inputRef,
+        rootRef,
+        setDraft,
+        commitDraft,
+        pasteDraft,
         removeTag,
         clearTags,
-        focusTag,
-        setFocusedIndex: setFocusedIndexState,
-        setActiveIndex: setActiveIndexState,
         setInputFocused,
+        setTagFocused,
+        handleInputBlur,
+        focusTag,
         focusInput,
-        inputRef,
-        listRef,
-        getTagValue,
-        onTagClick,
-        onInputKeydown,
+        getMountedTagIndexes,
+        getDirection,
+        isWithinRoot,
+        registerInputNode,
+        registerTagListNode,
         registerTagNode,
+        registerBoundaryNode,
+        registerLabel,
+        announce,
+        announceRejection,
+        onValueChange,
+        getTagValue: function getTagValue(index: number) {
+          return values[index] ?? '';
+        },
       };
     },
     [
+      actualFocusedIndex,
       addOnPaste,
+      addOnTab,
       allowDuplicates,
+      announce,
+      announceRejection,
+      blurBehavior,
       clearTags,
-      commitTag,
-      delimiter,
+      commitDraft,
+      delimiters,
       disabled,
+      draft,
       focusInput,
       focusTag,
-      getTagId,
-      getTagValue,
-      inputBlurBehavior,
+      getDirection,
+      getMountedTagIndexes,
+      handleInputBlur,
+      hasInvalid,
       inputId,
-      inputRef,
-      labelId,
-      listId,
-      listRef,
+      invalid,
+      isWithinRoot,
+      labelIds,
       maxLength,
+      maxReached,
       maxTags,
       minLength,
       minTags,
-      onInputKeydown,
-      onTagClick,
+      name,
+      onValueChange,
+      pasteDraft,
       placeholderWhenFull,
       readOnly,
+      registerBoundaryNode,
+      registerInputNode,
+      registerLabel,
+      registerTagListNode,
       registerTagNode,
-      rootId,
-      setActiveIndexState,
-      setFocusedIndexState,
+      removeTag,
+      required,
+      requiredInvalid,
+      setDraft,
       setInputFocused,
-      setInputValue,
-      store,
+      setTagFocused,
+      transientInvalid,
+      values,
     ],
   );
 
-  const handleFocusCapture = React.useCallback(
-    function onFocusCaptureHandler() {
-      setFocusWithin(true);
-    },
-    [setFocusWithin],
-  );
+  const hiddenValues =
+    name === undefined
+      ? null
+      : values.map(function renderFormValue(tag, index) {
+          return (
+            <input
+              key={`${name}-${index}`}
+              type="hidden"
+              name={name}
+              value={tag}
+              disabled={disabled}
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+          );
+        });
 
-  const handleBlurCapture = React.useCallback(
-    function onBlurCaptureHandler(event: React.FocusEvent<HTMLElement>) {
-      const relatedTarget = event.relatedTarget as HTMLElement | null;
-      if (rootRef.current && relatedTarget && rootRef.current.contains(relatedTarget)) {
-        return;
-      }
-      setFocusWithin(false);
-    },
-    [setFocusWithin],
-  );
-
-  const dataState = React.useMemo(
-    function computeDataState() {
-      if (disabled) {
-        return 'disabled';
-      }
-      if (readOnly) {
-        return 'readonly';
-      }
-      return 'active';
-    },
-    [disabled, readOnly],
-  );
-
-  const hasError = useStoreSelector(store, function selectError(state) {
-    return state.validationError !== null;
-  });
-
-  const isFocusWithin = useStoreSelector(store, function selectFocusWithin(state) {
-    return state.isFocusWithin;
-  });
-
-  const mergedRef = mergeRefs(rootRef, forwardedRef);
+  const autoLabelledBy = labelIds.length > 0 ? labelIds.join(' ') : undefined;
+  const rootState = disabled ? 'disabled' : readOnly ? 'readonly' : hasInvalid ? 'invalid' : 'active';
+  const rootProps = rest as Record<string, unknown>;
 
   return (
     <EmblorProvider value={providerValue}>
       <Component
-        ref={mergedRef as React.Ref<HTMLElement>}
-        id={rootId}
-        className={className}
-        data-state={dataState}
+        {...rootProps}
+        ref={rootMergedRef}
+        id={consumerRootId}
+        role="group"
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy ?? autoLabelledBy}
+        aria-invalid={hasInvalid || undefined}
+        aria-disabled={disabled || undefined}
+        data-state={rootState}
         data-disabled={disabled ? '' : undefined}
         data-readonly={readOnly ? '' : undefined}
-        data-has-error={hasError ? '' : undefined}
-        data-focus-within={isFocusWithin ? '' : undefined}
-        onFocusCapture={composeEventHandlers(onFocus, handleFocusCapture)}
-        onBlurCapture={composeEventHandlers(onBlur, handleBlurCapture)}
-        aria-labelledby={labelId}
-        role="group"
+        data-invalid={hasInvalid ? '' : undefined}
+        data-max-reached={maxReached ? '' : undefined}
+        data-focus-within={focusWithin ? '' : undefined}
+        dir={dir}
+        disabled={Component === 'fieldset' ? disabled : undefined}
+        onFocus={rootProps.onFocus as React.FocusEventHandler<HTMLElement> | undefined}
+        onBlur={rootProps.onBlur as React.FocusEventHandler<HTMLElement> | undefined}
+        onFocusCapture={composeEventHandlers(onFocusCapture, handleFocusCapture)}
+        onBlurCapture={composeEventHandlers(onBlurCapture, handleBlurCapture)}
+        onInvalidCapture={composeEventHandlers(onInvalidCapture, handleInvalidCapture)}
+        onReset={composeEventHandlers(onReset, handleReset)}
       >
         {children}
+        {hiddenValues}
+        <span
+          key={liveSequence}
+          aria-live="polite"
+          aria-atomic="true"
+          data-emblor-live-region=""
+          style={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            padding: 0,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0 0 0 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          {liveMessage}
+        </span>
       </Component>
     </EmblorProvider>
   );
 });
+
+export const EmblorRoot = EmblorRootImpl as EmblorRootComponent;

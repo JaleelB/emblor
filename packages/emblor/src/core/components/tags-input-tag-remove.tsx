@@ -1,47 +1,98 @@
 import * as React from 'react';
-import type { EmblorTagRemoveProps } from '../../types';
-import { composeEventHandlers } from '../../utils';
-import { useEmblorContext } from '../tags-input-context';
+import type { EmblorTagRemoveComponent, EmblorTagRemoveProps } from '../../types';
+import { composeEventHandlers, isComposingEvent, isNativeButtonNode, mergeRefs } from '../../utils';
+import { useEmblorContext, useEmblorTagContext } from '../tags-input-context';
 
-export const EmblorTagRemove = React.forwardRef<HTMLElement, EmblorTagRemoveProps>(
+const EmblorTagRemoveImpl = React.forwardRef<HTMLElement, EmblorTagRemoveProps<any>>(
   function EmblorTagRemove(props, forwardedRef) {
-    const { as, index, children, ariaLabel = 'Remove tag', onClick, disabled: disabledProp, ...rest } = props;
-    const { store, removeTag, disabled, readOnly } = useEmblorContext('Emblor.TagRemove');
-    const tagRecord = store.getState().tags[index];
+    const { as, children, disabled: disabledProp, onClick, onKeyDown, 'aria-label': ariaLabel, ...rest } = props;
+    const { index, value } = useEmblorTagContext('EmblorTagRemove');
+    const { values, disabled, readOnly, minTags, removeTag, registerBoundaryNode } =
+      useEmblorContext('EmblorTagRemove');
     const Component = (as ?? 'button') as React.ElementType;
-    const isDisabled = Boolean(disabledProp) || disabled || readOnly;
+    const [isNativeButton, setIsNativeButton] = React.useState(Component === 'button');
+    const isDisabled = Boolean(
+      disabledProp || disabled || readOnly || (minTags !== undefined && values.length <= minTags),
+    );
+    const nodeRef = React.useRef<HTMLElement | null>(null);
+    const boundaryCleanupRef = React.useRef<(() => void) | null>(null);
+    const assignRef = React.useMemo(
+      function createRemoveRef() {
+        return mergeRefs(forwardedRef as React.Ref<HTMLElement>, function capture(node: HTMLElement | null) {
+          nodeRef.current = node;
+          if (node) {
+            setIsNativeButton(function syncNativeButton(current) {
+              const next = isNativeButtonNode(node);
+              return current === next ? current : next;
+            });
+          }
+        });
+      },
+      [forwardedRef],
+    );
+
+    React.useLayoutEffect(
+      function registerBoundary() {
+        boundaryCleanupRef.current?.();
+        boundaryCleanupRef.current = registerBoundaryNode(nodeRef.current);
+        return function cleanupBoundary() {
+          boundaryCleanupRef.current?.();
+          boundaryCleanupRef.current = null;
+        };
+      },
+      [registerBoundaryNode],
+    );
+
+    const resolveSource = React.useCallback(function resolveSource(event: React.MouseEvent<HTMLElement>) {
+      return event.detail === 0 ? ('keyboard' as const) : ('pointer' as const);
+    }, []);
 
     const handleClick = React.useCallback(
-      function onClickHandler(event: React.MouseEvent<HTMLElement>) {
+      function handleRemoveClick(event: React.MouseEvent<HTMLElement>) {
         event.stopPropagation();
-        if (isDisabled) {
+        if (!isDisabled) {
+          removeTag(index, resolveSource(event));
+        }
+      },
+      [index, isDisabled, removeTag, resolveSource],
+    );
+
+    const handleNonButtonKeyDown = React.useCallback(
+      function handleNonButtonKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+        if (
+          isNativeButtonNode(event.currentTarget) ||
+          isComposingEvent(event) ||
+          (event.key !== 'Enter' && event.key !== ' ' && event.key !== 'Spacebar')
+        ) {
           return;
         }
-        removeTag(index);
+        event.preventDefault();
+        event.stopPropagation();
+        if (!isDisabled) {
+          removeTag(index, 'keyboard');
+        }
       },
       [index, isDisabled, removeTag],
     );
 
-    if (!tagRecord) {
-      return null;
-    }
-
     return (
       <Component
-        {...rest}
-        ref={forwardedRef as React.Ref<HTMLElement>}
-        type={Component === 'button' ? 'button' : undefined}
-        aria-label={ariaLabel}
+        {...(rest as Record<string, unknown>)}
+        ref={assignRef}
+        type={isNativeButton ? 'button' : undefined}
+        role={isNativeButton ? undefined : 'button'}
+        tabIndex={isNativeButton ? undefined : isDisabled ? -1 : 0}
+        aria-label={ariaLabel ?? `Remove ${value}`}
+        aria-disabled={isDisabled || undefined}
+        disabled={isNativeButton ? isDisabled || undefined : undefined}
         data-disabled={isDisabled ? '' : undefined}
-        aria-disabled={isDisabled}
-        disabled={Component === 'button' ? (isDisabled ? true : undefined) : undefined}
-        onClick={composeEventHandlers(
-          onClick as ((event: React.MouseEvent<HTMLElement>) => void) | undefined,
-          handleClick,
-        )}
+        onClick={composeEventHandlers(onClick, handleClick, { checkForDefaultPrevented: true })}
+        onKeyDown={composeEventHandlers(onKeyDown, handleNonButtonKeyDown, { checkForDefaultPrevented: true })}
       >
-        {children ?? '×'}
+        {children !== undefined ? children : '×'}
       </Component>
     );
   },
 );
+
+export const EmblorTagRemove = EmblorTagRemoveImpl as EmblorTagRemoveComponent;

@@ -1,140 +1,154 @@
 import * as React from 'react';
-import type { EmblorTagProps } from '../../types';
-import { composeEventHandlers, mergeRefs, useStoreSelector } from '../../utils';
-import { useEmblorContext } from '../tags-input-context';
+import type { EmblorTagComponent, EmblorTagProps } from '../../types';
+import { composeEventHandlers, isComposingEvent, mergeRefs } from '../../utils';
+import { EmblorTagProvider, useEmblorContext } from '../tags-input-context';
 
-export const EmblorTag = React.forwardRef<HTMLElement, EmblorTagProps>(function EmblorTag(props, forwardedRef) {
-  const { as, index, children, onKeyDown, onClick, onFocus, ...rest } = props;
+const EmblorTagImpl = React.forwardRef<HTMLElement, EmblorTagProps<any>>(function EmblorTag(props, forwardedRef) {
+  const { as, index, children, onKeyDown, onClick, onFocus, onBlur, ...rest } = props;
   const {
-    store,
+    values,
     disabled,
     readOnly,
-    setFocusedIndex,
-    setActiveIndex,
+    actualFocusedIndex,
+    setTagFocused,
     focusInput,
     focusTag,
     removeTag,
-    onTagClick,
-    getTagValue,
+    getMountedTagIndexes,
+    getDirection,
     registerTagNode,
-  } = useEmblorContext('Emblor.Tag');
+  } = useEmblorContext('EmblorTag');
 
-  const Component = (as ?? 'div') as React.ElementType;
-  const tagRecord = useStoreSelector(store, function selectTag(state) {
-    return state.tags[index] ?? null;
-  });
-  const isFocused = useStoreSelector(store, function selectFocus(state) {
-    return state.focusedIndex === index;
-  });
-  const isActive = useStoreSelector(store, function selectActive(state) {
-    return state.activeIndex === index;
-  });
+  if (!Number.isFinite(index) || !Number.isInteger(index) || index < 0 || index >= values.length) {
+    throw new Error(`EmblorTag index ${index} must be a valid position in the current EmblorRoot value.`);
+  }
 
-  const tagRef = React.useRef<HTMLElement | null>(null);
-  const combinedRef = mergeRefs(tagRef, forwardedRef);
+  const tagValue = values[index];
+  const tagTokenRef = React.useRef(Symbol());
+  const tagNodeRef = React.useRef<HTMLElement | null>(null);
+  const registeredCleanupRef = React.useRef<(() => void) | null>(null);
+  const assignRef = React.useMemo(
+    function createTagRef() {
+      return mergeRefs(forwardedRef as React.Ref<HTMLElement>, function capture(node: HTMLElement | null) {
+        tagNodeRef.current = node;
+      });
+    },
+    [forwardedRef],
+  );
 
-  React.useEffect(
-    function registerNode() {
-      registerTagNode(index, tagRef.current);
-      return function cleanup() {
-        registerTagNode(index, null);
+  React.useLayoutEffect(
+    function registerTag() {
+      registeredCleanupRef.current?.();
+      registeredCleanupRef.current = registerTagNode(index, tagNodeRef.current, tagTokenRef.current);
+      return function cleanupTag() {
+        registeredCleanupRef.current?.();
+        registeredCleanupRef.current = null;
       };
     },
     [index, registerTagNode],
   );
 
   const handleClick = React.useCallback(
-    function onClickHandler(event: React.MouseEvent<HTMLElement>) {
+    function handleTagClick(event: React.MouseEvent<HTMLElement>) {
       if (disabled) {
         return;
       }
-      setFocusedIndex(index);
-      setActiveIndex(index);
-      if (onTagClick && tagRecord) {
-        onTagClick(tagRecord.value, index);
-      }
+      event.currentTarget.focus();
+      setTagFocused(index);
     },
-    [disabled, index, onTagClick, setActiveIndex, setFocusedIndex, tagRecord],
+    [disabled, index, setTagFocused],
   );
 
   const handleFocus = React.useCallback(
-    function onFocusHandler() {
-      setFocusedIndex(index);
-      setActiveIndex(index);
+    function handleTagFocus(event: React.FocusEvent<HTMLElement>) {
+      if (event.target === event.currentTarget) {
+        setTagFocused(index);
+      }
     },
-    [index, setActiveIndex, setFocusedIndex],
+    [index, setTagFocused],
+  );
+
+  const handleBlur = React.useCallback(
+    function handleTagBlur(event: React.FocusEvent<HTMLElement>) {
+      if (event.target === event.currentTarget) {
+        setTagFocused(null);
+      }
+    },
+    [setTagFocused],
   );
 
   const handleKeyDown = React.useCallback(
-    function onKeyDownHandler(event: React.KeyboardEvent<HTMLElement>) {
+    function handleTagKeyDown(event: React.KeyboardEvent<HTMLElement>) {
+      if (isComposingEvent(event)) {
+        return;
+      }
+      const mountedIndexes = getMountedTagIndexes();
+      const position = mountedIndexes.indexOf(index);
+
       if (event.key === 'Backspace' || event.key === 'Delete') {
         event.preventDefault();
-        removeTag(index);
-        focusInput();
-        return;
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        const previousIndex = index - 1;
-        if (previousIndex >= 0) {
-          focusTag(previousIndex);
-          return;
-        }
-        focusInput();
-        return;
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        const nextIndex = index + 1;
-        const nextValue = getTagValue(nextIndex);
-        if (nextValue !== null) {
-          focusTag(nextIndex);
-          return;
-        }
-        focusInput();
+        removeTag(index, 'keyboard');
         return;
       }
       if (event.key === 'Home') {
         event.preventDefault();
-        focusTag(0);
+        if (mountedIndexes[0] !== undefined) {
+          focusTag(mountedIndexes[0]);
+        }
         return;
       }
       if (event.key === 'End') {
         event.preventDefault();
-        const state = store.getState();
-        const lastIndex = Math.max(state.tags.length - 1, 0);
-        focusTag(lastIndex);
+        const lastIndex = mountedIndexes[mountedIndexes.length - 1];
+        if (lastIndex !== undefined) {
+          focusTag(lastIndex);
+        }
+        return;
+      }
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+        return;
+      }
+
+      event.preventDefault();
+      const direction = getDirection();
+      const movesForward = direction === 'ltr' ? event.key === 'ArrowRight' : event.key === 'ArrowLeft';
+      const targetPosition = position + (movesForward ? 1 : -1);
+      const targetIndex = mountedIndexes[targetPosition];
+      if (targetIndex === undefined) {
+        focusInput();
+      } else {
+        focusTag(targetIndex);
       }
     },
-    [focusInput, focusTag, getTagValue, index, removeTag, store],
+    [focusInput, focusTag, getDirection, getMountedTagIndexes, index, removeTag],
   );
 
-  if (!tagRecord) {
-    return null;
-  }
-
-  const dataState = isFocused ? 'focused' : isActive ? 'active' : 'idle';
+  const isFocused = actualFocusedIndex === index;
+  const Component = (as ?? 'div') as React.ElementType;
 
   return (
-    <Component
-      {...rest}
-      ref={combinedRef}
-      id={tagRecord.id}
-      role="listitem"
-      tabIndex={isFocused ? 0 : -1}
-      data-index={index}
-      data-state={dataState}
-      data-focused={isFocused ? '' : undefined}
-      data-active={isActive ? '' : undefined}
-      data-disabled={disabled ? '' : undefined}
-      data-readonly={readOnly ? '' : undefined}
-      aria-disabled={disabled}
-      aria-readonly={readOnly}
-      onClick={composeEventHandlers(onClick, handleClick)}
-      onFocus={composeEventHandlers(onFocus, handleFocus)}
-      onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown)}
-    >
-      {children ?? tagRecord.value}
-    </Component>
+    <EmblorTagProvider value={{ index, value: tagValue }}>
+      <Component
+        {...(rest as Record<string, unknown>)}
+        ref={assignRef}
+        role="listitem"
+        tabIndex={isFocused ? 0 : -1}
+        data-index={index}
+        data-state={isFocused ? 'focused' : 'idle'}
+        data-focused={isFocused ? '' : undefined}
+        data-disabled={disabled ? '' : undefined}
+        data-readonly={readOnly ? '' : undefined}
+        aria-disabled={disabled || undefined}
+        aria-readonly={readOnly || undefined}
+        onClick={composeEventHandlers(onClick, handleClick, { checkForDefaultPrevented: true })}
+        onFocus={composeEventHandlers(onFocus, handleFocus)}
+        onBlur={composeEventHandlers(onBlur, handleBlur)}
+        onKeyDown={composeEventHandlers(onKeyDown, handleKeyDown, { checkForDefaultPrevented: true })}
+      >
+        {children}
+      </Component>
+    </EmblorTagProvider>
   );
 });
+
+export const EmblorTag = EmblorTagImpl as EmblorTagComponent;

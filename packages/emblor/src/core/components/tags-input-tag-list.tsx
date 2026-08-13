@@ -1,31 +1,58 @@
 import * as React from 'react';
-import type { EmblorTagListProps } from '../../types';
-import { mergeRefs, useStoreSelector } from '../../utils';
+import type { EmblorTagListComponent, EmblorTagListProps } from '../../types';
+import { mergeRefs } from '../../utils';
 import { useEmblorContext } from '../tags-input-context';
 
-export const EmblorTagList = React.forwardRef<HTMLElement, EmblorTagListProps>(
+const EmblorTagListImpl = React.forwardRef<HTMLElement, EmblorTagListProps<any>>(
   function EmblorTagList(props, forwardedRef) {
-    const { as, id, children, ...rest } = props;
-    const { store, listId, listRef, labelId, disabled, readOnly } = useEmblorContext('Emblor.TagList');
+    const { as, children, 'aria-labelledby': ariaLabelledBy, ...rest } = props;
+    const { values, disabled, readOnly, labelIds, registerTagListNode } = useEmblorContext('EmblorTagList');
     const Component = (as ?? 'div') as React.ElementType;
-    const tagCount = useStoreSelector(store, function selectCount(state) {
-      return state.tags.length;
-    });
-    const mergedRef = mergeRefs(listRef, forwardedRef);
+    const listNodeRef = React.useRef<HTMLElement | null>(null);
+    const registeredCleanupRef = React.useRef<(() => void) | null>(null);
+    const assignRef = React.useMemo(
+      function createListRef() {
+        return mergeRefs(forwardedRef as React.Ref<HTMLElement>, function capture(node: HTMLElement | null) {
+          listNodeRef.current = node;
+        });
+      },
+      [forwardedRef],
+    );
+
+    React.useLayoutEffect(
+      function registerList() {
+        registeredCleanupRef.current?.();
+        registeredCleanupRef.current = registerTagListNode(listNodeRef.current);
+        return function cleanupList() {
+          registeredCleanupRef.current?.();
+          registeredCleanupRef.current = null;
+        };
+      },
+      [registerTagListNode],
+    );
+
+    const resolvedChildren =
+      typeof children === 'function'
+        ? values.map(function renderTag(tag, index) {
+            return children(tag, index);
+          })
+        : children;
+    const resolvedLabelledBy = ariaLabelledBy ?? (labelIds.length > 0 ? labelIds.join(' ') : undefined);
 
     return (
       <Component
-        {...rest}
-        ref={mergedRef}
-        id={id ?? listId}
+        {...(rest as Record<string, unknown>)}
+        ref={assignRef}
         role="list"
-        aria-labelledby={labelId}
-        data-empty={tagCount === 0 ? '' : undefined}
+        aria-labelledby={resolvedLabelledBy}
+        data-empty={values.length === 0 ? '' : undefined}
         data-disabled={disabled ? '' : undefined}
         data-readonly={readOnly ? '' : undefined}
       >
-        {children}
+        {resolvedChildren}
       </Component>
     );
   },
 );
+
+export const EmblorTagList = EmblorTagListImpl as EmblorTagListComponent;

@@ -1,75 +1,99 @@
 import * as React from 'react';
-import type { EmblorTag } from '../types';
-import type { EmblorStore } from '../utils';
+import type {
+  EmblorAnnouncement,
+  EmblorBlurBehavior,
+  EmblorInputElementType,
+  EmblorRejection,
+  EmblorValueChangeDetails,
+} from '../types';
 
-export type EmblorAnnouncement =
-  | { type: 'tag-added'; value: string; index: number }
-  | { type: 'tag-removed'; value: string; index: number }
-  | { type: 'cleared' }
-  | { type: 'none' };
+export type EmblorInputNode = HTMLInputElement | HTMLTextAreaElement;
 
-export type EmblorStoreState = {
-  tags: Array<EmblorTag>;
-  inputValue: string;
-  isFocusWithin: boolean;
-  focusedIndex: number | null;
-  activeIndex: number | null;
-  isInputFocused: boolean;
-  lastAction: EmblorAnnouncement;
-  validationError: string | null;
+export type EmblorPasteResult = {
+  accepted: boolean;
+  rejected: boolean;
 };
 
 export type EmblorContextValue = {
-  store: EmblorStore<EmblorStoreState>;
+  values: string[];
+  draft: string;
   disabled: boolean;
   readOnly: boolean;
-  allowDuplicates: boolean;
+  required: boolean;
+  requiredInvalid: boolean;
+  invalid: boolean;
+  transientInvalid: boolean;
+  hasInvalid: boolean;
+  maxReached: boolean;
   maxTags?: number;
   minTags?: number;
-  placeholderWhenFull?: string;
   minLength?: number;
   maxLength?: number;
-  delimiter: Array<string>;
+  allowDuplicates: boolean;
+  delimiters: string[];
   addOnPaste: boolean;
-  inputBlurBehavior: 'commit' | 'discard' | 'noop';
-  rootId: string;
-  listId: string;
+  addOnTab: boolean;
+  blurBehavior: EmblorBlurBehavior;
+  placeholderWhenFull?: string;
+  name?: string;
   inputId: string;
-  labelId?: string;
-  getTagId: (index: number) => string;
-  setInputValue: (value: string) => void;
-  commitTag: (value: string, meta?: { source: 'keyboard' | 'paste' | 'blur' }) => boolean;
-  removeTag: (index: number) => void;
-  clearTags: () => void;
+  labelIds: string[];
+  actualFocusedIndex: number | null;
+  inputRef: React.MutableRefObject<EmblorInputNode | null>;
+  rootRef: React.MutableRefObject<HTMLElement | null>;
+  setDraft: (value: string) => void;
+  commitDraft: (rawValue: string, source: 'keyboard' | 'blur') => boolean;
+  pasteDraft: (prospectiveDraft: string, sourceDraft: string, source: 'paste') => EmblorPasteResult | null;
+  removeTag: (index: number, source: 'keyboard' | 'pointer') => void;
+  clearTags: (source: 'keyboard' | 'pointer') => void;
+  setInputFocused: () => void;
+  setTagFocused: (index: number | null) => void;
+  handleInputBlur: (event: React.FocusEvent<HTMLElement>, cancelled: boolean) => void;
   focusTag: (index: number) => void;
-  setFocusedIndex: (index: number | null) => void;
-  setActiveIndex: (index: number | null) => void;
-  setInputFocused: (value: boolean) => void;
   focusInput: () => void;
-  inputRef: React.MutableRefObject<HTMLInputElement | null>;
-  listRef: React.MutableRefObject<HTMLElement | null>;
-  getTagValue: (index: number) => string | null;
-  onTagClick?: (tag: string, index: number) => void;
-  onInputKeydown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  registerTagNode: (index: number, node: HTMLElement | null) => void;
+  getMountedTagIndexes: () => number[];
+  getDirection: () => 'ltr' | 'rtl';
+  isWithinRoot: (node: Node | null) => boolean;
+  registerInputNode: (node: HTMLElement | null, id: string) => void;
+  registerTagListNode: (node: HTMLElement | null) => () => void;
+  registerTagNode: (index: number, node: HTMLElement | null, token: symbol) => () => void;
+  registerBoundaryNode: (node: HTMLElement | null) => () => void;
+  registerLabel: (token: symbol, id: string) => () => void;
+  announce: (announcement: EmblorAnnouncement) => void;
+  announceRejection: (rejection: EmblorRejection) => void;
+  onValueChange?: (value: string[], details: EmblorValueChangeDetails) => void;
+  getTagValue: (index: number) => string;
 };
 
 const EmblorContext = React.createContext<EmblorContextValue | null>(null);
 
-export function EmblorProvider({
-  value,
-  children,
-}: {
-  value: EmblorContextValue;
-  children: React.ReactNode;
-}): JSX.Element {
+export function EmblorProvider({ value, children }: { value: EmblorContextValue; children: React.ReactNode }) {
   return <EmblorContext.Provider value={value}>{children}</EmblorContext.Provider>;
 }
 
 export function useEmblorContext(component: string): EmblorContextValue {
   const context = React.useContext(EmblorContext);
   if (!context) {
-    throw new Error(`${component} must be used within <Emblor.Root> component`);
+    throw new Error(`${component} must be used within <EmblorRoot>`);
+  }
+  return context;
+}
+
+export type EmblorTagContextValue = {
+  index: number;
+  value: string;
+};
+
+const EmblorTagContext = React.createContext<EmblorTagContextValue | null>(null);
+
+export function EmblorTagProvider({ value, children }: { value: EmblorTagContextValue; children: React.ReactNode }) {
+  return <EmblorTagContext.Provider value={value}>{children}</EmblorTagContext.Provider>;
+}
+
+export function useEmblorTagContext(component: string): EmblorTagContextValue {
+  const context = React.useContext(EmblorTagContext);
+  if (!context) {
+    throw new Error(`${component} must be used within <EmblorTag>`);
   }
   return context;
 }
