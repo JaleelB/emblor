@@ -1,6 +1,6 @@
 {
   "name": "emblor",
-  "version": "2.0.0",
+  "version": "1.4.8",
   "private": false,
   "type": "module",
   "sideEffects": false,
@@ -14,42 +14,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
       "default": "./dist/index.js"
-    },
-    "./core": {
-      "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.js",
-      "require": "./dist/core/index.cjs",
-      "default": "./dist/core/index.js"
-    },
-    "./addons": {
-      "types": "./dist/addons/index.d.ts",
-      "import": "./dist/addons/index.js",
-      "require": "./dist/addons/index.cjs",
-      "default": "./dist/addons/index.js"
-    },
-    "./sortable": {
-      "types": "./dist/sortable/index.d.ts",
-      "import": "./dist/sortable/index.js",
-      "require": "./dist/sortable/index.cjs",
-      "default": "./dist/sortable/index.js"
-    },
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "import": "./dist/utils/index.js",
-      "require": "./dist/utils/index.cjs",
-      "default": "./dist/utils/index.js"
-    },
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js",
-      "require": "./dist/types/index.cjs",
-      "default": "./dist/types/index.js"
-    },
-    "./testing": {
-      "types": "./dist/testing/index.d.ts",
-      "import": "./dist/testing/index.js",
-      "require": "./dist/testing/index.cjs",
-      "default": "./dist/testing/index.js"
     }
   },
   "files": [
@@ -61,12 +25,13 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
+    "test:compat": "node ./tests/compat/verify-packed-consumers.mjs",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react": ">=18.0.0 <20.0.0",
+    "react-dom": ">=18.0.0 <20.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",

@@ -6,15 +6,18 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        node-version: [22.x, 24.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v4
         with:
           version: 9.0.2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -25,3 +28,15 @@ jobs:
 
       - name: Build packages
         run: pnpm run build --filter "./packages/*"
+
+      - name: Lint package
+        run: pnpm -C packages/emblor run lint
+
+      - name: Typecheck package
+        run: pnpm -C packages/emblor run typecheck
+
+      - name: Test package
+        run: pnpm -C packages/emblor run test
+
+      - name: Verify packed consumers
+        run: pnpm -C packages/emblor run test:compat

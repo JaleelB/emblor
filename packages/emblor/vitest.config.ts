@@ -9,12 +9,6 @@ export default defineConfig({
   resolve: {
     alias: {
       emblor: fromRoot('./src/index.ts'),
-      'emblor/core': fromRoot('./src/core/index.ts'),
-      'emblor/addons': fromRoot('./src/addons/index.ts'),
-      'emblor/sortable': fromRoot('./src/sortable/index.ts'),
-      'emblor/utils': fromRoot('./src/utils/index.ts'),
-      'emblor/types': fromRoot('./src/types/index.ts'),
-      'emblor/testing': fromRoot('./src/testing/index.ts'),
     },
   },
   test: {

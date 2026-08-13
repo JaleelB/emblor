@@ -12,10 +12,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node 18
-        uses: actions/setup-node@v3
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -44,8 +44,11 @@ jobs:
       - name: Run typecheck in website workspace
         run: pnpm -C website run typecheck
 
-      # - name: Run typecheck in packages workspace
-      #   run: pnpm -C packages/emblor run typecheck
+      - name: Run typecheck in package workspace
+        run: pnpm -C packages/emblor run typecheck
+
+      - name: Run package tests
+        run: pnpm -C packages/emblor run test
 
       - name: Check prettier format
         run: pnpm run prettier-check
