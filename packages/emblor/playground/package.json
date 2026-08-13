@@ -9,8 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@radix-ui/react-popover": "^1.0.7",
-    "cmdk": "^0.2.0",
     "emblor": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

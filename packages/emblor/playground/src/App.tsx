@@ -1,154 +1,365 @@
 import * as React from 'react';
-import type { ReactNode } from 'react';
 import {
-  CoreOnlyExample,
-  CoreWithAddonsExample,
-  CmdkCompositionExample,
-  RadixPopoverCompositionExample,
-} from './examples';
+  EmblorClear,
+  EmblorInput,
+  EmblorLabel,
+  EmblorRoot,
+  EmblorTag,
+  EmblorTagList,
+  EmblorTagRemove,
+  EmblorTagText,
+  type EmblorRejection,
+  type EmblorValueChangeDetails,
+} from 'emblor';
 
-type StoryDefinition = {
-  id: string;
-  title: string;
-  description: string;
-  element: ReactNode;
-  notes: Array<string>;
-};
+type Scenario = 'canonical' | 'uncontrolled' | 'validation' | 'keyboard' | 'forms' | 'polymorphism';
 
-const STORIES: Array<StoryDefinition> = [
+const SCENARIOS: Array<{ id: Scenario; label: string; description: string }> = [
   {
-    id: 'core-only',
-    title: 'Core primitives',
-    description:
-      'Start with the headless `emblor/core` building blocks to power a fully controllable tag input with minimal markup.',
-    element: <CoreOnlyExample />,
-    notes: [
-      'Uses `EmblorRoot`, `EmblorInput`, `EmblorTagList`, `EmblorTag`, `EmblorTagRemove`, and `EmblorClearTrigger`.',
-      'Demonstrates controlled state with custom delimiters (comma, Enter, Tab) and a max tag guard.',
-      'Shows how to wire accessibility labels for screen readers using the `labelId` prop.',
-    ],
+    id: 'canonical',
+    label: 'Canonical controlled',
+    description: 'The approved compound API with consumer-owned occurrence keys.',
   },
   {
-    id: 'core-with-addons',
-    title: 'Core + Addons',
-    description:
-      'Layer the `emblor/addons` helpers for richer experiences: live counts and clear-all affordances.',
-    element: <CoreWithAddonsExample />,
-    notes: [
-      'Adds `TagCount` and `ClearButton` from `emblor/addons` to surface metrics and bulk actions.',
-      'Illustrates using the store to announce tag additions and to present remaining tag capacity.',
-      'Great starting point for productivity tooling where teams manage shared vocabularies.',
-    ],
+    id: 'uncontrolled',
+    label: 'Uncontrolled + reset',
+    description: 'Root owns tags and draft while a native form owns reset.',
   },
   {
-    id: 'cmdk-composition',
-    title: 'cmdk composition',
-    description:
-      'Wire up the tags input with the real `cmdk` command palette primitives for suggestion-driven filtering.',
-    element: <CmdkCompositionExample />,
-    notes: [
-      'Reuses the headless input while rendering `Command.Input` via the `as` prop.',
-      'Command items append unique tags to the list without leaving the palette.',
-      'Demonstrates mixing Emblor state with third-party composition utilities.',
-    ],
+    id: 'validation',
+    label: 'Validation + paste',
+    description: 'Transform, structured rejections, partial paste, and capacity.',
   },
   {
-    id: 'popover-composition',
-    title: 'Radix Popover composition',
-    description:
-      'Embed the tag input inside `@radix-ui/react-popover` to create lightweight filter menus.',
-    element: <RadixPopoverCompositionExample />,
-    notes: [
-      'Shows how to manage popover state externally while keeping Emblor fully controlled.',
-      'Close buttons use `Popover.Close`, so focus returns to the trigger automatically.',
-      'Pairs well with tables, dashboards, or any contextual filtering UI.',
-    ],
+    id: 'keyboard',
+    label: 'Keyboard + focus',
+    description: 'LTR/RTL navigation, removal restoration, and visible focus state.',
   },
   {
-    id: 'keyboard-navigation',
-    title: 'Keyboard navigation',
-    description:
-      'Navigate tags entirely from the keyboard: Backspace deletes, arrows move focus between tags, and Left/Right from the input jumps into the list.',
-    element: <CoreOnlyExample />,
-    notes: [
-      'From the input: Left arrow focuses the last tag; Right arrow focuses the first tag.',
-      'Within the list: Left/Right move between tags, Home/End jump to the ends.',
-      'Visual focus rings indicate the currently focused/active tag.',
-    ],
+    id: 'forms',
+    label: 'Forms + accessibility',
+    description: 'Repeated FormData, required state, labels, and announcements.',
+  },
+  {
+    id: 'polymorphism',
+    label: 'Polymorphism + styling',
+    description: 'Alternate elements, forwarded props, and custom event handlers.',
   },
 ];
 
-function classNames(...values: Array<string | false | null | undefined>): string {
-  return values.filter(Boolean).join(' ');
+function TagContent() {
+  return (
+    <>
+      <EmblorTagText />
+      <EmblorTagRemove className="lab-remove" />
+    </>
+  );
 }
 
-export function App(): JSX.Element {
-  const [activeStoryId, setActiveStoryId] = React.useState<string>(() => STORIES[0]?.id ?? '');
-  const activeStory = React.useMemo(() => STORIES.find((story) => story.id === activeStoryId) ?? STORIES[0], [
-    activeStoryId,
-  ]);
-
-  if (!activeStory) {
-    return (
-      <div className="story-app" data-app-root>
-        <main className="story-main">
-          <header className="story-main__header">
-            <span className="story-main__eyebrow">Stories</span>
-            <h1>No stories available</h1>
-            <p>Add story definitions to the `STORIES` array to populate the playground canvas.</p>
-          </header>
-        </main>
+function TagField(
+  props: React.ComponentProps<typeof EmblorRoot> & {
+    label: string;
+    inputPlaceholder?: string;
+    onInput?: React.FormEventHandler<HTMLInputElement>;
+  },
+) {
+  const { label, inputPlaceholder = 'Add a tag', onInput, children, ...rootProps } = props;
+  return (
+    <EmblorRoot {...rootProps} className="lab-root">
+      <EmblorLabel className="lab-label">{label}</EmblorLabel>
+      <EmblorTagList className="lab-list">
+        {(tag, index) => (
+          <EmblorTag key={tag} index={index} className="lab-tag">
+            <TagContent />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput className="lab-input" placeholder={inputPlaceholder} onInput={onInput} />
+      <div className="lab-actions">
+        <EmblorClear className="lab-button lab-button--quiet">Clear all</EmblorClear>
+        {children}
       </div>
+    </EmblorRoot>
+  );
+}
+
+function Inspector({
+  tags,
+  draft,
+  lastChange,
+  rejection,
+  submitted,
+}: {
+  tags: string[];
+  draft?: string;
+  lastChange?: EmblorValueChangeDetails;
+  rejection?: EmblorRejection;
+  submitted?: string;
+}) {
+  const focused = useFocusedElementDescription();
+  return (
+    <aside className="inspector" aria-label="Scenario inspector">
+      <div>
+        <span>tags</span>
+        <code>{JSON.stringify(tags)}</code>
+      </div>
+      <div>
+        <span>draft</span>
+        <code>{JSON.stringify(draft ?? '')}</code>
+      </div>
+      <div>
+        <span>last change</span>
+        <code>{lastChange ? JSON.stringify(lastChange) : '—'}</code>
+      </div>
+      <div>
+        <span>rejection</span>
+        <code>{rejection ? JSON.stringify(rejection) : '—'}</code>
+      </div>
+      <div>
+        <span>focused</span>
+        <code>{focused}</code>
+      </div>
+      {submitted ? (
+        <div>
+          <span>FormData</span>
+          <code>{submitted}</code>
+        </div>
+      ) : null}
+    </aside>
+  );
+}
+
+function useFocusedElementDescription() {
+  const [description, setDescription] = React.useState('—');
+
+  React.useEffect(function observeFocus() {
+    const describe = function describe() {
+      const active = document.activeElement as HTMLElement | null;
+      const tag = active?.closest<HTMLElement>('[data-index]');
+      if (tag) {
+        setDescription(active === tag ? `tag ${tag.dataset.index}` : `tag ${tag.dataset.index} action`);
+        return;
+      }
+      setDescription(active?.tagName.toLowerCase() ?? '—');
+    };
+    const settle = function settle() {
+      queueMicrotask(describe);
+    };
+    describe();
+    document.addEventListener('focusin', describe);
+    document.addEventListener('focusout', settle);
+    return function stopObservingFocus() {
+      document.removeEventListener('focusin', describe);
+      document.removeEventListener('focusout', settle);
+    };
+  }, []);
+
+  return description;
+}
+
+function CanonicalScenario() {
+  const [tags, setTags] = React.useState(['react', 'typescript']);
+  const [lastChange, setLastChange] = React.useState<EmblorValueChangeDetails>();
+  return (
+    <div className="scenario-grid">
+      <TagField
+        label="Technologies"
+        value={tags}
+        onValueChange={(next, details) => {
+          setTags(next);
+          setLastChange(details);
+        }}
+        delimiters={[',']}
+      />
+      <Inspector tags={tags} lastChange={lastChange} />
+    </div>
+  );
+}
+
+function UncontrolledScenario() {
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const [tags, setTags] = React.useState(['default']);
+  const [draft, setDraft] = React.useState('');
+  const [lastChange, setLastChange] = React.useState<EmblorValueChangeDetails>();
+  return (
+    <div className="scenario-grid">
+      <form
+        ref={formRef}
+        className="lab-form"
+        onReset={() => {
+          setTags(['default']);
+          setDraft('');
+        }}
+      >
+        <TagField
+          label="Uncontrolled values"
+          defaultValue={['default']}
+          defaultInputValue=""
+          name="topics"
+          onValueChange={(next, details) => {
+            setTags(next);
+            setLastChange(details);
+          }}
+          onInput={(event) => setDraft(event.currentTarget.value)}
+          inputPlaceholder="Type, then reset"
+        />
+        <button className="lab-button" type="reset">
+          Native reset
+        </button>
+      </form>
+      <Inspector tags={tags} draft={draft} lastChange={lastChange} />
+    </div>
+  );
+}
+
+function ValidationScenario() {
+  const [tags, setTags] = React.useState(['React']);
+  const [lastRejection, setLastRejection] = React.useState<EmblorRejection>();
+  const [lastChange, setLastChange] = React.useState<EmblorValueChangeDetails>();
+  return (
+    <div className="scenario-grid">
+      <TagField
+        label="Paste a comma-separated list"
+        value={tags}
+        onValueChange={(next, details) => {
+          setTags(next);
+          setLastChange(details);
+        }}
+        transform={(value) => value.toLowerCase()}
+        validate={(value) => value !== 'blocked'}
+        maxTags={4}
+        maxLength={12}
+        onReject={setLastRejection}
+        placeholderWhenFull="Capacity reached — remove one first"
+      />
+      <Inspector tags={tags} lastChange={lastChange} rejection={lastRejection} />
+    </div>
+  );
+}
+
+function KeyboardScenario() {
+  const [rtl, setRtl] = React.useState(false);
+  const [tags, setTags] = React.useState(['one', 'two', 'three']);
+  return (
+    <div className="scenario-grid">
+      <TagField
+        dir={rtl ? 'rtl' : 'ltr'}
+        label={`${rtl ? 'RTL' : 'LTR'} navigation`}
+        value={tags}
+        onValueChange={setTags}
+      />
+      <div className="lab-note">
+        <button className="lab-button" type="button" onClick={() => setRtl((value) => !value)}>
+          Toggle direction
+        </button>
+        <p>Use the input boundary arrows, then Home/End and Backspace on a focused tag.</p>
+      </div>
+    </div>
+  );
+}
+
+function FormsScenario() {
+  const [submitted, setSubmitted] = React.useState('');
+  const [tags, setTags] = React.useState<string[]>([]);
+  return (
+    <div className="scenario-grid">
+      <form
+        className="lab-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const data = new FormData(event.currentTarget);
+          setSubmitted(data.getAll('skills').join(' × '));
+        }}
+      >
+        <TagField label="Required skills" name="skills" required value={tags} onValueChange={setTags} />
+        <button className="lab-button" type="submit">
+          Inspect FormData
+        </button>
+      </form>
+      <Inspector tags={tags} submitted={submitted} />
+    </div>
+  );
+}
+
+function PolymorphismScenario() {
+  const [tags, setTags] = React.useState(['custom']);
+  return (
+    <div className="scenario-grid">
+      <EmblorRoot
+        as="section"
+        value={tags}
+        onValueChange={setTags}
+        className="lab-root lab-root--polymorphic"
+        data-scenario="polymorphism"
+      >
+        <EmblorLabel as="div" className="lab-label">
+          Polymorphic section
+        </EmblorLabel>
+        <EmblorTagList as="ul" className="lab-list">
+          {(tag, index) => (
+            <EmblorTag as="li" key={tag} index={index} className="lab-tag">
+              <TagContent />
+            </EmblorTag>
+          )}
+        </EmblorTagList>
+        <EmblorInput as="textarea" rows={2} className="lab-input" placeholder="A textarea editor" />
+        <EmblorClear as="span" className="lab-button lab-button--quiet">
+          Clear
+        </EmblorClear>
+      </EmblorRoot>
+      <Inspector tags={tags} />
+    </div>
+  );
+}
+
+export function App() {
+  const [scenario, setScenario] = React.useState<Scenario>('canonical');
+  const active = SCENARIOS.find((item) => item.id === scenario) ?? SCENARIOS[0];
+  const content =
+    scenario === 'canonical' ? (
+      <CanonicalScenario />
+    ) : scenario === 'uncontrolled' ? (
+      <UncontrolledScenario />
+    ) : scenario === 'validation' ? (
+      <ValidationScenario />
+    ) : scenario === 'keyboard' ? (
+      <KeyboardScenario />
+    ) : scenario === 'forms' ? (
+      <FormsScenario />
+    ) : (
+      <PolymorphismScenario />
     );
-  }
 
   return (
-    <div className="story-app" data-app-root>
-      <aside className="story-sidebar">
-        <div className="story-sidebar__header">
-          <span className="story-sidebar__title">Tag input stories</span>
-          <span className="story-sidebar__subtitle">Shadcn-inspired compositions</span>
+    <div className="lab-shell">
+      <aside className="lab-sidebar">
+        <div className="lab-brand">
+          <span>Emblor v2</span>
+          <small>vertical slice</small>
         </div>
-        <nav className="story-sidebar__nav" aria-label="Tag input stories">
-          {STORIES.map((story) => (
+        <nav aria-label="Acceptance scenarios">
+          {SCENARIOS.map((item) => (
             <button
-              key={story.id}
+              key={item.id}
               type="button"
-              className={classNames('story-sidebar__item', story.id === activeStory.id && 'is-active')}
-              onClick={() => setActiveStoryId(story.id)}
+              className={item.id === scenario ? 'lab-nav-item is-active' : 'lab-nav-item'}
+              onClick={() => setScenario(item.id)}
             >
-              {story.title}
+              {item.label}
             </button>
           ))}
         </nav>
+        <p className="lab-sidebar__note">Temporary package-development lab. Styles live here, not in the library.</p>
       </aside>
-      <main className="story-main">
-        <header className="story-main__header">
-          <span className="story-main__eyebrow">Stories / Tag input</span>
-          <h1>{activeStory.title}</h1>
-          <p>{activeStory.description}</p>
+      <main className="lab-main">
+        <header className="lab-header">
+          <span className="lab-eyebrow">Public root import / acceptance lab</span>
+          <h1>{active.label}</h1>
+          <p>{active.description}</p>
         </header>
-        <section className="story-main__canvas" aria-label="Story canvas">
-          <div className="story-card">
-            <div className="story-card__header">
-              <span className="story-card__title">{activeStory.title}</span>
-              <span className="story-card__status">Canvas</span>
-            </div>
-            <div className="story-card__body">
-              <div className="story-preview">{activeStory.element}</div>
-            </div>
-          </div>
+        <section className="lab-card" aria-label={`${active.label} scenario`}>
+          {content}
         </section>
-        {activeStory.notes.length > 0 ? (
-          <section className="story-main__notes" aria-label="Implementation notes">
-            <h2>Implementation notes</h2>
-            <ul>
-              {activeStory.notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
       </main>
     </div>
   );
