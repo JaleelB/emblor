@@ -88,6 +88,11 @@ if (!container.innerHTML.includes('react') || !container.innerHTML.includes('rol
 flushSync(() => root.unmount());
 `,
   );
+  const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+  const readmeExamples = Array.from(readme.matchAll(/```tsx\r?\n([\s\S]*?)```/g), (match) => match[1]);
+  readmeExamples.forEach((example, index) => {
+    writeFileSync(join(directory, `readme-example-${index}.tsx`), example);
+  });
   run(pnpm, ['install', '--no-frozen-lockfile', '--ignore-scripts'], directory);
   run(pnpm, ['run', 'build'], directory);
   run(pnpm, ['run', 'verify'], directory);

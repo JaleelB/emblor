@@ -26,6 +26,7 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:compat": "node ./tests/compat/verify-packed-consumers.mjs",
+    "test:browser": "pnpm run build && playwright test --config playwright.config.ts",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -37,6 +38,7 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^15.0.0",
     "@testing-library/user-event": "^14.5.1",
+    "@playwright/test": "^1.55.0",
     "@vitejs/plugin-react": "^4.3.0",
     "@types/react": "^18.2.40",
     "@types/react-dom": "^18.2.17",
@@ -44,6 +46,7 @@
     "jsdom": "^24.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.6.0",
+    "vite": "^5.4.0",
     "vitest": "^2.0.0"
   }
 }
