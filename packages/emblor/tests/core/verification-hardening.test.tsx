@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -14,6 +14,8 @@ import {
   EmblorTagText,
 } from '../../src';
 import { defaultAnnouncement } from '../../src/utils';
+
+const suppressAnnouncements = () => '';
 
 function Tags({ sparse = false }: { sparse?: boolean }) {
   return (
@@ -33,7 +35,7 @@ function Tags({ sparse = false }: { sparse?: boolean }) {
 function Field(props: React.ComponentProps<typeof EmblorRoot> & { sparse?: boolean }) {
   const { sparse, children, ...rootProps } = props;
   return (
-    <EmblorRoot {...rootProps}>
+    <EmblorRoot getAnnouncement={suppressAnnouncements} {...rootProps}>
       <Tags sparse={sparse} />
       <EmblorInput aria-label="Tags input" />
       {children}
@@ -51,6 +53,224 @@ function expectRenderError(node: React.ReactNode, message: RegExp) {
 }
 
 describe('verification hardening', () => {
+  it('runs whitespace through transform for keyboard, blur, and paste commits', async () => {
+    const onValueChange = vi.fn();
+    const onReject = vi.fn();
+    const transform = (value: string) => value || 'fallback';
+    const view = render(<Field transform={transform} onValueChange={onValueChange} onReject={onReject} />);
+    const input = screen.getByRole('textbox');
+
+    fireEvent.change(input, { target: { value: '   ' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onValueChange).toHaveBeenCalledWith(['fallback'], {
+      type: 'add',
+      value: 'fallback',
+      index: 0,
+      source: 'keyboard',
+    });
+
+    view.unmount();
+    const blurView = render(
+      <>
+        <Field transform={transform} blurBehavior="commit" defaultInputValue="   " onValueChange={onValueChange} />
+        <button type="button">Outside</button>
+      </>,
+    );
+    fireEvent.blur(screen.getByRole('textbox'), { relatedTarget: screen.getByRole('button', { name: 'Outside' }) });
+    await act(async () => Promise.resolve());
+    expect(onValueChange).toHaveBeenLastCalledWith(['fallback'], {
+      type: 'add',
+      value: 'fallback',
+      index: 0,
+      source: 'blur',
+    });
+    blurView.unmount();
+
+    const pasteChange = vi.fn();
+    const pasteView = render(<Field transform={transform} onValueChange={pasteChange} />);
+    fireEvent.paste(screen.getByRole('textbox'), {
+      clipboardData: { getData: () => 'one,   ,two' },
+    });
+    expect(pasteChange).toHaveBeenCalledWith(['one', 'fallback', 'two'], {
+      type: 'add-many',
+      values: ['one', 'fallback', 'two'],
+      startIndex: 0,
+      source: 'paste',
+    });
+    pasteView.unmount();
+  });
+
+  it('reports transformed whitespace as empty while keeping a truly empty draft silent', () => {
+    const onReject = vi.fn();
+    render(<Field transform={() => ''} onReject={onReject} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: '   ' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onReject).toHaveBeenCalledWith({
+      rawValue: '   ',
+      value: '',
+      reason: 'empty',
+      source: 'keyboard',
+    });
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onReject).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserves transient rejection through unrelated removal', () => {
+    render(<Field defaultValue={['one', 'two']} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'one' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(input).toHaveAttribute('data-invalid', '');
+    fireEvent.click(within(screen.getByText('two').closest('[role="listitem"]') as HTMLElement).getByRole('button'));
+    expect(screen.getByRole('textbox')).toHaveAttribute('data-invalid', '');
+  });
+
+  it('preserves transient rejection when Clear does not change an empty draft', () => {
+    const onInputValueChange = vi.fn();
+    render(
+      <Field defaultValue={['one']} onInputValueChange={onInputValueChange}>
+        <EmblorClear />
+      </Field>,
+    );
+    const input = screen.getByRole('textbox');
+    fireEvent.paste(input, { clipboardData: { getData: () => 'one' } });
+    expect(input).toHaveValue('');
+    expect(input).toHaveAttribute('data-invalid', '');
+    fireEvent.click(screen.getByRole('button', { name: 'Clear all tags' }));
+    expect(input).toHaveValue('');
+    expect(input).toHaveAttribute('data-invalid', '');
+    expect(onInputValueChange).not.toHaveBeenCalled();
+  });
+
+  it('clears transient rejection when Clear actually changes the draft', () => {
+    const onInputValueChange = vi.fn();
+    render(
+      <Field defaultValue={['one']} onInputValueChange={onInputValueChange}>
+        <EmblorClear />
+      </Field>,
+    );
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'one' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(input).toHaveAttribute('data-invalid', '');
+    fireEvent.click(screen.getByRole('button', { name: 'Clear all tags' }));
+    expect(input).toHaveValue('');
+    expect(input).not.toHaveAttribute('data-invalid');
+    expect(onInputValueChange).toHaveBeenLastCalledWith('');
+  });
+
+  it('keeps controlled draft callback order aligned with Root-owned mutations', () => {
+    const events: string[] = [];
+    function ControlledDraftField() {
+      const [draft, setDraft] = React.useState('');
+      return (
+        <Field
+          inputValue={draft}
+          onInputValueChange={(next) => {
+            events.push(`draft:${next}`);
+            setDraft(next);
+          }}
+          onValueChange={(_next, details) => events.push(`tags:${details.type}`)}
+        />
+      );
+    }
+
+    render(<ControlledDraftField />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'one' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(events).toEqual(['draft:one', 'tags:add', 'draft:']);
+    expect(input).toHaveValue('');
+  });
+
+  it('keeps rejected and guarded transitions callback-silent', () => {
+    const onValueChange = vi.fn();
+    const onReject = vi.fn();
+    const { rerender } = render(
+      <Field value={['one']} maxTags={1} onValueChange={onValueChange} onReject={onReject} />,
+    );
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'two' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onReject).toHaveBeenCalledTimes(1);
+    rerender(<Field value={['externally supplied']} onValueChange={onValueChange} />);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onReject).toHaveBeenCalledTimes(1);
+  });
+
+  it('orders automatic labels by connected DOM position across reverse-mounted portals', async () => {
+    const firstPortal = document.createElement('div');
+    const secondPortal = document.createElement('div');
+    document.body.append(firstPortal, secondPortal);
+    const view = render(
+      <EmblorRoot>
+        <EmblorInput />
+        {createPortal(<EmblorLabel>Later label</EmblorLabel>, secondPortal)}
+        {createPortal(<EmblorLabel>Earlier label</EmblorLabel>, firstPortal)}
+      </EmblorRoot>,
+    );
+    try {
+      await act(async () => Promise.resolve());
+      expect(screen.getByRole('textbox')).toHaveAccessibleName('Earlier label Later label');
+    } finally {
+      act(() => {
+        view.unmount();
+        firstPortal.remove();
+        secondPortal.remove();
+      });
+    }
+  });
+
+  it('recomputes automatic label order after connected portal containers are reordered', async () => {
+    const firstPortal = document.createElement('div');
+    const secondPortal = document.createElement('div');
+    document.body.append(firstPortal, secondPortal);
+    const view = render(
+      <EmblorRoot>
+        <EmblorInput />
+        {createPortal(<EmblorLabel>First label</EmblorLabel>, firstPortal)}
+        {createPortal(<EmblorLabel>Second label</EmblorLabel>, secondPortal)}
+      </EmblorRoot>,
+    );
+    try {
+      expect(screen.getByRole('textbox')).toHaveAccessibleName('First label Second label');
+      act(() => {
+        document.body.insertBefore(secondPortal, firstPortal);
+      });
+      await act(async () => Promise.resolve());
+      expect(screen.getByRole('textbox')).toHaveAccessibleName('Second label First label');
+    } finally {
+      act(() => {
+        view.unmount();
+        firstPortal.remove();
+        secondPortal.remove();
+      });
+    }
+  });
+
+  it('keeps automatic naming when a polymorphic Label replaces its host node', async () => {
+    function ReplacingLabel() {
+      const [alternate, setAlternate] = React.useState(false);
+      return (
+        <EmblorRoot>
+          <EmblorLabel as={alternate ? 'div' : 'label'}>Name</EmblorLabel>
+          <EmblorInput />
+          <button type="button" onClick={() => setAlternate((current) => !current)}>
+            Replace label host
+          </button>
+        </EmblorRoot>
+      );
+    }
+
+    render(<ReplacingLabel />);
+    expect(screen.getByRole('textbox')).toHaveAccessibleName('Name');
+    fireEvent.click(screen.getByRole('button', { name: 'Replace label host' }));
+    await waitFor(() => expect(screen.getByRole('textbox')).toHaveAccessibleName('Name'));
+  });
+
   it('separates Enter, opt-in Tab, native Tab, and literal delimiters', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<Field delimiters={[';']} />);
@@ -67,6 +287,50 @@ describe('verification hardening', () => {
     act(() => input.focus());
     await user.type(input, 'three;');
     expect(screen.getByText('three')).toBeInTheDocument();
+  });
+
+  it('suppresses every Emblor command during composition and resumes on a later ordinary key', () => {
+    const onValueChange = vi.fn();
+    render(<Field defaultValue={['one']} onValueChange={onValueChange} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'draft' } });
+    for (const key of ['Enter', 'Tab', ',', 'Backspace', 'Delete', 'Home', 'End', 'ArrowLeft', 'ArrowRight']) {
+      fireEvent.keyDown(input, { key, isComposing: true });
+    }
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(input).toHaveValue('draft');
+
+    const tag = screen.getByText('one').closest('[role="listitem"]') as HTMLElement;
+    act(() => tag.focus());
+    fireEvent.keyDown(tag, { key: 'Delete', isComposing: true });
+    expect(screen.getByText('one')).toBeInTheDocument();
+
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onValueChange).toHaveBeenCalledWith(['one', 'draft'], {
+      type: 'add',
+      value: 'draft',
+      index: 1,
+      source: 'keyboard',
+    });
+  });
+
+  it('moves from Input boundaries according to physical direction', () => {
+    render(
+      <div dir="rtl">
+        <Field defaultValue={['first', 'last']} />
+      </div>,
+    );
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    const first = screen.getByText('first').closest('[role="listitem"]') as HTMLElement;
+    const last = screen.getByText('last').closest('[role="listitem"]') as HTMLElement;
+    act(() => input.focus());
+    input.setSelectionRange(0, 0);
+    fireEvent.keyDown(input, { key: 'ArrowRight' });
+    expect(last).toHaveFocus();
+    act(() => input.focus());
+    input.setSelectionRange(input.value.length, input.value.length);
+    fireEvent.keyDown(input, { key: 'ArrowLeft' });
+    expect(first).toHaveFocus();
   });
 
   it('forwards applicable native, ARIA, data, style, and event props on every part', () => {
@@ -99,6 +363,56 @@ describe('verification hardening', () => {
     expect(events).toHaveBeenCalled();
   });
 
+  it('keeps consumer-first cancellation across label and action activation', () => {
+    const onValueChange = vi.fn();
+    const cancel = vi.fn((event: React.SyntheticEvent) => event.preventDefault());
+    render(
+      <>
+        <EmblorRoot defaultValue={['one']} onValueChange={onValueChange}>
+          <EmblorLabel as="button" onClick={cancel}>
+            Cancel label
+          </EmblorLabel>
+          <EmblorTagList>
+            {(tag, index) => (
+              <EmblorTag key={tag} index={index}>
+                <EmblorTagText />
+                <EmblorTagRemove onClick={cancel} />
+              </EmblorTag>
+            )}
+          </EmblorTagList>
+          <EmblorInput role="combobox" />
+          <EmblorClear onClick={cancel} />
+        </EmblorRoot>
+        <button type="button">Outside</button>
+      </>,
+    );
+    const input = screen.getByRole('textbox');
+    const remove = screen.getByRole('button', { name: 'Remove one' });
+    const clear = screen.getByRole('button', { name: 'Clear all tags' });
+    const outside = screen.getByRole('button', { name: 'Outside' });
+    act(() => outside.focus());
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel label' }));
+    expect(input).not.toHaveFocus();
+    fireEvent.click(remove);
+    fireEvent.click(clear);
+    expect(screen.getByText('one')).toBeInTheDocument();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(cancel).toHaveBeenCalledTimes(3);
+    expect(input).toHaveAttribute('role', 'textbox');
+  });
+
+  it('keeps automatic labels out of naming when explicit naming overrides are supplied', () => {
+    render(
+      <EmblorRoot>
+        <EmblorLabel>Ignored automatic label</EmblorLabel>
+        <EmblorLabel htmlFor="unrelated">Explicit native label</EmblorLabel>
+        <EmblorInput aria-label="Consumer name" />
+      </EmblorRoot>,
+    );
+    expect(screen.getByRole('textbox')).toHaveAccessibleName('Consumer name');
+    expect(screen.getByRole('group')).toHaveAccessibleName('Ignored automatic label');
+  });
+
   it('preserves disabled/read-only form participation and resets only uncontrolled state', async () => {
     const user = userEvent.setup();
     function Controlled() {
@@ -127,6 +441,33 @@ describe('verification hardening', () => {
     expect(inputs[2]).toHaveValue('initial draft');
     expect(screen.getByText('controlled')).toBeInTheDocument();
     expect(inputs[3]).toHaveValue('controlled draft');
+  });
+
+  it('keeps minTags as a mutation guard even for externally supplied below-minimum values', () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(<Field value={['one']} minTags={2} onValueChange={onValueChange} />);
+    const remove = screen.getByRole('button', { name: 'Remove one' });
+    expect(remove).toBeDisabled();
+    fireEvent.click(remove);
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    rerender(<Field value={['one']} minTags={1} onValueChange={onValueChange} />);
+    expect(screen.getByRole('button', { name: 'Remove one' })).toBeDisabled();
+    rerender(<Field value={['one']} minTags={0} onValueChange={onValueChange} />);
+    expect(screen.getByRole('button', { name: 'Remove one' })).not.toBeDisabled();
+  });
+
+  it('preserves bracket names and omitted values in native form submission', () => {
+    const formRef = React.createRef<HTMLFormElement>();
+    render(
+      <form ref={formRef}>
+        <Field name="skills[]" defaultValue={['one', 'two', 'three']} sparse />
+      </form>,
+    );
+    expect(new FormData(formRef.current as HTMLFormElement).getAll('skills[]')).toEqual(['one', 'two', 'three']);
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.getByText('one')).toBeInTheDocument();
+    expect(screen.getByText('three')).toBeInTheDocument();
   });
 
   it('recomputes valid dynamic constraints without mutating or emitting', () => {
@@ -182,22 +523,25 @@ describe('verification hardening', () => {
     const user = userEvent.setup();
     const portal = document.createElement('div');
     document.body.append(portal);
+    const view = render(
+      <React.StrictMode>
+        <EmblorRoot defaultValue={['one']} blurBehavior="discard" defaultInputValue="draft">
+          <Tags />
+          <EmblorInput aria-label="Tags input" />
+          {createPortal(<EmblorLabel as="button">Portal label</EmblorLabel>, portal)}
+        </EmblorRoot>
+      </React.StrictMode>,
+    );
     try {
-      render(
-        <React.StrictMode>
-          <EmblorRoot defaultValue={['one']} blurBehavior="discard" defaultInputValue="draft">
-            <Tags />
-            <EmblorInput aria-label="Tags input" />
-            {createPortal(<EmblorLabel as="button">Portal label</EmblorLabel>, portal)}
-          </EmblorRoot>
-        </React.StrictMode>,
-      );
       const input = screen.getByRole('textbox');
       act(() => input.focus());
       await user.click(screen.getByRole('button', { name: 'Portal label' }));
       expect(input).toHaveValue('draft');
     } finally {
-      portal.remove();
+      act(() => {
+        view.unmount();
+        portal.remove();
+      });
     }
   });
 
@@ -336,6 +680,52 @@ describe('verification hardening', () => {
       expect(rejectedInput).toHaveValue('draft');
       expect(rejectedInput.selectionStart).toBe(0);
       expect(rejectedInput.selectionEnd).toBe(5);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('cancels total-rejection selection restoration after a later caret decision', async () => {
+    vi.useFakeTimers();
+    try {
+      render(<Field defaultValue={['duplicate']} defaultInputValue="draft" />);
+      const input = screen.getByRole('textbox') as HTMLInputElement;
+      act(() => input.focus());
+      input.setSelectionRange(0, 5);
+      fireEvent.paste(input, { clipboardData: { getData: () => 'duplicate' } });
+      input.setSelectionRange(2, 2);
+      fireEvent.select(input);
+      await act(async () => vi.runAllTimersAsync());
+      expect(input.selectionStart).toBe(2);
+      expect(input.selectionEnd).toBe(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('cancels selection restoration even when a consumer prevents a later keydown', async () => {
+    vi.useFakeTimers();
+    try {
+      render(
+        <EmblorRoot defaultValue={['duplicate']} defaultInputValue="draft">
+          <Tags />
+          <EmblorInput
+            aria-label="Tags input"
+            onKeyDown={(event) => {
+              event.preventDefault();
+            }}
+          />
+        </EmblorRoot>,
+      );
+      const input = screen.getByRole('textbox') as HTMLInputElement;
+      act(() => input.focus());
+      input.setSelectionRange(0, 5);
+      fireEvent.paste(input, { clipboardData: { getData: () => 'duplicate' } });
+      input.setSelectionRange(2, 2);
+      fireEvent.keyDown(input, { key: 'ArrowLeft' });
+      await act(async () => vi.runAllTimersAsync());
+      expect(input.selectionStart).toBe(2);
+      expect(input.selectionEnd).toBe(2);
     } finally {
       vi.useRealTimers();
     }

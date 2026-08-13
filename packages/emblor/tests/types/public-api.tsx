@@ -77,6 +77,10 @@ export function PublicApiFixture() {
 const removedInputProp = <EmblorInput value="draft" onValueChange={() => {}} />;
 void removedInputProp;
 
+// @ts-expect-error Input only accepts input-like intrinsic elements.
+const invalidInputElement = <EmblorInput as="div" />;
+void invalidInputElement;
+
 // @ts-expect-error EmblorTagRemove inherits index from its containing EmblorTag.
 const removedIndexProp = <EmblorTagRemove index={0} />;
 void removedIndexProp;

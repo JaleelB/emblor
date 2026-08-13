@@ -15,6 +15,8 @@ import {
   type EmblorValueChangeDetails,
 } from '../../src';
 
+const suppressAnnouncements = () => '';
+
 const CustomButton = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<'button'>>(
   function CustomButton(props, ref) {
     return <button {...props} ref={ref} />;
@@ -24,7 +26,7 @@ const CustomButton = React.forwardRef<HTMLButtonElement, React.ComponentPropsWit
 function Field(props: React.ComponentProps<typeof EmblorRoot> & { inputPlaceholder?: string }) {
   const { inputPlaceholder = 'Add tag', children, ...rootProps } = props;
   return (
-    <EmblorRoot {...rootProps}>
+    <EmblorRoot getAnnouncement={suppressAnnouncements} {...rootProps}>
       <EmblorLabel>Tags</EmblorLabel>
       <EmblorTagList>
         {(tag, index) => (
@@ -280,6 +282,20 @@ describe('Emblor v2 vertical slice', () => {
     }
   });
 
+  it('restores Input focus after an accepted uncontrolled clear', () => {
+    render(
+      <Field defaultValue={['one']}>
+        <EmblorClear />
+      </Field>,
+    );
+    const clear = screen.getByRole('button', { name: 'Clear all tags' });
+    act(() => {
+      clear.focus();
+      fireEvent.click(clear);
+    });
+    expect(screen.getByRole('textbox')).toHaveFocus();
+  });
+
   it('preserves native button safety for custom action components', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
@@ -319,7 +335,7 @@ describe('Emblor v2 vertical slice', () => {
   it('renders every partial-paste announcement in rejection-then-batch order', async () => {
     vi.useFakeTimers();
     try {
-      render(<Field defaultValue={['existing']} maxTags={3} />);
+      render(<Field defaultValue={['existing']} maxTags={3} getAnnouncement={undefined} />);
       const getLiveRegion = () => document.querySelector('[aria-live="polite"]') as HTMLElement;
       fireEvent.paste(screen.getByRole('textbox'), {
         clipboardData: { getData: () => 'first,existing,second,third' },

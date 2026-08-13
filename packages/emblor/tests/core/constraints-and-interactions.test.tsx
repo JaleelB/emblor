@@ -4,12 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove } from '../../src';
 
+const suppressAnnouncements = () => '';
+
 function MinimalField(
   props: React.ComponentProps<typeof EmblorRoot> & { inputOnPaste?: React.ClipboardEventHandler<HTMLInputElement> },
 ) {
   const { inputOnPaste, ...rootProps } = props;
   return (
-    <EmblorRoot {...rootProps}>
+    <EmblorRoot getAnnouncement={suppressAnnouncements} {...rootProps}>
       <EmblorTagList>
         {(tag, index) => (
           <EmblorTag key={`${tag}-${index}`} index={index}>
@@ -49,6 +51,28 @@ describe('Emblor constraints and interaction boundaries', () => {
     } finally {
       consoleError.mockRestore();
     }
+  });
+
+  it('splits paste with deduplicated literal delimiters and supports whole-draft mode', () => {
+    const onValueChange = vi.fn();
+    const first = render(<MinimalField delimiters={['|', '.', '😀', '|']} onValueChange={onValueChange} />);
+    fireEvent.paste(screen.getByRole('textbox'), {
+      clipboardData: { getData: () => 'one|two.three😀four' },
+    });
+    expect(onValueChange).toHaveBeenCalledWith(['one', 'two', 'three', 'four'], {
+      type: 'add-many',
+      values: ['one', 'two', 'three', 'four'],
+      startIndex: 0,
+      source: 'paste',
+    });
+    first.unmount();
+
+    const wholeDraftChange = vi.fn();
+    render(<MinimalField delimiters={[]} onValueChange={wholeDraftChange} />);
+    fireEvent.paste(screen.getByRole('textbox'), {
+      clipboardData: { getData: () => 'one,two' },
+    });
+    expect(wholeDraftChange.mock.calls[0][0]).toEqual(['one,two']);
   });
 
   it('does not interpret commands while composing', async () => {
