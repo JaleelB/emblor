@@ -12,11 +12,11 @@
   "consumers": {
     "18.3.1": {
       "bundleBytes": 170654,
-      "dependencyGraphSha256": "638a00dabe2eebbb9b95bcaf59a43bc2b47225c25a6839c93fc747f02aafbff2"
+      "dependencyGraphSha256": "7b7022ec91fe4e783bc1e6e6f5226fe61049e5c23740fb15372db84f6f57d9e7"
     },
     "19.1.1": {
       "bundleBytes": 214524,
-      "dependencyGraphSha256": "bafd0de863ba23f9fd301943d3198abb092d96dd6e3b8bb81d208b78da2e5e2d"
+      "dependencyGraphSha256": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97"
     }
   }
 }

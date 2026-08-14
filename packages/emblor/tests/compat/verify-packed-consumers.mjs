@@ -25,6 +25,7 @@ const expectedExports = [
   'EmblorTagText',
 ];
 const consumerReports = [];
+const platformPackagePattern = /^(?:@esbuild\/(?:aix|android|darwin|freebsd|linux|netbsd|openbsd|sunos|win32)-|@rollup\/rollup-|fsevents$)/;
 
 mkdirSync(tarballDirectory);
 
@@ -71,10 +72,18 @@ function directoryBytes(directory, predicate = () => true) {
 }
 
 function normalizeForFingerprint(value) {
-  if (Array.isArray(value)) return value.map(normalizeForFingerprint);
+  if (Array.isArray(value)) {
+    return value.filter((entry) => !(entry && typeof entry === 'object' && entry.optional === true)).map(normalizeForFingerprint);
+  }
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value)
+        .filter(
+          ([key, nestedValue]) =>
+            !platformPackagePattern.test(key) &&
+            !(nestedValue && typeof nestedValue === 'object' && nestedValue.optional === true) &&
+            !(nestedValue && typeof nestedValue === 'object' && platformPackagePattern.test(nestedValue.name ?? '')),
+        )
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([key, nestedValue]) => [
           key,
