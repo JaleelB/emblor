@@ -326,7 +326,6 @@ try {
     ['18.3.1', '19.1.1'],
     'packed consumer matrix did not cover React 18 and React 19',
   );
-  console.log(`[distribution] Consumer fingerprint report: ${JSON.stringify(compatReport.consumers)}`);
 
   const measurements = {
     tarballBytes: statSync(tarballPath).size,

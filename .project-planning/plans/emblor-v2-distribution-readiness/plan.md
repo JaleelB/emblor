@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation in progress. The Phase 2 distribution tooling and local gates are implemented and passing on Node 22; the pushed clean-checkout Node 22/24 matrix, including bundled Chromium on Node 24, remains before this plan can close. Phase 1 is complete and its final pushed artifact passed Node 22 and Node 24 CI. This Phase 2 plan covers only the remaining distribution delta between that hardened package and an alpha-ready, reproducible package artifact.
+Implementation complete. The exact pushed commit passed the clean-checkout Node 22/24 matrix, including bundled Chromium on Node 24. Phase 1 is complete, and this Phase 2 plan closes the remaining distribution delta between that hardened package and an alpha-ready, reproducible package artifact.
 
 ## Feature Definition
 
@@ -58,7 +58,7 @@ These are packaging and automation gaps, not reasons to redesign the frozen API.
 - [Decision Manifest](./decision-manifest.md)
 - [Decision Coverage](./coverage.md)
 
-Status: In progress. The required distribution obligations are mapped and locally verified where possible; Node 24 and clean-checkout evidence remain for closure. None are deferred.
+Status: Complete. All required distribution obligations are verified, including the exact pushed Node 22/24 clean-checkout matrix and Node 24 bundled Chromium confirmation. No obligation was deferred.
 
 ## Implementation Strategy
 
@@ -411,18 +411,18 @@ None at plan time. Exact size-tolerance values and whether package sanity runs o
 
 ## Definition of Done
 
-- [ ] Every row in `coverage.md` is Verified.
+- [x] Every row in `coverage.md` is Verified.
 - [x] Exact root-only exports and zero runtime dependencies are machine-enforced against the tarball.
 - [x] ESM, CJS, declarations, manifest targets, README, license, source maps, and tarball allowlist pass.
 - [x] Clean React 18 and React 19 consumers compile, production-build, and mount from the tarball.
 - [x] Native ESM import and CommonJS require work from the packed artifact.
 - [x] Package and representative bundle sanity baselines are recorded and reproducible.
-- [ ] Frozen-lockfile Node 22 and Node 24 distribution lanes pass; Node 24 bundled Chromium passes.
-- [ ] The non-publishing Node 24 release validation passes without artifact mutation.
+- [x] Frozen-lockfile Node 22 and Node 24 distribution lanes pass; Node 24 bundled Chromium passes.
+- [x] The non-publishing Node 24 release validation passes without artifact mutation.
 - [x] The package remains at `1.4.8`; no changeset or prerelease mode is introduced.
 - [x] No public API, source contract, website, playground, runtime dependency, or excluded feature changed.
-- [ ] A clean checkout reproduces the complete gate on the exact pushed commit.
-- [ ] `implementation-review.md` recommends proceeding to Phase 3.
+- [x] A clean checkout reproduces the complete gate on the exact pushed commit.
+- [x] `implementation-review.md` recommends proceeding to Phase 3.
 
 ## To-Dos
 
@@ -433,5 +433,5 @@ None at plan time. Exact size-tolerance values and whether package sanity runs o
 - [x] T-04 — Verify module loading and record package sanity baselines.
 - [x] T-05 — Create the authoritative Node 22/24 distribution gate.
 - [x] T-06 — Validate the non-publishing release path.
-- [ ] T-07 — Reproduce the gate from a clean checkout.
-- [ ] T-08 — Review the distribution artifact and close Phase 2.
+- [x] T-07 — Reproduce the gate from a clean checkout.
+- [x] T-08 — Review the distribution artifact and close Phase 2.

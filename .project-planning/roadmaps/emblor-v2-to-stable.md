@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-13. Phase 1 is complete; Phase 2 — Package & Distribution Readiness is active.
+Active umbrella roadmap as of 2026-08-14. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is next.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -20,7 +20,7 @@ The current package already has:
 - packed-consumer and package-content checks;
 - no core autocomplete, suggestions, sortable/drag-and-drop, Shadcn, Tailwind, CVA, addons, or v1 compatibility layer.
 
-The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are now complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). The final pushed artifact passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 1 is closed and Phase 2 — Package & Distribution Readiness is active.
+The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is also complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md): commit `7e0f0b0cdf30067364b28a94166712cef5a19a82` passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 3 — `2.0.0-alpha.0` Preparation is next.
 
 The package manifest remains at the published-v1 development baseline `1.4.8`. No v2 prerelease has been published yet. The existing `website/` still consumes and documents published v1, as required by DR-0005.
 

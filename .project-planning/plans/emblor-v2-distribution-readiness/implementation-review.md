@@ -2,7 +2,7 @@
 
 ## Status
 
-Local implementation complete; remote clean-checkout closure is pending. The source/public contract remains frozen, and the local Node 22 distribution gate passes. This review does not claim Phase 2 complete until the changes are committed and the exact pushed commit passes the Node 22/24 GitHub Actions matrix, including bundled Chromium on Node 24.
+Phase 2 complete. The source/public contract remains frozen, the local distribution and release dry-run gates pass, and the exact pushed commit passed the clean-checkout Node 22/24 GitHub Actions matrix, including bundled Chromium on Node 24.
 
 ## Delivered
 
@@ -46,15 +46,16 @@ package.json
 
 ## Decision Coverage
 
-PD/O-01 through PD/O-10 and PD/O-15 have direct local evidence and are marked `Verified` in [`coverage.md`](./coverage.md). PD/O-11 through PD/O-14 and PD/O-16 are marked `Partially Covered` because local execution cannot substitute for the required Node 24 runner, bundled Chromium installation, clean checkout, exact pushed commit, and recorded GitHub Actions result.
+All obligations PD/O-01 through PD/O-16 are `Verified` in [`coverage.md`](./coverage.md). The final evidence is GitHub Actions run [31766929569](https://github.com/JaleelB/emblor/actions/runs/31766929569) for commit `7e0f0b0cdf30067364b28a94166712cef5a19a82`: Node 22 passed the complete distribution lane, and Node 24 passed the complete lane plus Chromium installation and the browser contract gate.
 
-## Remaining Closure Work
+## Closure Evidence
 
-1. Commit the implementation without including unrelated pre-existing worktree changes.
-2. Push the implementation commit and record the CI run URL, commit SHA, Node 22/24 job conclusions, and Node 24 bundled-Chromium result.
-3. Re-run the committed distribution commands from a clean checkout and compare the artifact report with the baseline.
-4. Update `coverage.md`, this review, the plan status, and the planning index only after that evidence passes; then activate Phase 3 alpha preparation.
+- Commit: `7e0f0b0cdf30067364b28a94166712cef5a19a82`.
+- CI run: [31766929569](https://github.com/JaleelB/emblor/actions/runs/31766929569).
+- Node 22: success; frozen install, format, build, lint, typecheck, 76 tests, packed distribution, consumers, and package sanity passed.
+- Node 24: success; the same distribution checks passed, Chromium installed successfully, and all 8 browser contract tests passed.
+- Local release validation: `pnpm run release:dry-run` passed without publishing, changing `1.4.8`, or mutating the inspected package inputs.
 
 ## Recommendation
 
-Proceed to the clean-checkout and remote CI closure step. Do not publish, bump the version, add a Phase 2 changeset, enter prerelease mode, or modify the frozen source/API boundary.
+Proceed to Phase 3 alpha preparation. Do not publish, bump the version, add a Phase 2 changeset, enter prerelease mode, or modify the frozen source/API boundary until the separate alpha release runbook authorizes those actions.
