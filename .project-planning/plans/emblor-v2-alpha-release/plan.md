@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 3 candidate prepared locally; exact-SHA CI/browser evidence and npm trusted-publisher authorization remain open. Phase 2 is complete and the final closure commit `3980c5d0cda5123b5c61c4df10cbf5220610a4a3` passed the complete Node 22/24 GitHub Actions matrix, including bundled Chromium on Node 24. See [implementation review](./implementation-review.md).
+Phase 3 candidate `93d955cce94b9e79a07ed60bca26ed1dcc1e6027` is committed, pushed, and passed exact Node 22/24 CI plus the Node 24 Chromium gate. npm trusted-publisher authorization and Phase 3 approval remain open. Phase 2 is complete and the final closure commit `3980c5d0cda5123b5c61c4df10cbf5220610a4a3` passed the complete Node 22/24 GitHub Actions matrix, including bundled Chromium on Node 24. See [implementation review](./implementation-review.md).
 
 Phase 4 publication is not authorized by this plan. It remains gated on successful Phase 3 candidate review, npm/GitHub release authority, protected-environment approval, and an explicit user instruction naming the exact candidate SHA/version.
 
@@ -93,7 +93,7 @@ After npm publication, verify the registry before creating the Git tag and GitHu
 - [Decision Manifest](./decision-manifest.md)
 - [Decision Coverage](./coverage.md)
 
-Status: Phase 3 candidate prepared, approval pending. All 18 obligations are mapped; AR/O-02 through AR/O-09 are locally evidenced, AR/O-10 through AR/O-12 remain partially covered pending exact-SHA and external authority evidence, and publication obligations remain Planned until the separately approved Phase 4 action occurs.
+Status: Phase 3 candidate pushed and exact-SHA CI/browser verified, approval pending. All 18 obligations are mapped; AR/O-01 through AR/O-09 and AR/O-12 are evidenced, AR/O-10 and AR/O-11 remain partially covered pending npm authority and explicit approval, and publication obligations remain Planned until the separately approved Phase 4 action occurs.
 
 ## Files and External Systems
 
@@ -371,7 +371,7 @@ Require every coverage row Verified, findings triaged, feedback channel active, 
 - [x] Disposable rehearsal deterministically yields `2.0.0-alpha.0`.
 - [x] README, migration, changelog, release notes, and feedback templates are ready.
 - [x] Tarball includes the intended documentation and passes the full distribution gate.
-- [ ] Exact candidate passes Node 22/24 CI and Node 24 Chromium.
+- [x] Exact candidate passes Node 22/24 CI and Node 24 Chromium.
 - [ ] Phase 3 review approves the exact SHA.
 - [x] npm still reports `latest: 1.4.8`; target alpha is absent.
 - [x] No publish command has run.
@@ -427,7 +427,7 @@ None requiring a product or architecture decision. The npm trusted publisher and
 - [x] T-03 — Complete migration, changelog, and alpha release notes.
 - [x] T-04 — Establish the alpha feedback system.
 - [x] T-05 — Build the approval-gated alpha publication workflow.
-- [ ] T-06 — Generate the exact alpha release candidate.
+- [x] T-06 — Generate the exact alpha release candidate.
 - [ ] T-07 — Approve or reject Phase 3.
 - [ ] T-08 — Publish `2.0.0-alpha.0` under `next` after explicit approval.
 - [ ] T-09 — Verify the public npm release.

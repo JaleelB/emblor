@@ -2,9 +2,9 @@
 
 ## Status
 
-Candidate prepared locally; not approved for Phase 4 publication.
+Candidate committed and pushed at `93d955cce94b9e79a07ed60bca26ed1dcc1e6027`; not approved for Phase 4 publication.
 
-Verdict: blocked on exact-SHA CI/browser evidence and external npm trusted-publisher authorization. No npm publication or dist-tag mutation occurred.
+Verdict: exact-SHA CI/browser evidence is green; approval remains blocked on external npm trusted-publisher authorization. No npm publication or dist-tag mutation occurred.
 
 ## Follow-up review — workflow and boundary fixes
 
@@ -18,6 +18,8 @@ Verdict: blocked on exact-SHA CI/browser evidence and external npm trusted-publi
 
 - Phase 2 baseline: `3980c5d0cda5123b5c61c4df10cbf5220610a4a3`.
 - Recorded final Phase 2 CI run: `31767216492`, including Node 22/24 distribution and Node 24 bundled Chromium evidence.
+- Candidate SHA: `93d955cce94b9e79a07ed60bca26ed1dcc1e6027`.
+- Candidate CI run: `31814645434` passed both Node 22.x and Node 24.x jobs, including packed distribution verification and the Node 24 Chromium browser contract gate.
 - Repository visibility: public; default branch: `main`.
 - npm owner: `jaleelb`; registry state remains `latest: 1.4.8` and contains no `2.0.0-alpha.0`.
 - GitHub `NPM_TOKEN` secret exists, but it was not used and is not treated as trusted-publishing authority.
@@ -44,7 +46,7 @@ Verdict: blocked on exact-SHA CI/browser evidence and external npm trusted-publi
 - README examples compiled through the packed React 18/19 consumer fixtures.
 - `git diff --check` passed.
 - `pnpm run release:dry-run` passed after the boundary and workflow fixes.
-- The local browser gate was reattempted, but this workspace currently lacks the Playwright Chromium executable; all 8 tests failed at browser launch before test execution. The exact candidate therefore still requires the remote Node 24 Chromium result (the review's prior 8/8 result remains the required evidence to attach to the pushed SHA).
+- The local browser gate remains unavailable because this workspace lacks the Playwright Chromium executable, but the exact candidate's remote Node 24 Chromium gate passed in CI run `31814645434`.
 
 ## Frozen-boundary review
 
@@ -52,6 +54,6 @@ No source, public API/type, runtime dependency, website, playground, or excluded
 
 ## Coverage decision
 
-AR/O-02 through AR/O-09 are implemented and locally evidenced. AR/O-10 and AR/O-11 are implemented in repository/workflow configuration but remain partially evidenced until npm trusted publishing and an exact candidate SHA are available. AR/O-12 remains open pending exact-SHA Node 22/24 CI and Node 24 browser results. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
+AR/O-01 through AR/O-09 and AR/O-12 are implemented and evidenced, including the pushed exact candidate SHA and green Node 22/24 plus Node 24 browser CI. AR/O-10 and AR/O-11 remain partially evidenced until npm trusted publishing is verified and Phase 4 publication is explicitly approved. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
 
-The combined runbook remains Active. Do not dispatch `publish.yml` until the candidate is committed, exact-SHA CI and browser gates pass, npm trusted publisher identity is verified, and the user explicitly approves that exact SHA with `2.0.0-alpha.0`.
+The combined runbook remains Active. Do not dispatch `publish.yml` until npm trusted publisher identity is verified and the user explicitly approves `93d955cce94b9e79a07ed60bca26ed1dcc1e6027` with `2.0.0-alpha.0`.
