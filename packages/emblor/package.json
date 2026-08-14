@@ -1,10 +1,22 @@
 {
   "name": "emblor",
-  "version": "1.4.8",
+  "version": "2.0.0-alpha.0",
   "private": false,
   "type": "module",
   "sideEffects": false,
+  "description": "A headless, accessible compound tag-input primitive for React.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaleelB/emblor.git"
+  },
+  "homepage": "https://github.com/JaleelB/emblor#readme",
+  "bugs": {
+    "url": "https://github.com/JaleelB/emblor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,6 +32,8 @@
   "files": [
     "dist",
     "README.md",
+    "MIGRATION.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
