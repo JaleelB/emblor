@@ -12,11 +12,17 @@
   "consumers": {
     "18.3.1": {
       "bundleBytes": 170654,
-      "dependencyGraphSha256": "7b7022ec91fe4e783bc1e6e6f5226fe61049e5c23740fb15372db84f6f57d9e7"
+      "dependencyGraphSha256ByPlatform": {
+        "win32": "7b7022ec91fe4e783bc1e6e6f5226fe61049e5c23740fb15372db84f6f57d9e7",
+        "linux": "209ffcfe46a3966d85d9afd8554803b551578b2e636d5bf0b7e3161f47c3c618"
+      }
     },
     "19.1.1": {
       "bundleBytes": 214524,
-      "dependencyGraphSha256": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97"
+      "dependencyGraphSha256ByPlatform": {
+        "win32": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97",
+        "linux": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97"
+      }
     }
   }
 }
