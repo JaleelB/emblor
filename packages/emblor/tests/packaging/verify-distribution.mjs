@@ -10,8 +10,11 @@ const packageRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const repositoryRoot = resolve(packageRoot, '..', '..');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const tar = process.platform === 'win32' ? 'tar.exe' : 'tar';
+const expectedVersion = '2.0.0-alpha.0';
 const expectedFiles = [
+  'CHANGELOG.md',
   'LICENSE',
+  'MIGRATION.md',
   'README.md',
   'dist/index.cjs',
   'dist/index.cjs.map',
@@ -90,15 +93,32 @@ function sha256(path) {
 
 function assertManifest(manifest, label) {
   assert.equal(manifest.name, 'emblor', `${label} package name drifted`);
-  assert.equal(manifest.version, '1.4.8', `${label} package version drifted from the Phase 2 baseline`);
+  assert.equal(manifest.version, expectedVersion, `${label} package version drifted from the alpha candidate`);
   assert.equal(manifest.private, false, `${label} package must be publishable`);
   assert.equal(manifest.type, 'module', `${label} package must use native ESM metadata`);
   assert.equal(manifest.sideEffects, false, `${label} package must remain side-effect free`);
+  assert.equal(
+    manifest.description,
+    'A headless, accessible compound tag-input primitive for React.',
+    `${label} description drifted`,
+  );
   assert.equal(manifest.license, 'MIT', `${label} package must declare the MIT license`);
+  assert.deepEqual(
+    manifest.repository,
+    { type: 'git', url: 'git+https://github.com/JaleelB/emblor.git' },
+    `${label} repository metadata drifted`,
+  );
+  assert.equal(manifest.homepage, 'https://github.com/JaleelB/emblor#readme', `${label} homepage drifted`);
+  assert.deepEqual(manifest.bugs, { url: 'https://github.com/JaleelB/emblor/issues' }, `${label} bugs metadata drifted`);
+  assert.deepEqual(manifest.publishConfig, { access: 'public' }, `${label} publish access drifted`);
   assert.equal(manifest.main, 'dist/index.cjs', `${label} CJS main target drifted`);
   assert.equal(manifest.module, 'dist/index.js', `${label} ESM module target drifted`);
   assert.equal(manifest.types, 'dist/index.d.ts', `${label} declaration target drifted`);
-  assert.deepEqual(manifest.files, ['dist', 'README.md', 'LICENSE'], `${label} files boundary drifted`);
+  assert.deepEqual(
+    manifest.files,
+    ['dist', 'README.md', 'MIGRATION.md', 'CHANGELOG.md', 'LICENSE'],
+    `${label} files boundary drifted`,
+  );
   assert.deepEqual(Object.keys(manifest.exports).sort(), ['.', './package.json'], `${label} exports drifted`);
   assert.deepEqual(
     manifest.exports['.'],
@@ -163,11 +183,23 @@ function assertPackedArtifact(packedRoot, sourceManifest) {
   assertManifest(packedManifest, 'packed');
   assert.deepEqual(packedManifest, sourceManifest, 'npm pack changed the inspected package manifest');
 
-  assert.equal(
-    sha256(join(packedRoot, 'README.md')),
-    sha256(join(packageRoot, 'README.md')),
-    'packed README does not match packages/emblor/README.md',
-  );
+  for (const document of ['README.md', 'MIGRATION.md', 'CHANGELOG.md']) {
+    assert.equal(
+      sha256(join(packedRoot, document)),
+      sha256(join(packageRoot, document)),
+      `packed ${document} does not match packages/emblor/${document}`,
+    );
+  }
+  const packedReadme = readFileSync(join(packedRoot, 'README.md'), 'utf8');
+  const packedMigration = readFileSync(join(packedRoot, 'MIGRATION.md'), 'utf8');
+  const packedChangelog = readFileSync(join(packedRoot, 'CHANGELOG.md'), 'utf8');
+  assert.match(packedReadme, /npm install emblor@next/);
+  assert.match(packedReadme, /pnpm add emblor@next/);
+  assert.match(packedReadme, /latest` remains the v1 line/);
+  assert.match(packedMigration, /Migrating from Emblor v1 to v2/);
+  assert.match(packedMigration, /string\[\]/);
+  assert.match(packedMigration, /native form/);
+  assert.match(packedChangelog, new RegExp(`# ${expectedVersion}`));
   assert.equal(
     sha256(join(packedRoot, 'LICENSE')),
     sha256(join(packageRoot, 'LICENSE')),
@@ -222,31 +254,34 @@ function assertWorkflowInputs() {
   assert.match(ci, /distribution:artifact/, 'CI must run the artifact distribution gate');
 
   const publish = readFileSync(join(repositoryRoot, '.github', 'workflows', 'publish.yml'), 'utf8');
-  assert.match(publish, /branches:\s*\[main\]/, 'publish workflow must only follow CI runs from main');
-  assert.match(publish, /types:\s*\[completed\]/, 'publish workflow must wait for CI completion');
-  assert.match(
-    publish,
-    /github\.event\.workflow_run\.conclusion\s*==\s*['"]success['"]/,
-    'publish workflow must require successful CI',
-  );
-  assert.match(
-    publish,
-    /github\.event\.workflow_run\.head_sha\s*==\s*github\.sha/,
-    'publish workflow must prevent Changesets from resetting to a different event SHA',
-  );
-  assert.match(
-    publish,
-    /ref:\s*\$\{\{\s*github\.event\.workflow_run\.head_sha\s*\}\}/,
-    'publish workflow must checkout the exact CI-verified commit',
-  );
+  assert.match(publish, /workflow_dispatch:/, 'alpha publication must be manually dispatched');
+  assert.match(publish, /expected_sha:/, 'alpha publication must accept an exact SHA');
+  assert.match(publish, /expected_version:/, 'alpha publication must accept an exact version');
+  assert.match(publish, /PHASE_2_SHA:\s*3980c5d0cda5123b5c61c4df10cbf5220610a4a3/, 'Phase 2 baseline drifted');
+  assert.match(publish, /workflow_id:\s*'ci\.yml'/, 'alpha publication must query the CI workflow');
+  assert.match(publish, /environment:\s*\n\s+name: npm/, 'alpha publication must use the protected npm environment');
+  assert.match(publish, /id-token:\s*write/, 'alpha publication must request OIDC identity');
   assert.doesNotMatch(publish, /copy-readme|Copy README/i, 'publish workflow must not overwrite the inspected README');
   assert.match(publish, /release:dry-run/, 'publish workflow must run the non-publishing release validation');
   assert.match(publish, /node-version: 24\.x/, 'publish workflow must validate on Node 24');
+  const packStepStart = publish.indexOf('      - name: Pack the verified candidate once');
+  const uploadStepStart = publish.indexOf('      - name: Upload the exact candidate tarball');
+  assert.ok(packStepStart >= 0 && uploadStepStart > packStepStart, 'publish workflow pack step is missing');
+  const packStep = publish.slice(packStepStart, uploadStepStart);
+  assert.match(packStep, /npm pack \. --pack-destination/, 'publish workflow must pack from packages/emblor');
+  assert.match(packStep, /working-directory: packages\/emblor/, 'publish workflow pack directory drifted');
+  const publishJobStart = publish.indexOf('\n  publish:');
+  assert.ok(publishJobStart >= 0, 'publish job is missing');
+  const publishJob = publish.slice(publishJobStart);
+  assert.match(publishJob, /uses: actions\/setup-node@v4/, 'publish job must set up Node 24');
+  assert.match(publishJob, /node-version: 24\.x/, 'publish job must run on Node 24');
   assert.match(
     publish,
-    /run:\s*pnpm run release:dry-run\s+- name:\s*Create Release Pull Request or Publish\s+id:\s*changesets\s+uses:\s*changesets\/action@v1/,
-    'publish workflow must not mutate package inputs between release validation and Changesets',
+    /npm publish .*--tag next .*--access public .*--provenance/,
+    'publish command must be explicit',
   );
+  assert.doesNotMatch(publish, /NPM_TOKEN|changesets\/action|changeset publish/, 'alpha workflow must not use token publication');
+  assert.doesNotMatch(publish, /on:\s*\n\s+workflow_run:/, 'alpha workflow must not publish automatically after CI');
 }
 
 function assertWithinBaseline(label, actual, expected, tolerancePercent) {

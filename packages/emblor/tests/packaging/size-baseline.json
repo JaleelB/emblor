@@ -1,10 +1,10 @@
 {
   "version": 1,
   "tolerancePercent": 10,
-  "source": "Phase 2 distribution artifact after release hardening on Node 22.23.2",
+  "source": "Phase 3 2.0.0-alpha.0 candidate artifact after release documentation on Node 22.23.2",
   "measurements": {
-    "tarballBytes": 85239,
-    "unpackedBytes": 443943,
+    "tarballBytes": 89169,
+    "unpackedBytes": 458496,
     "esmBytes": 65122,
     "cjsBytes": 67399,
     "declarationsBytes": 12956
