@@ -21,7 +21,7 @@
       "bundleBytes": 214524,
       "dependencyGraphSha256ByPlatform": {
         "win32": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97",
-        "linux": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97"
+        "linux": "6643db88bde15fe63ffac6f45c025fad06d5b1cca63a10f78b58e69a64fc202c"
       }
     }
   }
