@@ -2,6 +2,24 @@
 
 Emblor is a headless tag-input primitive. It owns tag and draft state, keyboard behavior, validation, focus coordination, native forms, and accessible announcements. Consumers own the rendered markup and styling.
 
+> [!WARNING]
+>
+> `2.0.0-alpha.0` is an early v2 prerelease. It is installable for evaluation, but it is not semver-stable. The v2 architecture is frozen for this alpha; contract-restoring fixes and explicitly approved contract changes may still land before stable v2. npm `latest` remains the v1 line (`1.4.8`).
+
+## Install the alpha
+
+Install the public prerelease channel explicitly:
+
+```bash
+npm install emblor@next
+```
+
+```bash
+pnpm add emblor@next
+```
+
+The package supports React 18 and React 19. The package does not impose a Node engine; repository and release verification use Node 24 with Node 22 compatibility coverage. For v1 consumers, start with the [v1-to-v2 migration guide](./MIGRATION.md). Release context and known limitations are in the [alpha release notes](https://github.com/JaleelB/emblor/releases/tag/emblor%402.0.0-alpha.0). Please report findings through the [alpha issue forms](https://github.com/JaleelB/emblor/issues/new/choose), including the exact package version and a minimal reproduction when applicable.
+
 ## Quick start
 
 ```tsx
@@ -120,6 +138,8 @@ Consumers own React keys and optional tag DOM IDs. The example uses `tag` becaus
 ## Scope
 
 The package is intentionally headless. It does not ship autocomplete, cmdk, popovers, sorting, drag-and-drop, Tailwind, CVA, or a styling runtime. The package playground is a temporary acceptance lab; its CSS is not part of the library contract. The existing website remains on the v1 documentation until a later v2 documentation plan.
+
+The public package is intentionally limited to the root import and `emblor/package.json` metadata. There are no supported `emblor/core`, `emblor/addons`, `emblor/sortable`, `emblor/utils`, `emblor/types`, or `emblor/testing` code subpaths. See [`CHANGELOG.md`](./CHANGELOG.md) for generated release history and [`MIGRATION.md`](./MIGRATION.md) for conversion details.
 
 ## Local quality gate
 
