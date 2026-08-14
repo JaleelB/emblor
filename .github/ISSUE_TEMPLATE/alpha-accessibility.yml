@@ -1,0 +1,68 @@
+name: Alpha accessibility or browser compatibility
+description: Report an accessibility, keyboard, focus, announcement, DOM semantics, or browser compatibility issue.
+title: '[alpha-a11y]: '
+labels:
+  - alpha
+  - alpha-accessibility
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include the assistive technology or browser behavior when applicable. A focused reproduction is especially helpful for keyboard and focus reports.
+  - type: input
+    id: version
+    attributes:
+      label: Emblor version
+      placeholder: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: target_alpha
+    attributes:
+      label: Target alpha
+      value: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include React, Node, browser/version, OS, assistive technology/version, and input method.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Accessibility or compatibility impact
+      description: Describe the affected user journey and severity.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Link or paste a minimal reproduction and exact keyboard, pointer, or focus steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Include the expected role, name, state, announcement, focus target, or browser behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

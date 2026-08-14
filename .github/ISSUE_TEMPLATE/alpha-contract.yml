@@ -1,0 +1,79 @@
+name: Alpha frozen-contract proposal
+description: Propose a change to the frozen v2 public contract after documenting a concrete need.
+title: '[alpha-contract]: '
+labels:
+  - alpha
+  - alpha-contract
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Emblor v2 is architecture-frozen for the alpha. This form records a proposal; it does not approve a public API, behavior, package-boundary, or scope change. An accepted change must supersede the affected decision and resynchronize its plan and coverage before implementation.
+  - type: input
+    id: version
+    attributes:
+      label: Emblor version
+      placeholder: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: target_alpha
+    attributes:
+      label: Target alpha
+      value: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: input
+    id: affected_decision
+    attributes:
+      label: Affected decision
+      description: Cite the exact decision, such as DR-0041 or DR-0018.
+      placeholder: DR-xxxx
+    validations:
+      required: true
+  - type: textarea
+    id: current_contract
+    attributes:
+      label: Current contract and limitation
+      description: Describe the current behavior and the concrete problem it creates.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed change
+      description: Describe the requested API, behavior, package, or scope change precisely.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and migration impact
+      description: Explain effects on existing alpha consumers, forms, accessibility, types, and migration guidance.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include consumer composition or documentation-only alternatives.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction or evidence
+      description: Link or paste a minimal reproduction, benchmark, or consumer evidence.
+    validations:
+      required: true
