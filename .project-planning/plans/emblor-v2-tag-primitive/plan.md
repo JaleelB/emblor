@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation complete locally and ready for Node 24 CI confirmation. The architecture remains frozen by DR-0041. This plan restored the four original contract violations plus the concrete rejection, polymorphic-label, and native Clear-focus defects found during pre-push review, closed the remaining local proof and documentation gaps, and did not change the public API.
+Completed on 2026-08-13. The architecture remains frozen by DR-0041. This plan restored the four original contract violations plus the concrete rejection, polymorphic-label, and native Clear-focus defects found during pre-push review, closed the remaining proof and documentation gaps, and did not change the public API. The final pushed artifact passed the Node 22 and Node 24 CI matrix, including the bundled-Chromium browser gate on Node 24.
 
 ## Plan Boundary
 
@@ -71,7 +71,7 @@ This architecture is not being redesigned. Private state may be extended only wh
 - [Gap-analysis evidence](../../sessions/2026-08-13-v2-tag-primitive-gap-analysis.md)
 - [Architecture freeze](../../decisions/0041-freeze-the-emblor-v2-vertical-slice-architecture.md)
 
-Status: Ready for CI confirmation. Every residual obligation has passing local direct evidence in [coverage.md](./coverage.md), with commands, deviations, and the boundary review in [implementation-review.md](./implementation-review.md). There are no deferred obligations or unresolved decisions, but final closure waits for the configured Node 24 bundled-Chromium lane to pass on the pushed artifact.
+Status: Completed. Every residual obligation has passing direct evidence in [coverage.md](./coverage.md), with commands, deviations, the boundary review, and the final pushed CI evidence in [implementation-review.md](./implementation-review.md). There are no deferred obligations or unresolved decisions.
 
 ## Execution Sequence
 
@@ -568,14 +568,14 @@ None. The architecture, behavioral contracts, browser scope, and plan boundary a
 - [x] Every clause listed in T-05 through T-09 has direct durable evidence.
 - [x] The Chromium browser suite passes locally and is wired into the Node 24 CI lane.
 - [x] The post-review Node 22 package gates pass.
-- [ ] The post-review Node 24 package and bundled-Chromium CI gates pass.
+- [x] The post-review Node 24 package and bundled-Chromium CI gates pass.
 - [x] Packed React 18 and React 19 consumers compile and mount.
 - [x] Documentation examples compile from the packed root export.
 - [x] No public API, export, ownership, or semantic changes occurred.
 - [x] No runtime dependency or excluded feature entered core.
 - [x] Every row in `coverage.md` is Verified.
 - [x] `implementation-review.md` records commands, evidence, deviations, and final verdict.
-- [ ] The planning index marks this plan Completed after CI confirmation.
+- [x] The planning index marks this plan Completed after CI confirmation.
 
 ## To-Dos
 
@@ -591,4 +591,4 @@ None. The architecture, behavioral contracts, browser scope, and plan boundary a
 - [x] T-09 — Complete focus, blur, and selection coverage.
 - [x] T-10 — Add the durable real-browser gate.
 - [x] T-11 — Complete behavioral documentation.
-- [ ] T-12 — Resynchronize final CI evidence and close the plan.
+- [x] T-12 — Resynchronize final CI evidence and close the plan.

@@ -13,10 +13,11 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Active Plans
 
-- [`plans/emblor-v2-tag-primitive/plan.md`](plans/emblor-v2-tag-primitive/plan.md) — Phase 1 residual core hardening is locally verified and awaiting the configured Node 24 package and bundled-Chromium CI confirmation.
-  - [`decision-manifest.md`](plans/emblor-v2-tag-primitive/decision-manifest.md) — applicable accepted decisions and supersession resolution.
-  - [`coverage.md`](plans/emblor-v2-tag-primitive/coverage.md) — 25 residual obligations with passing local direct evidence.
-  - [`implementation-review.md`](plans/emblor-v2-tag-primitive/implementation-review.md) — post-review commands, direct evidence, boundary review, and CI-pending verdict.
+- [`plans/emblor-v2-distribution-readiness/plan.md`](plans/emblor-v2-distribution-readiness/plan.md) — Phase 2 package and distribution readiness from the hardened artifact to a reproducible alpha-ready package gate.
+  - [`decision-manifest.md`](plans/emblor-v2-distribution-readiness/decision-manifest.md) — applicable accepted decisions and supersession resolution.
+  - [`coverage.md`](plans/emblor-v2-distribution-readiness/coverage.md) — required distribution obligations mapped to implementation and verification.
+
+  - [`implementation-review.md`](plans/emblor-v2-distribution-readiness/implementation-review.md) — local implementation evidence and the remaining clean-checkout/remote CI closure step.
 
 ## Active Roadmaps
 
@@ -24,4 +25,6 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Completed Plans
 
+- [`plans/emblor-v2-tag-primitive/plan.md`](plans/emblor-v2-tag-primitive/plan.md) — Phase 1 residual core hardening completed with 25/25 obligations Verified and passing Node 22/24 CI plus bundled Chromium.
+  - [`implementation-review.md`](plans/emblor-v2-tag-primitive/implementation-review.md) — final evidence, boundary review, and Phase 1 closure verdict.
 - [`plans/emblor-v2-vertical-slice/plan.md`](plans/emblor-v2-vertical-slice/plan.md) — completed package vertical slice, visual acceptance lab, and architecture-freeze gate.

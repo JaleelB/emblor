@@ -123,6 +123,14 @@ The package is intentionally headless. It does not ship autocomplete, cmdk, popo
 
 ## Local quality gate
 
+Run the complete local distribution gate from the repository root:
+
+```text
+pnpm distribution
+```
+
+It uses the committed frozen workspace lockfile, builds the package, runs formatting, lint, types, unit tests, and verifies one packed artifact through the React 18/19 consumer and package-sanity checks. Each isolated consumer resolves a temporary lockfile, installs from that frozen lockfile, and must match its reviewed dependency-graph fingerprint. CI runs the same named checks after its frozen install with `pnpm run distribution -- --skip-install`.
+
 The package’s non-browser gate is:
 
 ```text

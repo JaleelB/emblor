@@ -11,7 +11,7 @@ jobs:
         node-version: [22.x, 24.x]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
           version: 9.0.2
@@ -20,26 +20,26 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install dependencies from the frozen lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Check prettier format
-        run: pnpm run prettier-check
+        run: pnpm run distribution:format
 
       - name: Build packages
-        run: pnpm run build --filter "./packages/*"
+        run: pnpm run distribution:build
 
       - name: Lint package
-        run: pnpm -C packages/emblor run lint
+        run: pnpm run distribution:lint
 
       - name: Typecheck package
-        run: pnpm -C packages/emblor run typecheck
+        run: pnpm run distribution:typecheck
 
       - name: Test package
-        run: pnpm -C packages/emblor run test
+        run: pnpm run distribution:test
 
-      - name: Verify packed consumers
-        run: pnpm -C packages/emblor run test:compat
+      - name: Verify packed distribution artifact
+        run: pnpm run distribution:artifact
 
       - name: Install Chromium
         if: matrix.node-version == '24.x'

@@ -2,7 +2,7 @@
 
 ## Verdict
 
-Ready for CI confirmation. The original contract violations and the concrete defects found during pre-push review are fixed, all residual obligations have passing local evidence, and the frozen v2 package boundary remains unchanged. Final Phase 1 closure waits for the configured Node 24 package and bundled-Chromium CI lane to pass on the pushed artifact.
+Phase 1 complete. The original contract violations and the concrete defects found during pre-push review are fixed, all residual obligations have passing evidence, the frozen v2 package boundary remains unchanged, and the final pushed artifact passed the complete Node 22/24 CI matrix including bundled Chromium on Node 24.
 
 ## Scope delivered
 
@@ -29,7 +29,7 @@ The post-review unit suite contains 5 test files and 76 passing tests on Node 22
 - Node 22.23.2: typecheck, lint, and package build
 - Formatting: `pnpm prettier-check`
 
-The packed-consumer verification passed on the post-review Node 22 package artifact for React 18.3.1 and React 19.1.1, including TypeScript compilation, mounting, and all README TSX examples. The tarball contains the intended package files only; browser tests, fixtures, and planning files are not published. The exact post-review Node 24 matrix remains pending CI.
+The packed-consumer verification passed on the post-review package artifact under both Node 22 and Node 24 for React 18.3.1 and React 19.1.1, including TypeScript compilation, mounting, and all README TSX examples. The tarball contains the intended package files only; browser tests, fixtures, and planning files are not published.
 
 ### Browser gate
 
@@ -44,7 +44,13 @@ The local Chrome-channel Playwright run passed all 8 browser tests on Node 22.23
 - accepted Clear and controlled acknowledgement focus restoration;
 - controlled removal refusal preserving origin focus.
 
-The local run used the installed Chrome channel through `PLAYWRIGHT_CHANNEL=chrome`. The fixture imports the built public `emblor` root entry, and the browser command builds the package before starting Vite. The committed configuration defaults to Playwright's Chromium project, never reuses an existing server, and the CI workflow installs bundled Chromium with `playwright install --with-deps chromium` in the Node 24 lane. That CI execution is configured but not yet claimed as passing.
+The local run used the installed Chrome channel through `PLAYWRIGHT_CHANNEL=chrome`. The fixture imports the built public `emblor` root entry, and the browser command builds the package before starting Vite. The committed configuration defaults to Playwright's Chromium project, never reuses an existing server, and the CI workflow installs bundled Chromium with `playwright install --with-deps chromium` in the Node 24 lane.
+
+The final pushed artifact at commit `286819451ddc61dd29adb8b8fa8014c9070a943d` passed GitHub Actions run `31753494089` on 2026-08-13:
+
+- `build (22.x)` passed formatting, build, lint, typecheck, 76 tests, and packed React 18/19 consumer verification.
+- `build (24.x)` passed the same package gates, installed bundled Chromium, and passed all 8 browser contract tests.
+- Run: <https://github.com/JaleelB/emblor/actions/runs/31753494089>
 
 ### Direct evidence by residual obligation
 
@@ -70,4 +76,4 @@ The local run used the installed Chrome channel through `PLAYWRIGHT_CHANNEL=chro
 
 ## Closure
 
-All 25 rows in `coverage.md` have passing local direct evidence. The planning index keeps this plan Active until the post-review Node 24 package and bundled-Chromium CI lane passes. After that evidence is recorded, T-12 may close Phase 1 and move the plan to Completed; no implementation or architectural question remains open.
+All 25 rows in `coverage.md` have passing direct evidence. The pushed Node 22/24 matrix and Node 24 bundled-Chromium lane passed, T-12 is closed, and the planning index moves this plan to Completed. No implementation or architectural question remains open. Phase 2 may begin under its separate just-in-time distribution-readiness plan.

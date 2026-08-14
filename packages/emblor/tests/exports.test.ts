@@ -38,6 +38,7 @@ describe('Emblor package boundary', () => {
     expect(packageManifest.engines).toBeUndefined();
     expect(packageManifest.scripts).toHaveProperty('test:compat');
     expect(workflow).toContain('node-version: [22.x, 24.x]');
-    expect(workflow).toContain('run test:compat');
+    expect(workflow).toContain('run: pnpm run distribution:artifact');
+    expect(workflow).toContain('pnpm install --frozen-lockfile');
   });
 });

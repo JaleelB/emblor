@@ -32,4 +32,4 @@ This matrix tracks the residual obligations after the frozen vertical slice. Eac
 
 ## Completion rule
 
-All 25 residual obligations are locally `Verified`. The direct evidence and local gate results are recorded in `implementation-review.md`. This status does not claim that the post-review artifact has passed the configured Node 24 CI lane; plan closure remains pending that operational confirmation.
+All 25 residual obligations are `Verified`. The direct evidence, local gate results, and final pushed Node 22/24 CI confirmation are recorded in `implementation-review.md`. Phase 1 is complete.

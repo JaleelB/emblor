@@ -4,6 +4,7 @@
   "private": false,
   "type": "module",
   "sideEffects": false,
+  "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,6 +27,7 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:compat": "node ./tests/compat/verify-packed-consumers.mjs",
+    "test:distribution": "node ./tests/packaging/verify-distribution.mjs",
     "test:browser": "pnpm run build && playwright test --config playwright.config.ts",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"

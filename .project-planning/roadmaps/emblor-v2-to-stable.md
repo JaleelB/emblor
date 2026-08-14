@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-13.
+Active umbrella roadmap as of 2026-08-13. Phase 1 is complete; Phase 2 — Package & Distribution Readiness is active.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -20,7 +20,7 @@ The current package already has:
 - packed-consumer and package-content checks;
 - no core autocomplete, suggestions, sortable/drag-and-drop, Shadcn, Tailwind, CVA, addons, or v1 compatibility layer.
 
-The completed gap analysis is authoritative. It found exactly four remaining primitive defects plus bounded verification and documentation work. That work is already specified by the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md); this roadmap incorporates that plan as Phase 1 without restating its tasks.
+The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are now complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). The final pushed artifact passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 1 is closed and Phase 2 — Package & Distribution Readiness is active.
 
 The package manifest remains at the published-v1 development baseline `1.4.8`. No v2 prerelease has been published yet. The existing `website/` still consumes and documents published v1, as required by DR-0005.
 
@@ -68,7 +68,7 @@ All other accepted DR-0001–DR-0040 behavioral decisions remain binding release
 ## Dependency and Release Flow
 
 ```text
-Current: frozen vertical slice on v1.4.8 baseline
+Completed: frozen vertical slice and residual core hardening on v1.4.8 baseline
   |
   v
 1. Residual Core Hardening
@@ -107,8 +107,8 @@ The docs rebuild may overlap late alpha iteration after its entry gate is met. B
 
 | Phase                               | Release state                | Primary outcome                                                                   | Depends on          | Ends with                                   |
 | ----------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ------------------- | ------------------------------------------- |
-| Current                             | v1 `latest`; v2 unpublished  | Frozen, pushed vertical slice and authoritative residual roadmap                  | —                   | Current baseline                            |
-| 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Current baseline    | Hardening PR/commit series                  |
+| Current                             | v1 `latest`; v2 unpublished  | Phase 1 complete; package and distribution readiness active                       | Phase 1             | Distribution-readiness plan                 |
+| 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Frozen baseline     | Completed hardening commit series           |
 | 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Distribution-readiness PR                   |
 | 3. `alpha.0` Preparation            | v2 unpublished               | Exact prerelease metadata, docs, notes, and publish runbook ready                 | Phase 2             | Alpha release-candidate PR                  |
 | 4. `alpha.0` Release                | `2.0.0-alpha.0` on `next`    | First public installable v2 and verified npm artifact                             | Phase 3             | npm/GitHub alpha release                    |
@@ -195,7 +195,7 @@ Prove that the exact package intended for npm—not workspace source—is comple
 
 ### Plan
 
-Create a separate just-in-time `emblor-v2-distribution-readiness` implementation plan when Phase 1 closes. Reuse existing packed-consumer scripts and package tests; plan only the remaining distribution delta.
+Use the active [Emblor v2 Package & Distribution Readiness plan](../plans/emblor-v2-distribution-readiness/plan.md). It reuses the existing packed-consumer scripts and package tests and covers only the remaining distribution delta.
 
 ### Milestone
 
