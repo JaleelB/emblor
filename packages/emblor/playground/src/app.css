@@ -1,0 +1,58 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #e7edf5;
+  background: #0b1018;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(circle at 20% 0%, #1d2b42 0, transparent 40%), #0b1018; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.lab-shell { display: flex; min-height: 100vh; }
+.lab-sidebar { width: 250px; padding: 28px 18px; border-right: 1px solid #28364a; background: rgba(9, 14, 23, .82); display: flex; flex-direction: column; gap: 28px; }
+.lab-brand { display: flex; flex-direction: column; gap: 5px; font-weight: 700; letter-spacing: .03em; }
+.lab-brand small, .lab-sidebar__note, .lab-eyebrow { color: #8796ab; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.lab-sidebar nav { display: grid; gap: 7px; }
+.lab-nav-item { border: 1px solid transparent; border-radius: 9px; padding: 10px 11px; text-align: left; color: #a7b5c8; background: transparent; }
+.lab-nav-item:hover, .lab-nav-item.is-active { border-color: #536f9e; background: #172337; color: #fff; }
+.lab-sidebar__note { margin-top: auto; line-height: 1.6; letter-spacing: .03em; text-transform: none; }
+.lab-main { width: min(1100px, 100%); padding: clamp(32px, 7vw, 82px) clamp(20px, 6vw, 84px); margin: 0 auto; }
+.lab-header { max-width: 700px; margin-bottom: 32px; }
+.lab-header h1 { margin: 10px 0; font-size: clamp(30px, 5vw, 54px); letter-spacing: -.04em; }
+.lab-header p { margin: 0; color: #a7b5c8; line-height: 1.6; }
+.lab-card { border: 1px solid #28364a; border-radius: 18px; background: rgba(13, 20, 32, .8); box-shadow: 0 30px 90px rgba(0, 0, 0, .25); padding: clamp(18px, 4vw, 36px); }
+.scenario-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .72fr); gap: 22px; align-items: start; }
+.lab-root { display: grid; gap: 13px; border: 1px solid #30415a; border-radius: 14px; padding: 20px; background: #121c2b; }
+.lab-root[data-invalid] { border-color: #d06b79; }
+.lab-label { color: #f5f8fc; font-weight: 650; }
+.lab-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 30px; }
+.lab-list[data-empty]::before { content: "No committed tags"; color: #6f7e92; font-size: 13px; align-self: center; }
+.lab-tag { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #466084; border-radius: 999px; padding: 7px 9px 7px 12px; background: #1b2a40; color: #e7edf5; }
+.lab-tag[data-focused] { outline: 3px solid rgba(115, 166, 255, .35); outline-offset: 2px; }
+.lab-remove { border: 0; border-radius: 50%; width: 20px; height: 20px; color: #b9c8dc; background: #2d4666; }
+.lab-remove:hover { color: #fff; background: #496d9d; }
+.lab-input { width: 100%; border: 1px solid #3b4f6b; border-radius: 9px; padding: 11px 12px; color: #f5f8fc; background: #0e1623; outline: none; }
+.lab-input:focus { border-color: #78a9ff; box-shadow: 0 0 0 3px rgba(120, 169, 255, .16); }
+.lab-input[data-invalid] { border-color: #d06b79; }
+.lab-actions { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+.lab-button { border: 1px solid #5a81b7; border-radius: 8px; padding: 9px 12px; color: #f5f8fc; background: #24436c; }
+.lab-button:hover { background: #315b90; }
+.lab-button:disabled, .lab-button[aria-disabled="true"] { cursor: not-allowed; opacity: .45; }
+.lab-button--quiet { border-color: #40536d; background: #1b2a40; }
+.inspector { display: grid; gap: 10px; border: 1px solid #28364a; border-radius: 12px; padding: 14px; background: #0d1521; font-size: 12px; }
+.inspector > div { display: grid; gap: 5px; }
+.inspector span { color: #8796ab; text-transform: uppercase; letter-spacing: .08em; }
+.inspector code { overflow-wrap: anywhere; color: #b9d4ff; }
+.lab-form { display: grid; gap: 14px; }
+.lab-note { border: 1px solid #28364a; border-radius: 12px; padding: 16px; color: #a7b5c8; line-height: 1.6; }
+
+@media (max-width: 780px) {
+  .lab-shell { display: block; }
+  .lab-sidebar { width: 100%; border-right: 0; border-bottom: 1px solid #28364a; }
+  .lab-sidebar nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-main { padding-top: 36px; }
+  .scenario-grid { grid-template-columns: 1fr; }
+}

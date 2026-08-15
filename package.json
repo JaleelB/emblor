@@ -6,45 +6,34 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prettier-check": "prettier --check \"**/*.{ts,tsx,md}\"",
-    "release": "pnpm run build && changeset publish",
-    "local-release": "changeset version && changeset publish",
-    "prepublishOnly": "npm run ci",
-    "copy-readme": "cp README.md packages/*",
-    "prepare": "husky"
+    "format": "prettier --write README.md package.json \"packages/emblor/package.json\" \"packages/emblor/**/*.{ts,tsx,md}\" \"scripts/**/*.mjs\" \".github/workflows/*.yml\" \".github/ISSUE_TEMPLATE/*.{yml,yaml}\" \".github/releases/*.md\" \".changeset/*.{json,md}\"",
+    "prettier-check": "prettier --check README.md package.json \"packages/emblor/package.json\" \"packages/emblor/**/*.{ts,tsx,md}\" \"scripts/**/*.mjs\" \".github/workflows/*.yml\" \".github/ISSUE_TEMPLATE/*.{yml,yaml}\" \".github/releases/*.md\" \".changeset/*.{json,md}\"",
+    "test:browser": "pnpm -C packages/emblor test:browser",
+    "distribution:format": "pnpm prettier-check",
+    "distribution:build": "pnpm run build --filter \"./packages/*\"",
+    "distribution:lint": "pnpm -C packages/emblor lint",
+    "distribution:typecheck": "pnpm -C packages/emblor typecheck",
+    "distribution:test": "pnpm -C packages/emblor test",
+    "distribution:artifact": "pnpm -C packages/emblor test:distribution",
+    "distribution": "node ./scripts/run-distribution-gate.mjs",
+    "ci": "pnpm run distribution -- --skip-install",
+    "release:alpha:prepare": "node ./node_modules/@changesets/cli/bin.js pre enter alpha && node ./node_modules/@changesets/cli/bin.js version",
+    "release:dry-run": "node ./scripts/validate-release.mjs",
+    "prepublishOnly": "npm run ci"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@types/node": "18",
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.9",
+    "@typescript-eslint/parser": "^8.67.0",
+    "eslint": "^9.9.1",
     "prettier": "^3.2.5",
-    "tsc-files": "^1.1.4",
     "tsup": "^6.5.0",
     "turbo": "latest",
     "typescript": "5.4.5",
-    "zod": "^3.22.4",
-    "eslint": "^9.9.1"
+    "zod": "^3.22.4"
   },
-  "lint-staged": {
-    "*.{ts,tsx,md,mdx}": [
-      "prettier --write",
-      "tsc-files --noEmit"
-    ],
-    "*.{js,jsx,json}": [
-      "prettier --write"
-    ]
-  },
-  "trustedDependencies": [
-    "npm-run-all"
-  ],
   "packageManager": "pnpm@9.0.2",
   "engines": {
-    "node": ">=18 <20"
-  },
-  "dependencies": {
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^5.0.5"
+    "node": ">=22 <23 || >=24 <25"
   }
 }

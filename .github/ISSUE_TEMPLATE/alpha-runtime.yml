@@ -1,0 +1,78 @@
+name: Alpha runtime behavior
+description: Report a runtime, state, validation, form, keyboard, focus, or rendering problem.
+title: '[alpha-runtime]: '
+labels:
+  - alpha
+  - alpha-runtime
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing Emblor v2. Please use the exact published version you tested and include a minimal reproduction. Do not include secrets or private user data.
+  - type: input
+    id: version
+    attributes:
+      label: Emblor version
+      description: Use the exact npm version, for example 2.0.0-alpha.0.
+      placeholder: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: target_alpha
+    attributes:
+      label: Target alpha
+      description: Which alpha should triage target?
+      value: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include React, React DOM, Node, package manager, browser, OS, and bundler versions.
+      placeholder: |
+        React:
+        React DOM:
+        Node:
+        Package manager:
+        Browser/OS:
+        Bundler:
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected and what is blocked or degraded?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Link or paste the smallest runnable reproduction and exact steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: State what should happen and, if relevant, the affected v2 contract.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add logs, screenshots, traces, or links that are safe to share.

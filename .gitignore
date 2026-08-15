@@ -35,6 +35,12 @@ dist/**
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+
+# Browser testing
+test-results/
+playwright-report/
+playwright/.cache/
 
 # Misc
 .DS_Store
