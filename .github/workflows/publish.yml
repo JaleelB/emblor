@@ -167,7 +167,7 @@ jobs:
         run: node scripts/validate-alpha-registry.mjs --prepublish
 
       - name: Publish the verified tarball to npm `next` with provenance
-        run: npm publish "alpha-candidate/emblor-${EXPECTED_VERSION}.tgz" --tag next --access public --provenance --ignore-scripts
+        run: npm publish "./alpha-candidate/emblor-${EXPECTED_VERSION}.tgz" --tag next --access public --provenance --ignore-scripts
 
       - name: Verify npm publication before any Git metadata action
         run: node scripts/validate-alpha-registry.mjs --published
