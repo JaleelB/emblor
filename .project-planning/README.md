@@ -13,17 +13,21 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Active Plans
 
-- [`plans/emblor-v2-alpha-release/plan.md`](plans/emblor-v2-alpha-release/plan.md) — Phase 3 alpha preparation and separately approved Phase 4 `2.0.0-alpha.0` publication runbook.
-  - [`decision-manifest.md`](plans/emblor-v2-alpha-release/decision-manifest.md) — release, documentation, compatibility, and frozen-contract decision applicability.
-  - [`coverage.md`](plans/emblor-v2-alpha-release/coverage.md) — alpha preparation and publication obligations mapped to tasks and verification.
-  - [`implementation-review.md`](plans/emblor-v2-alpha-release/implementation-review.md) — local candidate evidence, boundary review, and remaining release gates.
-  - [`transition-runbook.md`](plans/emblor-v2-alpha-release/transition-runbook.md) — actionable v1 preservation, internal backlog classification, manual workflow installation, v2-to-`main` integration, and post-publish issue/PR disposition sequence.
+No blanket Alpha Iteration plan exists yet. Create small issue-scoped plans only for confirmed alpha findings; frozen-contract changes require a superseding decision first.
 
 ## Active Roadmaps
 
-- [`roadmaps/emblor-v2-to-stable.md`](roadmaps/emblor-v2-to-stable.md) — complete milestone path from the frozen v2 vertical slice through residual hardening, alpha, docs, beta, and stable `2.0.0`.
+- [`roadmaps/emblor-v2-to-stable.md`](roadmaps/emblor-v2-to-stable.md) — complete milestone path; Phase 5 Alpha Iteration is active after the verified public `2.0.0-alpha.0` release.
 
 ## Completed Plans
+
+- [`plans/emblor-v2-alpha-release/plan.md`](plans/emblor-v2-alpha-release/plan.md) — Phase 3 preparation and Phase 4 `2.0.0-alpha.0` publication completed with exact-SHA, npm, consumer, GitHub, feedback, and backlog evidence.
+  - [`phase-4-publication-plan.md`](plans/emblor-v2-alpha-release/phase-4-publication-plan.md) — completed just-in-time publication and verification plan.
+  - [`phase-4-publication-evidence.md`](plans/emblor-v2-alpha-release/phase-4-publication-evidence.md) — final protected publication, registry, consumer, Git/GitHub, feedback, and handoff evidence.
+  - [`decision-manifest.md`](plans/emblor-v2-alpha-release/decision-manifest.md) — release, documentation, compatibility, and frozen-contract decision applicability.
+  - [`coverage.md`](plans/emblor-v2-alpha-release/coverage.md) — alpha preparation and publication obligations mapped to tasks and verification.
+  - [`implementation-review.md`](plans/emblor-v2-alpha-release/implementation-review.md) — final candidate and post-publish evidence, boundary review, and Alpha Iteration recommendation.
+  - [`transition-runbook.md`](plans/emblor-v2-alpha-release/transition-runbook.md) — v1 preservation, internal backlog classification, manual workflow installation, v2-to-`main` integration, and post-publish disposition sequence.
 
 - [`plans/emblor-v2-distribution-readiness/plan.md`](plans/emblor-v2-distribution-readiness/plan.md) — Phase 2 package and distribution readiness completed with verified tarball, packed consumers, release-path validation, and pushed Node 22/24 CI plus Node 24 Chromium evidence.
 

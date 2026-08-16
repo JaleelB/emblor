@@ -2,9 +2,9 @@
 
 ## Status
 
-Phase 3 package preparation and the transition prerequisites are evidenced. The integration PR is open with its current head passing Node 22/24 CI, the website typecheck/lint job, and Vercel preview deployment. Phase 3 now waits only for the reviewed PR to merge and for the exact resulting `main` SHA to pass the final gate; that SHA will become the Phase 4 candidate.
+Phase 3 and Phase 4 are complete. T-15 records a PASS for exact merged `main` SHA `76bbd359eebc522dedd03cbfcacfcc6cfa903b96`, and [phase-4-publication-evidence.md](./phase-4-publication-evidence.md) records the protected publication, registry verification, consumer proof, GitHub prerelease, and backlog handoff.
 
-Phase 4 publication is not authorized by this plan. It remains gated on successful Phase 3 candidate review, npm/GitHub release authority, protected-environment approval, and an explicit user instruction naming the exact candidate SHA/version.
+The explicit Phase 4 authorization was supplied for SHA `76bbd359eebc522dedd03cbfcacfcc6cfa903b96` and version `2.0.0-alpha.0`; the protected `npm` environment was then approved. Phase 5 Alpha Iteration is now the next active phase.
 
 ## Release Definition
 
@@ -22,16 +22,15 @@ This is a release runbook, not a package architecture plan.
 ## Current State
 
 - Phase 1 and Phase 2 are complete with all coverage obligations Verified.
-- Package-preparation candidate `337985d5c1a8ebfecf81557a974ee2df9f67bf84` is pushed on `feat/emblor-v2-refactor` and passed CI run `31814904247`.
-- npm reports `emblor@1.4.8` and `latest: 1.4.8`; no prerelease versions or prerelease dist-tags exist.
+- The approved integrated candidate is `76bbd359eebc522dedd03cbfcacfcc6cfa903b96`; exact-SHA CI run `31923283942` passed Node 22 and Node 24.
+- npm reports `next: 2.0.0-alpha.0` and `latest: 1.4.8`; the public exact version is installable.
 - `npm owner ls emblor` identifies `jaleelb` as package owner.
-- npm trusted publishing is configured for `JaleelB/emblor`, `publish.yml`, environment `npm`, and permission `npm publish`; operational proof remains Phase 4.
-- The existing `NPM_TOKEN` is retained but unused until the first OIDC publication succeeds.
+- npm trusted publishing is configured for `JaleelB/emblor`, `publish.yml`, environment `npm`, and permission `npm publish`; protected OIDC publication and provenance succeeded in Phase 4.
+- The existing `NPM_TOKEN` was not used.
 - Changesets prerelease metadata, package version `2.0.0-alpha.0`, README, migration guide, changelog, release notes, feedback intake, and packed-artifact checks are complete on the feature branch.
-- Current v1 `main` is preserved on remote `1.x` at the recorded v1 SHA, and its issue/PR backlog has been classified internally without public mutation.
-- Default-branch `main` now has the manual OIDC workflow; no publication workflow has been dispatched.
-- The integration PR has green Node 22/24, website typecheck/lint, and Vercel checks. It remains unmerged, so final `main`-SHA approval is still open.
-- The exact final Phase 4 candidate will be the verified integration result on `main`, not the package-preparation feature-branch SHA.
+- Current v1 `main` remains preserved on remote `1.x` at the recorded v1 SHA; evidence-supported backlog replies and closures occurred only after the real npm `next` link existed.
+- The protected manual OIDC workflow published the verified tarball once, then the exact Git tag and GitHub prerelease were created after registry verification.
+- The final dispatch used a corrected feature-ref workflow revision to repair three pre-publication defects; its checkout, ancestry, CI, candidate metadata, and tarball remained pinned to the approved merged `main` SHA. Port these release-plumbing fixes to the default-branch workflow before the next publication.
 
 ## Release Mechanism
 
@@ -94,7 +93,7 @@ After npm publication, verify the registry before creating the Git tag and GitHu
 - [Decision Coverage](./coverage.md)
 - [v1 Maintenance and v2 Alpha Integration Transition Runbook](./transition-runbook.md)
 
-Status: package preparation and trusted-publisher configuration are evidenced. Transition obligations AR/O-19 through AR/O-23 are Planned. Phase 3 remains Active until v1 is preserved, backlog disposition is recorded, manual publishing is installed on `main`, and the exact integrated `main` candidate passes verification. Phase 4 publication obligations remain Planned and separately approved.
+Status: Phase 3 and Phase 4 are complete. AR/O-01 through AR/O-23 are Verified in [coverage.md](./coverage.md) and [phase-4-publication-evidence.md](./phase-4-publication-evidence.md). Phase 5 Alpha Iteration is active; remaining behavior and security findings are carried forward without claiming they are fixed.
 
 ## Files and External Systems
 
@@ -368,27 +367,27 @@ Require every coverage row Verified, findings triaged, feedback channel active, 
 ### Phase 3 — safe preparation
 
 - [x] Phase 2 exact SHA and final CI are recorded.
-- [ ] npm owner and trusted publisher configuration are verified.
+- [x] npm owner and trusted publisher configuration are verified.
 - [x] Protected GitHub release environment is configured.
 - [x] Stale v1 changeset is removed and one v2 major changeset exists.
 - [x] Disposable rehearsal deterministically yields `2.0.0-alpha.0`.
 - [x] README, migration, changelog, release notes, and feedback templates are ready.
 - [x] Tarball includes the intended documentation and passes the full distribution gate.
 - [x] Exact candidate passes Node 22/24 CI and Node 24 Chromium.
-- [ ] Phase 3 review approves the exact SHA.
+- [x] Phase 3 review approves the exact SHA.
 - [x] npm still reports `latest: 1.4.8`; target alpha is absent.
 - [x] No publish command has run.
 
-### Phase 4 — explicit approval required
+### Phase 4 — completed
 
-- [ ] User explicitly approves the exact SHA and version.
-- [ ] Protected workflow publishes the verified tarball with OIDC under `next`.
-- [ ] `latest` remains `1.4.8`.
-- [ ] npm artifact, integrity, provenance, exports, declarations, peers, and docs match.
-- [ ] `emblor@2.0.0-alpha.0` tag and GitHub prerelease exist.
-- [ ] Exact-version and `@next` React 18/19 consumers pass.
-- [ ] Feedback channel is active and findings are triaged.
-- [ ] Post-publish review recommends Alpha Iteration.
+- [x] User explicitly approves the exact SHA and version.
+- [x] Protected workflow publishes the verified tarball with OIDC under `next`.
+- [x] `latest` remains `1.4.8`.
+- [x] npm artifact, integrity, provenance, exports, declarations, peers, and docs match.
+- [x] `emblor@2.0.0-alpha.0` tag and GitHub prerelease exist.
+- [x] Exact-version and `@next` React 18/19 consumers pass.
+- [x] Feedback channel is active and findings are triaged.
+- [x] Post-publish review recommends Alpha Iteration.
 
 ## Failure and Rollback Policy
 
@@ -431,12 +430,12 @@ None blocking transition execution. Final v1 sunset duration and npm deprecation
 - [x] T-04 — Establish the alpha feedback system.
 - [x] T-05 — Build the approval-gated alpha publication workflow.
 - [x] T-06 — Generate the exact alpha release candidate.
-- [ ] T-07 — Approve or reject Phase 3.
-- [ ] T-08 — Publish `2.0.0-alpha.0` under `next` after explicit approval.
-- [ ] T-09 — Verify the public npm release.
-- [ ] T-10 — Close alpha.0 release and hand off to iteration.
+- [x] T-07 — Approve or reject Phase 3.
+- [x] T-08 — Publish `2.0.0-alpha.0` under `next` after explicit approval.
+- [x] T-09 — Verify the public npm release.
+- [x] T-10 — Close alpha.0 release and hand off to iteration.
 - [x] T-11 — Preserve current v1 on remote `1.x`.
 - [x] T-12 — Classify v1 issues and pull requests internally without reopening v1 implementation.
 - [x] T-13 — Replace default-branch automatic publishing with manual trusted publishing.
 - [x] T-14 — Prepare and review the v2 integration PR.
-- [ ] T-15 — Approve the exact integrated `main` candidate.
+- [x] T-15 — Approve the exact integrated `main` candidate.
