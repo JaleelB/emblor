@@ -2,29 +2,33 @@
 
 ## Status
 
-Candidate committed and pushed at `93d955cce94b9e79a07ed60bca26ed1dcc1e6027`; not approved for Phase 4 publication.
+Package-preparation candidate committed and pushed at `337985d5c1a8ebfecf81557a974ee2df9f67bf84`; not approved for Phase 4 publication.
 
-Verdict: exact-SHA CI/browser evidence is green; approval remains blocked on external npm trusted-publisher authorization. No npm publication or dist-tag mutation occurred.
+Verdict: exact-SHA CI/browser evidence is green for the package-preparation parent and npm trusted publishing is configured. The website compatibility follow-up is locally validated but requires fresh PR CI. Phase 3 remains active for v1 preservation, internal backlog classification, default-branch workflow replacement, v2 integration into `main`, and exact integrated-candidate verification. No npm publication or dist-tag mutation occurred.
 
 ## Follow-up review — workflow and boundary fixes
 
 - The publication workflow now runs `npm pack .` from `packages/emblor`, so the uploaded artifact is the package tarball rather than the workspace root.
 - The publish job now configures Node 24 independently of the validation job before checking npm trusted-publishing compatibility.
 - The invalid GitHub Discussions contact link was removed because Discussions are disabled for this repository.
+- The v1 website typecheck compatibility failure was fixed narrowly by aligning its React 18 type packages with the already-resolved workspace versions (`@types/react` 18.3.26 and `@types/react-dom` 18.3.7); no v2 docs migration, website source, or runtime dependency was introduced.
 - The release validator now unions committed, staged, unstaged, and untracked paths when checking the frozen Phase 2 boundary; a dirty worktree can no longer hide a forbidden source, website, or playground change.
 - Static workflow assertions in both the release validator and distribution verifier cover the package working directory and publish-job Node 24 setup.
+- `.cursorrules` was removed as requested, eliminating its trailing-whitespace errors from the candidate boundary.
+- The migration guide retains the explicit warning that the v1 subpaths `emblor/core`, `emblor/addons`, `emblor/sortable`, `emblor/utils`, `emblor/types`, and `emblor/testing` disappeared.
+- Phase 3 now classifies the v1 backlog internally; public replies and closures are deferred until post-publish, when each applicable response can include a real npm `next` link.
 
 ## Baseline and authority evidence
 
 - Phase 2 baseline: `3980c5d0cda5123b5c61c4df10cbf5220610a4a3`.
 - Recorded final Phase 2 CI run: `31767216492`, including Node 22/24 distribution and Node 24 bundled Chromium evidence.
-- Candidate SHA: `93d955cce94b9e79a07ed60bca26ed1dcc1e6027`.
-- Candidate CI run: `31814645434` passed both Node 22.x and Node 24.x jobs, including packed distribution verification and the Node 24 Chromium browser contract gate.
+- Package-preparation candidate SHA: `337985d5c1a8ebfecf81557a974ee2df9f67bf84`.
+- Candidate CI run: `31814904247` passed both Node 22.x and Node 24.x jobs, including packed distribution verification and the Node 24 Chromium browser contract gate.
 - Repository visibility: public; default branch: `main`.
 - npm owner: `jaleelb`; registry state remains `latest: 1.4.8` and contains no `2.0.0-alpha.0`.
 - GitHub `NPM_TOKEN` secret exists, but it was not used and is not treated as trusted-publishing authority.
 - GitHub `npm` environment was created with protected-branch policy and a required reviewer (`JaleelB`).
-- npm trusted-publisher configuration could not be verified because this workstation is not authenticated to npm (`npm whoami` returned `ENEEDAUTH`).
+- npm trusted-publisher configuration was verified from authenticated npm package settings on 2026-08-14: repository `JaleelB/emblor`, workflow `publish.yml`, environment `npm`, permission `npm publish`. Operational OIDC proof remains a Phase 4 publication result.
 
 ## Candidate evidence
 
@@ -46,14 +50,15 @@ Verdict: exact-SHA CI/browser evidence is green; approval remains blocked on ext
 - README examples compiled through the packed React 18/19 consumer fixtures.
 - `git diff --check` passed.
 - `pnpm run release:dry-run` passed after the boundary and workflow fixes.
-- The local browser gate remains unavailable because this workspace lacks the Playwright Chromium executable, but the exact candidate's remote Node 24 Chromium gate passed in CI run `31814645434`.
+- `pnpm -C website typecheck` passes after the React type alignment. The existing Contentlayer Node compatibility output remains outside this v1 website compatibility fix and is deferred to the planned docs-layer replacement.
+- The local browser gate remains unavailable because this workspace lacks the Playwright Chromium executable, but the exact candidate's remote Node 24 Chromium gate passed in CI run `31814904247`.
 
 ## Frozen-boundary review
 
-No source, public API/type, runtime dependency, website, playground, or excluded-feature change was introduced by the Phase 3 implementation. Changes are limited to release metadata, package documentation, release automation, feedback intake, planning evidence, and distribution assertions.
+No v2 source, public API/type, runtime dependency, playground, or excluded-feature change was introduced by the Phase 3 implementation. The only website change is dev-toolchain type alignment needed to keep the unchanged v1 website typecheckable; no v2 docs migration or website source change was introduced. The remaining changes are release metadata, package documentation, release automation, feedback intake, planning evidence, and distribution assertions.
 
 ## Coverage decision
 
-AR/O-01 through AR/O-09 and AR/O-12 are implemented and evidenced, including the pushed exact candidate SHA and green Node 22/24 plus Node 24 browser CI. AR/O-10 and AR/O-11 remain partially evidenced until npm trusted publishing is verified and Phase 4 publication is explicitly approved. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
+AR/O-01 through AR/O-10 and AR/O-12 are implemented and evidenced, including trusted-publisher configuration, the pushed package-preparation parent, and green Node 22/24 plus Node 24 browser CI. The website typecheck fix is locally validated and awaits fresh PR evidence. AR/O-11 remains partially evidenced until the exact integrated `main` SHA receives explicit approval. AR/O-19 through AR/O-23 remain planned by the transition runbook; AR/O-20 now covers only internal Phase 3 classification, with public issue/PR disposition deferred to post-publish. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
 
-The combined runbook remains Active. Do not dispatch `publish.yml` until npm trusted publisher identity is verified and the user explicitly approves `93d955cce94b9e79a07ed60bca26ed1dcc1e6027` with `2.0.0-alpha.0`.
+The combined runbook remains Active. Do not dispatch `publish.yml` until the transition runbook completes and the user explicitly approves the exact verified integrated `main` SHA with `2.0.0-alpha.0`.

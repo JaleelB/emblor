@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-14. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is next.
+Active umbrella roadmap as of 2026-08-15. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is active through the v1-preservation and v2 integration transition.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -20,11 +20,11 @@ The current package already has:
 - packed-consumer and package-content checks;
 - no core autocomplete, suggestions, sortable/drag-and-drop, Shadcn, Tailwind, CVA, addons, or v1 compatibility layer.
 
-The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is also complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md): commit `7e0f0b0cdf30067364b28a94166712cef5a19a82` passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 3 — `2.0.0-alpha.0` Preparation is next.
+The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is also complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md): the final closure commit `3980c5d0cda5123b5c61c4df10cbf5220610a4a3` passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 3 — `2.0.0-alpha.0` Preparation is active under its release runbook.
 
-The package manifest remains at the published-v1 development baseline `1.4.8`. No v2 prerelease has been published yet. The existing `website/` still consumes and documents published v1, as required by DR-0005.
+The package-preparation candidate is `2.0.0-alpha.0` on `feat/emblor-v2-refactor`; no v2 prerelease has been published yet. The existing `website/` still consumes and documents published v1, as required by DR-0005. DR-0042 now requires preserving current v1 `main` on maintenance-only `1.x`, installing manual trusted publication on the default branch, and integrating the verified v2 candidate into `main` before Phase 4.
 
-Release preparation also has known repository housekeeping—not new product gaps—to resolve at the appropriate phase: `.changeset/` still contains an old v1 patch changeset, Changesets is configured with restricted access despite `emblor` being public, and the publish workflow copies the root README over the package README. Phase 3 must deliberately reconcile those files so prerelease metadata and published documentation describe v2 exactly once.
+Release metadata, package documentation, feedback intake, and candidate automation are prepared. npm trusted publishing is configured. Remaining Phase 3 work is the repository transition defined by the [transition runbook](../plans/emblor-v2-alpha-release/transition-runbook.md); publication remains a separate Phase 4 action.
 
 ## Stable Destination
 
@@ -52,16 +52,17 @@ These apply to every phase:
 
 ## Governing Decisions
 
-| Decision                  | Roadmap effect                                                                                                             |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| DR-0001, DR-0002, DR-0007 | Fix the product scope, one-package shape, root-only API, and excluded features.                                            |
-| DR-0004                   | Require meaningful React 18 and React 19 consumer verification.                                                            |
-| DR-0005                   | Keep the website on v1 until a published v2 alpha is stable enough to consume; rebuild it under a separate plan.           |
-| DR-0012                   | Start with `2.0.0-alpha.0`, use Changesets prerelease mode and a non-`latest` tag, and prove real consumers before stable. |
-| DR-0013                   | Make CI—not local hooks—the authoritative quality and release gate.                                                        |
-| DR-0014                   | Use Node 24 for release and retain Node 22 compatibility verification.                                                     |
-| DR-0016                   | Preserve headless DOM prop forwarding, polymorphic refs, and consumer styling ownership.                                   |
-| DR-0041                   | Preserve the frozen architecture; require a superseding decision for contract changes.                                     |
+| Decision                  | Roadmap effect                                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| DR-0001, DR-0002, DR-0007 | Fix the product scope, one-package shape, root-only API, and excluded features.                                                  |
+| DR-0004                   | Require meaningful React 18 and React 19 consumer verification.                                                                  |
+| DR-0005                   | Keep the website on v1 until a published v2 alpha is stable enough to consume; rebuild it under a separate plan.                 |
+| DR-0012                   | Start with `2.0.0-alpha.0`, use Changesets prerelease mode and a non-`latest` tag, and prove real consumers before stable.       |
+| DR-0013                   | Make CI—not local hooks—the authoritative quality and release gate.                                                              |
+| DR-0014                   | Use Node 24 for release and retain Node 22 compatibility verification.                                                           |
+| DR-0016                   | Preserve headless DOM prop forwarding, polymorphic refs, and consumer styling ownership.                                         |
+| DR-0041                   | Preserve the frozen architecture; require a superseding decision for contract changes.                                           |
+| DR-0042                   | Preserve v1 on maintenance-only `1.x`, use `main` for v2 prereleases, triage old work without broad fixes, and publish manually. |
 
 All other accepted DR-0001–DR-0040 behavioral decisions remain binding release requirements through DR-0041. DR-0006 and DR-0033 remain superseded.
 
@@ -107,9 +108,9 @@ The docs rebuild may overlap late alpha iteration after its entry gate is met. B
 
 | Phase                               | Release state                | Primary outcome                                                                   | Depends on          | Ends with                                   |
 | ----------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ------------------- | ------------------------------------------- |
-| Current                             | v1 `latest`; v2 unpublished  | Phase 1 complete; package and distribution readiness active                       | Phase 1             | Distribution-readiness plan                 |
+| Current                             | v1 `latest`; v2 unpublished  | Phases 1–2 complete; `alpha.0` preparation active                                 | Phase 2             | Alpha preparation/release runbook           |
 | 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Frozen baseline     | Completed hardening commit series           |
-| 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Distribution-readiness PR                   |
+| 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Completed distribution-readiness series     |
 | 3. `alpha.0` Preparation            | v2 unpublished               | Exact prerelease metadata, docs, notes, and publish runbook ready                 | Phase 2             | Alpha release-candidate PR                  |
 | 4. `alpha.0` Release                | `2.0.0-alpha.0` on `next`    | First public installable v2 and verified npm artifact                             | Phase 3             | npm/GitHub alpha release                    |
 | 5. Alpha Iteration                  | `alpha.x` on `next`          | Real-consumer, accessibility, browser, type, and packaging findings resolved      | Phase 4             | Final alpha release and beta recommendation |
@@ -226,6 +227,7 @@ Turn the verified `1.4.8` development baseline into an auditable first v2 prerel
 - Alpha changelog and release notes that clearly state prerelease status, frozen architectural scope, known limitations, supported React/Node policy, and feedback channel.
 - Release checklist covering npm authentication/access, exact tarball inspection, clean install, CI success, tag behavior, and rollback-by-follow-up-release rather than unpublish.
 - Alpha issue taxonomy and templates for runtime bugs, accessibility/browser issues, TypeScript/package ergonomics, docs gaps, and proposed frozen-contract changes.
+- Internal classification of the existing v1 issue/PR backlog, with public replies and closures deferred until after the alpha is published and a real `next` link is available.
 
 ### Dependencies / prerequisites
 
@@ -244,7 +246,7 @@ Turn the verified `1.4.8` development baseline into an auditable first v2 prerel
 
 ### Plan
 
-Create a just-in-time `emblor-v2-alpha-release` plan covering both Phase 3 preparation and Phase 4 execution. It should be a release runbook, not another package architecture plan.
+Use the active [Emblor v2 Alpha Preparation and Release Runbook](../plans/emblor-v2-alpha-release/plan.md), which covers Phase 3 preparation and the separately approved Phase 4 publication action without reopening package architecture.
 
 ### Milestone
 
@@ -272,6 +274,7 @@ Publish the first usable public v2 artifact and prove that npm distribution beha
 - Compile, production-build, and mount controlled/uncontrolled examples from npm.
 - Smoke-test representative real consumer projects, including at least a native form and a styled/polymorphic composition.
 - Open and publicize the alpha feedback channel and apply the agreed issue labels/severity.
+- After publication, reply to and close only the queued v1 issues/PRs supported by published evidence, using a real npm `next` link.
 
 ### Dependencies / prerequisites
 
@@ -562,7 +565,15 @@ Do not create detailed implementation plans for all future phases now. The roadm
 
 ## v1 Documentation and Maintenance Line
 
-The exact v1 disposition must be decided during beta stabilization and included in the stable runbook. The recommended default is:
+DR-0042 establishes the current source and maintenance policy:
+
+- preserve the pre-v2 `main` tip on `1.x` before integrating v2;
+- permit only separately planned critical, security, or systemic-installation fixes on `1.x`;
+- triage old v1 issues and pull requests without reopening broad v1 development;
+- keep npm `latest` on v1 through alpha and beta;
+- use `main` and short-lived branches for v2 prerelease work.
+
+The exact v1 sunset duration and npm deprecation timing remain to be decided during beta stabilization and included in the stable runbook. The recommended stable disposition remains:
 
 - keep the last v1 package available on npm by exact version;
 - archive the final v1 documentation at a clearly labeled versioned location;

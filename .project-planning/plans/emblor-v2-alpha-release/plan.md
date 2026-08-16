@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 3 candidate `93d955cce94b9e79a07ed60bca26ed1dcc1e6027` is committed, pushed, and passed exact Node 22/24 CI plus the Node 24 Chromium gate. npm trusted-publisher authorization and Phase 3 approval remain open. Phase 2 is complete and the final closure commit `3980c5d0cda5123b5c61c4df10cbf5220610a4a3` passed the complete Node 22/24 GitHub Actions matrix, including bundled Chromium on Node 24. See [implementation review](./implementation-review.md).
+Phase 3 package-preparation candidate `337985d5c1a8ebfecf81557a974ee2df9f67bf84` is committed, pushed, and passed exact Node 22/24 CI plus the Node 24 Chromium gate in run `31814904247`. npm trusted publishing is configured. Phase 3 now proceeds through the accepted v1-preservation, internal backlog-classification, default-branch workflow, and v2 integration sequence in the [transition runbook](./transition-runbook.md). The exact verified integration result on `main` will become the Phase 4 candidate.
 
 Phase 4 publication is not authorized by this plan. It remains gated on successful Phase 3 candidate review, npm/GitHub release authority, protected-environment approval, and an explicit user instruction naming the exact candidate SHA/version.
 
@@ -22,16 +22,15 @@ This is a release runbook, not a package architecture plan.
 ## Current State
 
 - Phase 1 and Phase 2 are complete with all coverage obligations Verified.
-- The branch and origin currently point to `3980c5d0cda5123b5c61c4df10cbf5220610a4a3`.
+- Package-preparation candidate `337985d5c1a8ebfecf81557a974ee2df9f67bf84` is pushed on `feat/emblor-v2-refactor` and passed CI run `31814904247`.
 - npm reports `emblor@1.4.8` and `latest: 1.4.8`; no prerelease versions or prerelease dist-tags exist.
 - `npm owner ls emblor` identifies `jaleelb` as package owner.
-- The repository has an `NPM_TOKEN` secret, but this workstation is not npm-authenticated and the secret's current permissions cannot be inspected. Do not treat secret existence as release authority.
-- The package is still `1.4.8`; `.changeset/cyan-owls-jump.md` is a stale v1 patch changeset; Changesets access is still `restricted`.
-- The package README is the canonical publication README, but it needs alpha installation/status/feedback content.
-- `MIGRATION.md` exists but is brief and is not currently included in the tarball.
-- No package changelog or alpha release-notes source exists.
-- Generic bug/feature issue forms exist but do not implement the alpha feedback taxonomy.
-- The publish workflow is CI-gated and Node 24-based, but it still uses token-oriented Changesets publication and has no OIDC/protected manual alpha approval boundary.
+- npm trusted publishing is configured for `JaleelB/emblor`, `publish.yml`, environment `npm`, and permission `npm publish`; operational proof remains Phase 4.
+- The existing `NPM_TOKEN` is retained but unused until the first OIDC publication succeeds.
+- Changesets prerelease metadata, package version `2.0.0-alpha.0`, README, migration guide, changelog, release notes, feedback intake, and packed-artifact checks are complete on the feature branch.
+- Current v1 `main` has not yet been preserved as `1.x`, and its issue/PR backlog has not yet received internal transition classification.
+- Default-branch `main` still contains the old automatic token-oriented workflow. The prepared manual OIDC workflow must replace it before v2 integration.
+- The exact final Phase 4 candidate will be the verified integration result on `main`, not the package-preparation feature-branch SHA.
 
 ## Release Mechanism
 
@@ -92,8 +91,9 @@ After npm publication, verify the registry before creating the Git tag and GitHu
 
 - [Decision Manifest](./decision-manifest.md)
 - [Decision Coverage](./coverage.md)
+- [v1 Maintenance and v2 Alpha Integration Transition Runbook](./transition-runbook.md)
 
-Status: Phase 3 candidate pushed and exact-SHA CI/browser verified, approval pending. All 18 obligations are mapped; AR/O-01 through AR/O-09 and AR/O-12 are evidenced, AR/O-10 and AR/O-11 remain partially covered pending npm authority and explicit approval, and publication obligations remain Planned until the separately approved Phase 4 action occurs.
+Status: package preparation and trusted-publisher configuration are evidenced. Transition obligations AR/O-19 through AR/O-23 are Planned. Phase 3 remains Active until v1 is preserved, backlog disposition is recorded, manual publishing is installed on `main`, and the exact integrated `main` candidate passes verification. Phase 4 publication obligations remain Planned and separately approved.
 
 ## Files and External Systems
 
@@ -111,6 +111,7 @@ Expected repository changes:
 - a release-notes source under `.github/releases/2.0.0-alpha.0.md`
 - `.github/workflows/publish.yml` or a replacement dedicated alpha workflow
 - `.github/ISSUE_TEMPLATE/*` and issue-template configuration
+- `website/package.json` only for a narrow v1 build-toolchain compatibility correction; no docs/content migration
 - root release scripts only where needed for deterministic preparation/verification
 - this plan folder, planning index, and roadmap status
 
@@ -125,7 +126,7 @@ Forbidden Phase 3 changes:
 - `packages/emblor/src/**`
 - public exports/types/props
 - runtime dependencies
-- `website/**`
+- `website` source, docs, or application behavior (a narrow build-toolchain compatibility correction is allowed)
 - `packages/emblor/playground/**`
 - npm publication or dist-tag mutation
 
@@ -308,6 +309,7 @@ Work:
 
 - Resynchronize coverage and create the final post-publish implementation review.
 - Link npm version/dist-tags, provenance, Git tag, GitHub prerelease, CI run, consumer evidence, and open findings.
+- Revisit the Phase 3 internal v1 backlog classifications only after publication; reply or close applicable issues and pull requests with migration evidence and a real npm `next` link.
 - Keep this runbook Active if any Required obligation lacks evidence or publication did not occur.
 - When complete, move the plan to Completed and make Phase 5 Alpha Iteration active.
 - Do not start website migration until the roadmap's stable-enough-alpha gate is met.
@@ -358,7 +360,7 @@ Inspect the registry artifact and run exact-version/`@next` external React 18/19
 
 ### VT-10 — Post-publish closure
 
-Require every coverage row Verified, findings triaged, feedback channel active, and links to all public/evidence artifacts before moving to Alpha Iteration.
+Require every coverage row Verified, findings triaged, feedback channel active, and links to all public/evidence artifacts before moving to Alpha Iteration. Apply queued v1 issue/PR replies or closures only now, and require each applicable reply to contain a real npm `next` link rather than a placeholder.
 
 ## Release Checklist
 
@@ -417,11 +419,11 @@ Do not squash preparation, release automation, version generation, and post-publ
 
 ## Open Questions
 
-None requiring a product or architecture decision. The npm trusted publisher and protected GitHub environment are external prerequisites to verify during T-00; failure to establish them blocks Phase 4 but does not require redesigning the package.
+None blocking transition execution. Final v1 sunset duration and npm deprecation timing remain deliberately deferred to beta stabilization and the stable-release runbook.
 
 ## To-Dos
 
-- [ ] T-00 — Establish release authority and immutable baseline.
+- [x] T-00 — Establish release authority and immutable baseline.
 - [x] T-01 — Reconcile Changesets and rehearse `alpha.0`.
 - [x] T-02 — Finalize package metadata and shipped documentation.
 - [x] T-03 — Complete migration, changelog, and alpha release notes.
@@ -432,3 +434,8 @@ None requiring a product or architecture decision. The npm trusted publisher and
 - [ ] T-08 — Publish `2.0.0-alpha.0` under `next` after explicit approval.
 - [ ] T-09 — Verify the public npm release.
 - [ ] T-10 — Close alpha.0 release and hand off to iteration.
+- [ ] T-11 — Preserve current v1 on remote `1.x`.
+- [ ] T-12 — Classify v1 issues and pull requests internally without reopening v1 implementation.
+- [ ] T-13 — Replace default-branch automatic publishing with manual trusted publishing.
+- [ ] T-14 — Prepare and review the v2 integration PR.
+- [ ] T-15 — Approve the exact integrated `main` candidate.
