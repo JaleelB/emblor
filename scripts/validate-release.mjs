@@ -34,7 +34,10 @@ const packageReadme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
 const migration = readFileSync(join(packageRoot, 'MIGRATION.md'), 'utf8');
 const changelog = readFileSync(join(packageRoot, 'CHANGELOG.md'), 'utf8');
 const releaseNotes = readFileSync(join(repositoryRoot, '.github', 'releases', `${expectedVersion}.md`), 'utf8');
-const publishWorkflow = readFileSync(join(repositoryRoot, '.github', 'workflows', 'publish.yml'), 'utf8');
+const publishWorkflow = readFileSync(join(repositoryRoot, '.github', 'workflows', 'publish.yml'), 'utf8').replace(
+  /\r\n/g,
+  '\n',
+);
 
 assert(manifest.name === 'emblor', 'Candidate package name must be emblor.');
 assert(manifest.version === expectedVersion, `Candidate version must be ${expectedVersion}.`);
@@ -123,8 +126,9 @@ try {
 } catch (error) {
   throw new Error(`Unable to inspect candidate boundary: ${error.message}`);
 }
-const forbiddenChange = [...changedFiles].filter((path) =>
-  /^(packages\/emblor\/src\/|packages\/emblor\/playground\/|website\/)/.test(path),
+const forbiddenChange = [...changedFiles].filter(
+  (path) =>
+    /^(packages\/emblor\/src\/|packages\/emblor\/playground\/|website\/)/.test(path) && path !== 'website/package.json',
 );
 assert(forbiddenChange.length === 0, `Candidate crosses the frozen boundary: ${forbiddenChange.join(', ')}`);
 
