@@ -44,8 +44,9 @@ if (mode === '--prepublish') {
   }
   console.log(`[release] npm preflight passed: latest=${tags.latest}; ${expectedVersion} is absent.`);
 } else {
-  const targetVersion = parseJson(target ?? '', `emblor@${expectedVersion} version`);
-  const resolvedVersion = typeof targetVersion === 'string' ? targetVersion : targetVersion.version;
+  const parsedTargetVersion = parseJson(target ?? '', `emblor@${expectedVersion} version`);
+  const targetVersion = Array.isArray(parsedTargetVersion) ? parsedTargetVersion[0] : parsedTargetVersion;
+  const resolvedVersion = typeof targetVersion === 'string' ? targetVersion : targetVersion?.version;
   if (resolvedVersion !== expectedVersion) {
     throw new Error(`Published version resolved to ${resolvedVersion ?? '<missing>'}, expected ${expectedVersion}.`);
   }
