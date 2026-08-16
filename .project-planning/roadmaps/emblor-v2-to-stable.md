@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-15. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is active through the v1-preservation and v2 integration transition.
+Active umbrella roadmap as of 2026-08-15. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is active through the v1-preservation and v2 integration transition, with the reviewed integration PR green and awaiting merge.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -250,7 +250,7 @@ Use the active [Emblor v2 Alpha Preparation and Release Runbook](../plans/emblor
 
 ### Milestone
 
-An alpha release-candidate PR containing changeset/prerelease metadata, release notes, documentation, and workflow adjustments. Publication remains a separate approved release action.
+An alpha release-candidate PR containing changeset/prerelease metadata, release notes, documentation, workflow adjustments, and the reviewed v1-preservation transition. Publication remains a separate approved release action.
 
 ### Do not start yet
 

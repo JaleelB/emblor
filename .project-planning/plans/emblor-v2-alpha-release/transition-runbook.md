@@ -6,7 +6,7 @@ Ready for execution. No branch creation, issue mutation, pull-request mutation, 
 
 Phase 3 package preparation is complete on `feat/emblor-v2-refactor`. Candidate `337985d5c1a8ebfecf81557a974ee2df9f67bf84` passed Node 22 and Node 24 CI, including the Chromium browser gate, in [GitHub Actions run 31814904247](https://github.com/JaleelB/emblor/actions/runs/31814904247). The npm trusted publisher is configured for `JaleelB/emblor`, `publish.yml`, environment `npm`, and permission `npm publish`.
 
-Remaining Phase 3 work is repository transition: preserve v1, classify its backlog internally without implementing broad fixes, install manual release control on `main`, integrate v2, and verify the exact resulting `main` candidate. Phase 4 publication and all public backlog replies/closures remain separately gated.
+T-11 through T-14 are now evidenced: v1 is preserved on `1.x`, the backlog is classified internally, manual release control is installed on `main`, and PR #122's integration candidate is green on Node 22/24, website checks, and Vercel. Remaining Phase 3 work is the reviewed merge and exact resulting `main` candidate verification. Phase 4 publication and all public backlog replies/closures remain separately gated.
 
 ## Desired Repository and Registry State
 
@@ -195,6 +195,8 @@ gh pr create --base main --head release/v2-alpha-integration --title "chore(rele
 ```
 
 Verification: VT-14.
+
+Current state: PR #122 is open against `main` with all required checks green. Do not merge it in this run; T-15 records the final merged-SHA gate.
 
 ## T-15 — Approve final Phase 3 `main` candidate
 

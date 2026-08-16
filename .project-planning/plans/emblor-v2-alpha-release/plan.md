@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 3 package-preparation candidate `337985d5c1a8ebfecf81557a974ee2df9f67bf84` is committed, pushed, and passed exact Node 22/24 CI plus the Node 24 Chromium gate in run `31814904247`. npm trusted publishing is configured. Phase 3 now proceeds through the accepted v1-preservation, internal backlog-classification, default-branch workflow, and v2 integration sequence in the [transition runbook](./transition-runbook.md). The exact verified integration result on `main` will become the Phase 4 candidate.
+Phase 3 package preparation and the transition prerequisites are evidenced. The integration PR is open with its current head passing Node 22/24 CI, the website typecheck/lint job, and Vercel preview deployment. Phase 3 now waits only for the reviewed PR to merge and for the exact resulting `main` SHA to pass the final gate; that SHA will become the Phase 4 candidate.
 
 Phase 4 publication is not authorized by this plan. It remains gated on successful Phase 3 candidate review, npm/GitHub release authority, protected-environment approval, and an explicit user instruction naming the exact candidate SHA/version.
 
@@ -28,8 +28,9 @@ This is a release runbook, not a package architecture plan.
 - npm trusted publishing is configured for `JaleelB/emblor`, `publish.yml`, environment `npm`, and permission `npm publish`; operational proof remains Phase 4.
 - The existing `NPM_TOKEN` is retained but unused until the first OIDC publication succeeds.
 - Changesets prerelease metadata, package version `2.0.0-alpha.0`, README, migration guide, changelog, release notes, feedback intake, and packed-artifact checks are complete on the feature branch.
-- Current v1 `main` has not yet been preserved as `1.x`, and its issue/PR backlog has not yet received internal transition classification.
-- Default-branch `main` still contains the old automatic token-oriented workflow. The prepared manual OIDC workflow must replace it before v2 integration.
+- Current v1 `main` is preserved on remote `1.x` at the recorded v1 SHA, and its issue/PR backlog has been classified internally without public mutation.
+- Default-branch `main` now has the manual OIDC workflow; no publication workflow has been dispatched.
+- The integration PR has green Node 22/24, website typecheck/lint, and Vercel checks. It remains unmerged, so final `main`-SHA approval is still open.
 - The exact final Phase 4 candidate will be the verified integration result on `main`, not the package-preparation feature-branch SHA.
 
 ## Release Mechanism
@@ -434,8 +435,8 @@ None blocking transition execution. Final v1 sunset duration and npm deprecation
 - [ ] T-08 — Publish `2.0.0-alpha.0` under `next` after explicit approval.
 - [ ] T-09 — Verify the public npm release.
 - [ ] T-10 — Close alpha.0 release and hand off to iteration.
-- [ ] T-11 — Preserve current v1 on remote `1.x`.
-- [ ] T-12 — Classify v1 issues and pull requests internally without reopening v1 implementation.
-- [ ] T-13 — Replace default-branch automatic publishing with manual trusted publishing.
-- [ ] T-14 — Prepare and review the v2 integration PR.
+- [x] T-11 — Preserve current v1 on remote `1.x`.
+- [x] T-12 — Classify v1 issues and pull requests internally without reopening v1 implementation.
+- [x] T-13 — Replace default-branch automatic publishing with manual trusted publishing.
+- [x] T-14 — Prepare and review the v2 integration PR.
 - [ ] T-15 — Approve the exact integrated `main` candidate.
