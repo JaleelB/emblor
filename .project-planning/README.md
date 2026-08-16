@@ -13,7 +13,11 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Active Plans
 
-Phase 3 alpha preparation is the next planned phase; its just-in-time release runbook is not yet created.
+- [`plans/emblor-v2-alpha-release/plan.md`](plans/emblor-v2-alpha-release/plan.md) — Phase 3 alpha preparation and separately approved Phase 4 `2.0.0-alpha.0` publication runbook.
+  - [`decision-manifest.md`](plans/emblor-v2-alpha-release/decision-manifest.md) — release, documentation, compatibility, and frozen-contract decision applicability.
+  - [`coverage.md`](plans/emblor-v2-alpha-release/coverage.md) — alpha preparation and publication obligations mapped to tasks and verification.
+  - [`implementation-review.md`](plans/emblor-v2-alpha-release/implementation-review.md) — local candidate evidence, boundary review, and remaining release gates.
+  - [`transition-runbook.md`](plans/emblor-v2-alpha-release/transition-runbook.md) — actionable v1 preservation, internal backlog classification, manual workflow installation, v2-to-`main` integration, and post-publish issue/PR disposition sequence.
 
 ## Active Roadmaps
 
@@ -22,6 +26,7 @@ Phase 3 alpha preparation is the next planned phase; its just-in-time release ru
 ## Completed Plans
 
 - [`plans/emblor-v2-distribution-readiness/plan.md`](plans/emblor-v2-distribution-readiness/plan.md) — Phase 2 package and distribution readiness completed with verified tarball, packed consumers, release-path validation, and pushed Node 22/24 CI plus Node 24 Chromium evidence.
+
   - [`decision-manifest.md`](plans/emblor-v2-distribution-readiness/decision-manifest.md) — applicable accepted decisions and supersession resolution.
   - [`coverage.md`](plans/emblor-v2-distribution-readiness/coverage.md) — all required distribution obligations verified.
   - [`implementation-review.md`](plans/emblor-v2-distribution-readiness/implementation-review.md) — final evidence and Phase 3 recommendation.

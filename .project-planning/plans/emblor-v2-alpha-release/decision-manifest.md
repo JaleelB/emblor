@@ -8,7 +8,7 @@
 | DR-0002         | Release one public package named `emblor`, with no addons, sortable package, or feature subpaths.                                                          |
 | DR-0003         | Document migration from v1 object values to public `string[]` values.                                                                                      |
 | DR-0004         | State and verify React 18 and React 19 support against the npm-installed artifact.                                                                         |
-| DR-0005         | Keep `website/` and production v1 docs unchanged during alpha preparation/publication.                                                                     |
+| DR-0005         | Keep `website/` and production v1 docs unchanged during alpha preparation/publication; allow only narrow build-toolchain fixes required to keep the v1 site functional. |
 | DR-0007         | Preserve and document the root-only public code API plus `emblor/package.json`.                                                                            |
 | DR-0008–DR-0011 | Keep final primitive names and keyboard/focus contracts accurate in README, migration, and release notes.                                                  |
 | DR-0012         | Generate the first v2 prerelease from the `1.4.8` baseline, publish under a non-`latest` tag, test representative consumers, and do not promote stable v2. |
@@ -17,6 +17,7 @@
 | DR-0015–DR-0032 | Keep state ownership, composition, validation, forms, accessibility, mutation, naming, and constraint documentation consistent with the frozen API.        |
 | DR-0034–DR-0040 | Keep structural, polymorphic, Unicode, paste, blur, external-state, and focus-restoration documentation consistent with the frozen behavior.               |
 | DR-0041         | Preserve the complete frozen architecture; any public-contract correction requires a superseding decision and resynchronized coverage before release.      |
+| DR-0042         | Preserve v1 on maintenance-only `1.x`, move v2 prerelease work to `main`, triage v1 backlog without broad fixes, and keep publication manual.              |
 
 ## Related
 
@@ -26,7 +27,7 @@
 ## Not Applicable
 
 - DR-0006 and DR-0033 are superseded and impose no active release obligation.
-- Website v2 implementation, integration demos, beta policy, stable promotion, and v1 maintenance disposition belong to later roadmap phases.
+- Website v2 implementation, integration demos, beta policy, stable promotion, and final v1 sunset timing belong to later roadmap phases.
 
 ## Deferred
 
