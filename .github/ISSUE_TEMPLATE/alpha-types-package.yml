@@ -1,0 +1,68 @@
+name: Alpha TypeScript or package ergonomics
+description: Report a declaration, export, installation, bundler, peer dependency, or package metadata issue.
+title: '[alpha-package]: '
+labels:
+  - alpha
+  - alpha-types
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please test from the public npm artifact when reporting packaging behavior. Include whether you installed by exact version or the `next` tag.
+  - type: input
+    id: version
+    attributes:
+      label: Emblor version
+      placeholder: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: target_alpha
+    attributes:
+      label: Target alpha
+      value: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include React/React DOM, Node, package manager, TypeScript, bundler, OS, and installation command.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Describe the install, type, export, build, or runtime packaging impact.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Link or paste a clean consumer reproduction, compiler output, or package inspection.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: State the expected declaration, export, metadata, peer, install, or bundler result.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

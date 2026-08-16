@@ -1,9 +1,22 @@
 {
   "compilerOptions": {
-    "jsx": "react",
-    "moduleResolution": "node",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2019",
+    "jsx": "react-jsx",
+    "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "lib": ["es2015", "dom"]
-  }
+    "noEmit": true,
+    "types": ["vitest/globals"],
+    "paths": {
+      "emblor": ["src/index.ts"]
+    }
+  },
+  "include": ["src", "tests", "playground"]
 }

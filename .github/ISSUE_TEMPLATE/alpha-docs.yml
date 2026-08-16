@@ -1,0 +1,68 @@
+name: Alpha documentation or migration gap
+description: Report an inaccurate, missing, or confusing README, changelog, release note, or migration instruction.
+title: '[alpha-docs]: '
+labels:
+  - alpha
+  - alpha-docs
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Documentation reports are welcome when they identify the page, version, and expected guidance. For behavior changes, use the runtime or frozen-contract form as well.
+  - type: input
+    id: version
+    attributes:
+      label: Emblor version
+      placeholder: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical
+        - high
+        - medium
+        - low
+    validations:
+      required: true
+  - type: input
+    id: target_alpha
+    attributes:
+      label: Target alpha
+      value: 2.0.0-alpha.0
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page or file
+      description: Link the exact README, migration, changelog, release-note section, or source file.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Consumer impact
+      description: Explain how the gap could cause a failed migration, incorrect implementation, or false expectation.
+    validations:
+      required: true
+  - type: textarea
+    id: current_guidance
+    attributes:
+      label: Current guidance
+      description: Quote or summarize the inaccurate or missing instruction without pasting a large copyrighted document.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected guidance
+      description: Describe the accurate instruction and link evidence when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

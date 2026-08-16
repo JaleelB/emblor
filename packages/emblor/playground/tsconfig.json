@@ -1,0 +1,13 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "types": ["react", "react-dom"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "emblor": ["../dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}
