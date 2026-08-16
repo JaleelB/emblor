@@ -161,13 +161,13 @@ jobs:
           node --input-type=module -e "import { readFileSync } from 'node:fs'; import { execFileSync } from 'node:child_process'; const candidate = JSON.parse(readFileSync('alpha-candidate/candidate.json', 'utf8')); if (candidate.commit !== process.env.EXPECTED_SHA || candidate.version !== process.env.EXPECTED_VERSION) throw new Error('Candidate identity mismatch'); const [major, minor, patch] = execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim().split('.').map(Number); if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) throw new Error('Trusted publishing requires npm >= 11.5.1');"
           tarball="alpha-candidate/emblor-${EXPECTED_VERSION}.tgz"
           test -f "$tarball"
-          sha256sum --check alpha-candidate/tarball.sha256
+          (cd alpha-candidate && sha256sum --check tarball.sha256)
 
       - name: Assert the registry is still safe to publish
         run: node scripts/validate-alpha-registry.mjs --prepublish
 
       - name: Publish the verified tarball to npm `next` with provenance
-        run: npm publish "alpha-candidate/emblor-${EXPECTED_VERSION}.tgz" --tag next --access public --provenance --ignore-scripts
+        run: npm publish "./alpha-candidate/emblor-${EXPECTED_VERSION}.tgz" --tag next --access public --provenance --ignore-scripts
 
       - name: Verify npm publication before any Git metadata action
         run: node scripts/validate-alpha-registry.mjs --published
