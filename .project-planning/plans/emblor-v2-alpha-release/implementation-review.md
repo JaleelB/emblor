@@ -2,9 +2,9 @@
 
 ## Status
 
-Package-preparation candidate committed and pushed at `337985d5c1a8ebfecf81557a974ee2df9f67bf84`; not approved for Phase 4 publication.
+The integration PR is structurally reviewed and its current head has passed Node 22/24 CI, website typecheck/lint, and Vercel preview deployment. It is approved for the merge gate, not for Phase 4 publication.
 
-Verdict: exact-SHA CI/browser evidence is green for the package-preparation parent and npm trusted publishing is configured. The website compatibility follow-up is locally validated but requires fresh PR CI. Phase 3 remains active for v1 preservation, internal backlog classification, default-branch workflow replacement, v2 integration into `main`, and exact integrated-candidate verification. No npm publication or dist-tag mutation occurred.
+Verdict: transition prerequisites are verified and the integration candidate is green. Phase 3 remains active until PR #122 merges and the exact resulting `main` SHA passes the final gate. No npm publication or dist-tag mutation occurred.
 
 ## Follow-up review — workflow and boundary fixes
 
@@ -24,6 +24,7 @@ Verdict: exact-SHA CI/browser evidence is green for the package-preparation pare
 - Recorded final Phase 2 CI run: `31767216492`, including Node 22/24 distribution and Node 24 bundled Chromium evidence.
 - Package-preparation candidate SHA: `337985d5c1a8ebfecf81557a974ee2df9f67bf84`.
 - Candidate CI run: `31814904247` passed both Node 22.x and Node 24.x jobs, including packed distribution verification and the Node 24 Chromium browser contract gate.
+- PR #122's refreshed integration candidate passed Node 22.x and Node 24.x CI, the website `typecheck-lint` job, and the Vercel preview deployment; the PR remains unmerged.
 - Repository visibility: public; default branch: `main`.
 - npm owner: `jaleelb`; registry state remains `latest: 1.4.8` and contains no `2.0.0-alpha.0`.
 - GitHub `NPM_TOKEN` secret exists, but it was not used and is not treated as trusted-publishing authority.
@@ -45,13 +46,12 @@ Verdict: exact-SHA CI/browser evidence is green for the package-preparation pare
 
 ## Verification performed
 
-- `pnpm run release:dry-run` passed without publishing and confirmed npm `latest: 1.4.8` with the target version absent.
-- `pnpm run distribution -- --skip-install` passed: formatting, build, lint, typecheck, 76 tests, exact tarball contents, ESM/CJS/types, React 18.3.1 and React 19.1.1 packed consumers, production bundles, runtime mount, and export/subpath checks.
+- The package-preparation parent passed `pnpm run release:dry-run` and the complete distribution gate without publishing; npm remained at `latest: 1.4.8` with the target version absent.
+- The current local rerun passes package build, lint, typecheck, 76 tests, exact tarball contents, ESM/CJS/types, React 18.3.1 and React 19.1.1 packed consumers, production bundles, runtime mount, and export/subpath checks. The wrapper's fixed formatting step reports the repository's Windows CRLF checkout; the normalized Prettier check passes and the authoritative PR check is green.
 - README examples compiled through the packed React 18/19 consumer fixtures.
 - `git diff --check` passed.
-- `pnpm run release:dry-run` passed after the boundary and workflow fixes.
-- `pnpm -C website typecheck` passes after the React type alignment. The existing Contentlayer Node compatibility output remains outside this v1 website compatibility fix and is deferred to the planned docs-layer replacement.
-- The local browser gate remains unavailable because this workspace lacks the Playwright Chromium executable, but the exact candidate's remote Node 24 Chromium gate passed in CI run `31814904247`.
+- `pnpm -C website typecheck` and `pnpm -C website lint` pass after the React type alignment. The refreshed PR also passes the website `typecheck-lint` job and Vercel deployment. The existing Contentlayer Node compatibility output remains outside this v1 website compatibility fix and is deferred to the planned docs-layer replacement.
+- `pnpm run release:dry-run` passes on the Windows checkout after CRLF normalization in the validator; no publication occurred. The local Chromium gate remains unavailable because the Playwright executable is not installed.
 
 ## Frozen-boundary review
 
@@ -59,6 +59,6 @@ No v2 source, public API/type, runtime dependency, playground, or excluded-featu
 
 ## Coverage decision
 
-AR/O-01 through AR/O-10 and AR/O-12 are implemented and evidenced, including trusted-publisher configuration, the pushed package-preparation parent, and green Node 22/24 plus Node 24 browser CI. The website typecheck fix is locally validated and awaits fresh PR evidence. AR/O-11 remains partially evidenced until the exact integrated `main` SHA receives explicit approval. AR/O-19 through AR/O-23 remain planned by the transition runbook; AR/O-20 now covers only internal Phase 3 classification, with public issue/PR disposition deferred to post-publish. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
+AR/O-01 through AR/O-10 and AR/O-12 are implemented and evidenced, including trusted-publisher configuration, the pushed package-preparation parent, and green Node 22/24 plus Node 24 browser CI. AR/O-19 through AR/O-21 are Verified, including v1 preservation, internal backlog classification, and manual workflow installation. AR/O-22 and AR/O-23 are Partially Covered because the integration PR is green but not merged and the exact final `main` SHA is not yet approved. AR/O-11 remains partially evidenced for the same final-SHA boundary. Public issue/PR disposition remains post-publish. AR/O-13 through AR/O-18 remain Phase 4 obligations and were not attempted.
 
 The combined runbook remains Active. Do not dispatch `publish.yml` until the transition runbook completes and the user explicitly approves the exact verified integrated `main` SHA with `2.0.0-alpha.0`.
