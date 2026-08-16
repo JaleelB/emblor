@@ -24,6 +24,7 @@ runStep('Build package artifacts', ['run', 'distribution:build']);
 runStep('Lint package', ['run', 'distribution:lint']);
 runStep('Typecheck package', ['run', 'distribution:typecheck']);
 runStep('Run package tests', ['run', 'distribution:test']);
+runStep('Test release boundary policy', ['run', 'distribution:release-boundary']);
 runStep('Verify the packed distribution artifact', ['run', 'distribution:artifact']);
 
 console.log('\n[distribution] Distribution gate passed.');

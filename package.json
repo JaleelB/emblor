@@ -14,6 +14,7 @@
     "distribution:lint": "pnpm -C packages/emblor lint",
     "distribution:typecheck": "pnpm -C packages/emblor typecheck",
     "distribution:test": "pnpm -C packages/emblor test",
+    "distribution:release-boundary": "node ./scripts/release-boundary.test.mjs",
     "distribution:artifact": "pnpm -C packages/emblor test:distribution",
     "distribution": "node ./scripts/run-distribution-gate.mjs",
     "ci": "pnpm run distribution -- --skip-install",

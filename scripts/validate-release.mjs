@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { findForbiddenCandidatePaths } from './release-boundary.mjs';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages', 'emblor');
@@ -126,10 +127,7 @@ try {
 } catch (error) {
   throw new Error(`Unable to inspect candidate boundary: ${error.message}`);
 }
-const forbiddenChange = [...changedFiles].filter(
-  (path) =>
-    /^(packages\/emblor\/src\/|packages\/emblor\/playground\/|website\/)/.test(path) && path !== 'website/package.json',
-);
+const forbiddenChange = findForbiddenCandidatePaths(changedFiles);
 assert(forbiddenChange.length === 0, `Candidate crosses the frozen boundary: ${forbiddenChange.join(', ')}`);
 
 console.log(`[release] Validating ${manifest.name}@${manifest.version} without publishing.`);
