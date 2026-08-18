@@ -20,8 +20,8 @@ const outputPath = resolve(
 );
 const sourceOnly = process.argv.includes('--source-only');
 const workspace = mkdtempSync(join(tmpdir(), 'emblor-browser-performance-'));
-const chromePath =
-  process.env.PLAYWRIGHT_EXECUTABLE_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const executableOverride = process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined;
+const browserExecutable = executableOverride ?? 'playwright-managed-chromium';
 
 function run(command, args, cwd, capture = false) {
   return execFileSync(command, args, {
@@ -147,7 +147,7 @@ function summarize(samples) {
 
 const report = {
   generatedAt: new Date().toISOString(),
-  browser: { executable: chromePath },
+  browser: { executable: browserExecutable },
   method: { warmups: 5, samples: 25, navigationSamples: 250, sizes: [10, 200] },
   targets: [],
 };
@@ -156,7 +156,10 @@ let browser;
 try {
   const targets = sourceOnly ? [localPackage()] : [publishedPackage(), localPackage()];
   const reacts = [installReact(18), installReact(19)];
-  browser = await chromium.launch({ executablePath: chromePath, headless: true });
+  browser = await chromium.launch({
+    ...(executableOverride ? { executablePath: executableOverride } : {}),
+    headless: true,
+  });
   let port = 4310;
   for (const target of targets) {
     for (const react of reacts) {
