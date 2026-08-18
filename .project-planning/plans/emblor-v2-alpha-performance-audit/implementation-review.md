@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation and local verification complete. One meaningful consumer-facing performance problem was confirmed and fixed without changing a frozen contract. The branch is ready for focused commit/PR review; authoritative pull-request CI is still pending.
+Implementation and verification complete. One meaningful consumer-facing performance problem was confirmed and fixed without changing a frozen contract. PR #124 is open, mergeable, and all authoritative pull-request checks pass.
 
 Recommendation: **publish `alpha.1` after this PR is approved, merged separately, and the later protected release runbook verifies the exact release candidate.** This review does not authorize publication, merge, tags, releases, or dist-tag mutation.
 
@@ -18,7 +18,7 @@ Recommendation: **publish `alpha.1` after this PR is approved, merged separately
 
 ## Browser benchmark method
 
-- Production Vite bundles; installed headless Chrome.
+- Production Vite bundles; Playwright-managed headless Chromium by default, with `PLAYWRIGHT_EXECUTABLE_PATH` available for an explicit browser executable.
 - React 18.3.1 and React 19.1.1.
 - Controlled and uncontrolled Root operation.
 - 10-tag and 200-tag lists.
@@ -101,7 +101,7 @@ Node 24.19.0:
 - packed distribution and React 18/19 consumer gates passed with byte-identical candidate reports to Node 22;
 - 8/8 Chrome browser contract tests passed.
 
-The authoritative repository-wide formatting result remains pending Linux PR CI because the clean Windows checkout reports baseline CRLF differences across unchanged files. The exact baseline SHA's Linux CI passed.
+The authoritative repository-wide checks passed in PR CI. The clean Windows checkout still reports baseline CRLF differences across unchanged files, so targeted formatting remains the reliable local signal. The exact baseline SHA's Linux CI also passed.
 
 ## Frozen-boundary review
 
@@ -119,7 +119,7 @@ The authoritative repository-wide formatting result remains pending Linux PR CI 
 - The 200-tag benchmark is deliberately large. It demonstrates scaling but is not a new public maximum-list contract.
 - Selection listener churn and broad focus-context navigation remain classified low-value; neither is changed.
 - React Doctor could not run because its requested installation failed in the local npm/OpenSSL path.
-- The benchmark runner's repeated Vite preview startup emits a benign local `MaxListenersExceededWarning` on the process input stream after results are written; benchmark scenarios complete successfully and temporary workspaces are removed.
+- The benchmark runner's repeated Vite preview startup may emit a benign local `MaxListenersExceededWarning` on the process input stream after results are written; benchmark scenarios complete successfully and temporary workspaces are removed.
 
 ## Release recommendation
 

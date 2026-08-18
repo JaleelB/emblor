@@ -5,7 +5,7 @@
 - Source: `origin/main` at `47fba3067a194d04c62405434ccfceeb97a0c55f`.
 - Published comparison: exact `emblor@2.0.0-alpha.0`, integrity `sha512-rF0JEuWfbLNRm+dEjtADXMKkMCsqrn3oY47GeGioR0h9nLgj4Wj0id7wLEQBVNdFwoZIGCHK6e7FEbzFgpEWaQ==`.
 - Scope: `packages/emblor` only. `website/` is excluded and unchanged.
-- Browser method: production Vite bundles in headless installed Chrome; 5 warmups, 25 add/remove/draft samples, 250 navigation samples; medians and p95 reported. Render instrumentation is injected into benchmark bundles only and is absent from package source/builds.
+- Browser method: production Vite bundles in headless Chromium; the audit run used the explicit installed-Chrome override, while the committed harness defaults to Playwright-managed Chromium and accepts `PLAYWRIGHT_EXECUTABLE_PATH`; 5 warmups, 25 add/remove/draft samples, 250 navigation samples; medians and p95 reported. Render instrumentation is injected into benchmark bundles only and is absent from package source/builds.
 - Matrices: controlled/uncontrolled, 10/200 tags, React 18.3.1/19.1.1, published alpha/source candidate.
 - Raw evidence: `baseline-performance.json`, `candidate-performance.json`, and `baseline-distribution.json` in this directory.
 
