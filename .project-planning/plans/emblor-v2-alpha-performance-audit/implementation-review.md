@@ -2,9 +2,20 @@
 
 ## Status
 
-Implementation and verification complete. One meaningful consumer-facing performance problem was confirmed and fixed without changing a frozen contract. PR #124 is open, mergeable, and all authoritative pull-request checks pass.
+Implementation and verification complete. One meaningful consumer-facing performance problem was confirmed and fixed without changing a frozen contract. PR #124 merged as `e8f2a891744e3dddbc6b48b0f7b0a28bb291a35f`, and its authoritative Node 22/24, distribution, browser, lint, typecheck, and Vercel checks passed.
 
-Recommendation: **publish `alpha.1` after this PR is approved, merged separately, and the later protected release runbook verifies the exact release candidate.** This review does not authorize publication, merge, tags, releases, or dist-tag mutation.
+The `alpha.1` release is complete. The exact release-preparation candidate merged as `d13025f632107d460a37458a33281ca873cacea2`; PRs #125, #126, and #127 subsequently merged release and documentation housekeeping. The audit remains a Phase 5 evidence record; Phase 5 stays active for post-alpha feedback and checkpoint review.
+
+This review records evidence; it does not authorize a future prerelease or change a frozen contract.
+
+## Post-publish closure
+
+- Publish workflow run [`32131496090`](https://github.com/JaleelB/emblor/actions/runs/32131496090) published `emblor@2.0.0-alpha.1` successfully under npm `next`, then failed in post-publish consumer verification with `spawnSync pnpm ENOENT` because the publish job lacked pnpm setup.
+- PR #126 (`366298a` and `c561230`) repaired the future workflow: it installs pnpm 9.0.2 and forwards the resolved candidate version into registry validation.
+- Independent verification of the public `2.0.0-alpha.1` tarball passed React 18.3.1 and React 19.1.1 install, typecheck, production build, runtime, forms, and module/export checks.
+- npm state is `next=2.0.0-alpha.1`, `latest=1.4.8`; integrity and SLSA provenance are present.
+- The immutable alpha.1 npm README retained two alpha.0 references. PR #127 (`42d97a5`) corrected the repository README for future releases; alpha.1 itself cannot be rewritten.
+- Git tag [`emblor@2.0.0-alpha.1`](https://github.com/JaleelB/emblor/releases/tag/emblor%402.0.0-alpha.1) targets the exact published source commit `d13025f…`.
 
 ## Baseline
 
@@ -123,6 +134,4 @@ The authoritative repository-wide checks passed in PR CI. The clean Windows chec
 
 ## Release recommendation
 
-**Publish `alpha.1` is justified** after normal PR approval/merge and a later explicit release authorization because the PR contains a meaningful, verified consumer-facing fix: large committed tag lists no longer rerender for every draft keystroke, with consistent React 18/19 controlled/uncontrolled browser evidence.
-
-Do not publish from this branch, merge this PR automatically, or plan `alpha.2`. Later findings after an `alpha.1` consumer cycle determine whether another alpha is warranted.
+The original recommendation was fulfilled: `alpha.1` is published and verified. No `alpha.2` is planned. Later findings from the alpha.1 consumer cycle determine whether another alpha is warranted.

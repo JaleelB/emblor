@@ -2,9 +2,9 @@
 
 ## Status
 
-Phase 3 package preparation and the transition prerequisites are evidenced. The integration PR is open with its current head passing Node 22/24 CI, the website typecheck/lint job, and Vercel preview deployment. Phase 3 now waits only for the reviewed PR to merge and for the exact resulting `main` SHA to pass the final gate; that SHA will become the Phase 4 candidate.
+This is a historical Phase 3/first-alpha preparation runbook. Its original integration and alpha.0 instructions are retained for audit history and are superseded operationally by the completed alpha.1 release closure.
 
-Phase 4 publication is not authorized by this plan. It remains gated on successful Phase 3 candidate review, npm/GitHub release authority, protected-environment approval, and an explicit user instruction naming the exact candidate SHA/version.
+The current package is `emblor@2.0.0-alpha.1` on npm `next`, with matching GitHub metadata and independent React 18/19 consumer verification. Phase 5 Alpha Iteration remains active; see [`../emblor-v2-alpha1-release-closure/plan.md`](../emblor-v2-alpha1-release-closure/plan.md) for the completed closure evidence.
 
 ## Release Definition
 
