@@ -1,13 +1,10 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { findForbiddenCandidatePaths } from './release-boundary.mjs';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const packageRoot = join(repositoryRoot, 'packages', 'emblor');
-const expectedVersion = process.env.EMBLOR_EXPECTED_VERSION ?? '2.0.0-alpha.0';
-const phase2Sha = '3980c5d0cda5123b5c61c4df10cbf5220610a4a3';
 const node = process.execPath;
 
 function readJson(path) {
@@ -28,6 +25,7 @@ function run(command, args) {
 }
 
 const manifest = readJson(join(packageRoot, 'package.json'));
+const expectedVersion = process.env.EMBLOR_EXPECTED_VERSION ?? manifest.version;
 const changesetConfig = readJson(join(repositoryRoot, '.changeset', 'config.json'));
 const prereleasePath = join(repositoryRoot, '.changeset', 'pre.json');
 const prerelease = readJson(prereleasePath);
@@ -42,6 +40,7 @@ const publishWorkflow = readFileSync(join(repositoryRoot, '.github', 'workflows'
 
 assert(manifest.name === 'emblor', 'Candidate package name must be emblor.');
 assert(manifest.version === expectedVersion, `Candidate version must be ${expectedVersion}.`);
+assert(/^2\.0\.0-alpha\.\d+$/.test(expectedVersion), 'Candidate version must match 2.0.0-alpha.N.');
 assert(manifest.private === false, 'Candidate package must be publishable.');
 assert(manifest.description, 'Candidate package must have a description.');
 assert(manifest.repository?.url === 'git+https://github.com/JaleelB/emblor.git', 'Repository metadata is incorrect.');
@@ -100,36 +99,14 @@ assert(publishJob.includes('node-version: 24.x'), 'Alpha workflow publish job mu
 const candidateChangesets = readdirSync(join(repositoryRoot, '.changeset')).filter(
   (entry) => entry.endsWith('.md') && entry !== 'README.md',
 );
-assert(
-  candidateChangesets.length === 1 && candidateChangesets[0] === 'quiet-pandas-release.md',
-  `The alpha prerelease must retain only the generated v2 changeset: ${candidateChangesets.join(', ')}`,
-);
+assert(candidateChangesets.length > 0, 'The alpha prerelease must retain at least one tracked changeset.');
 assert(
   Array.isArray(prerelease.changesets) &&
-    prerelease.changesets.length === 1 &&
-    prerelease.changesets[0] === 'quiet-pandas-release',
-  'Changesets prerelease state must retain the exact generated v2 changeset.',
+    prerelease.changesets.length === candidateChangesets.length &&
+    candidateChangesets.every((entry) => prerelease.changesets.includes(entry.slice(0, -3))),
+  'Changesets prerelease state must match the retained changeset files.',
 );
-
-let changedFiles = new Set();
-try {
-  const trackedChanges = [
-    run('git', ['diff', '--name-only', phase2Sha, '--']),
-    run('git', ['diff', '--cached', '--name-only', phase2Sha, '--']),
-  ];
-  const untrackedChanges = run('git', ['ls-files', '--others', '--exclude-standard']);
-  changedFiles = new Set(
-    [...trackedChanges, untrackedChanges]
-      .flatMap((output) => output.split(/\r?\n/))
-      .map((path) => path.trim())
-      .filter(Boolean),
-  );
-} catch (error) {
-  throw new Error(`Unable to inspect candidate boundary: ${error.message}`);
-}
-const forbiddenChange = findForbiddenCandidatePaths(changedFiles);
-assert(forbiddenChange.length === 0, `Candidate crosses the frozen boundary: ${forbiddenChange.join(', ')}`);
 
 console.log(`[release] Validating ${manifest.name}@${manifest.version} without publishing.`);
 run(node, [join(repositoryRoot, 'scripts', 'validate-alpha-registry.mjs'), '--prepublish']);
-console.log('[release] Alpha metadata, frozen boundary, and npm preflight passed; no publication occurred.');
+console.log('[release] Prerelease metadata and npm preflight passed; no publication occurred.');

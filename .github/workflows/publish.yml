@@ -1,4 +1,4 @@
-name: Publish alpha
+name: Publish prerelease
 
 on:
   workflow_dispatch:
@@ -8,13 +8,12 @@ on:
         required: true
         type: string
       expected_version:
-        description: First alpha must be exactly 2.0.0-alpha.0.
+        description: Exact prerelease version to publish, for example 2.0.0-alpha.1.
         required: true
-        default: 2.0.0-alpha.0
         type: string
 
 concurrency:
-  group: publish-alpha
+  group: publish-prerelease
   cancel-in-progress: false
 
 # The npm trusted publisher must identify this exact repository and workflow.
@@ -24,12 +23,12 @@ permissions:
   actions: read
 
 env:
-  PHASE_2_SHA: 3980c5d0cda5123b5c61c4df10cbf5220610a4a3
-  EXPECTED_VERSION: 2.0.0-alpha.0
+  EXPECTED_VERSION: ${{ inputs.expected_version }}
+  EMBLOR_EXPECTED_VERSION: ${{ inputs.expected_version }}
 
 jobs:
   validate:
-    name: Validate exact alpha candidate
+    name: Validate exact prerelease candidate
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,16 +42,15 @@ jobs:
           ref: ${{ inputs.expected_sha }}
           fetch-depth: 0
 
-      - name: Verify the immutable candidate boundary
+      - name: Verify the exact candidate is on main
         env:
           EXPECTED_SHA: ${{ inputs.expected_sha }}
         run: |
           set -euo pipefail
           test "$EXPECTED_SHA" = "$(git rev-parse HEAD)"
-          test "${{ inputs.expected_version }}" = "$EXPECTED_VERSION"
+          [[ "$EXPECTED_VERSION" =~ ^2\.0\.0-alpha\.[0-9]+$ ]]
           git fetch origin main --depth=1
           git merge-base --is-ancestor "$EXPECTED_SHA" origin/main
-          node scripts/validate-release-boundary.mjs "$PHASE_2_SHA" "$EXPECTED_SHA"
 
       - name: Require a successful exact-SHA CI run
         uses: actions/github-script@v7
@@ -95,7 +93,7 @@ jobs:
           pnpm -C packages/emblor exec playwright install --with-deps chromium
           pnpm -C packages/emblor run test:browser
 
-      - name: Validate alpha metadata and npm preflight
+      - name: Validate prerelease metadata and npm preflight
         run: pnpm run release:dry-run
 
       - name: Pack the verified candidate once
@@ -111,7 +109,7 @@ jobs:
           test -f "$tarball"
           (cd "$artifact_dir" && sha256sum "emblor-${EXPECTED_VERSION}.tgz" > tarball.sha256)
           node --input-type=module -e "import { readFileSync, writeFileSync } from 'node:fs'; const [sha256Line] = readFileSync(process.argv[1], 'utf8').trim().split(/\\r?\\n/); writeFileSync(process.argv[2], JSON.stringify({ commit: process.env.EXPECTED_SHA, version: process.env.EXPECTED_VERSION, tarball: 'emblor-' + process.env.EXPECTED_VERSION + '.tgz', sha256: sha256Line.split(/\\s+/)[0] }, null, 2) + '\\n');" "$artifact_dir/tarball.sha256" "$artifact_dir/candidate.json"
-          echo "artifact_name=emblor-alpha-candidate-${EXPECTED_SHA}" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=emblor-prerelease-candidate-${EXPECTED_SHA}" >> "$GITHUB_OUTPUT"
         working-directory: packages/emblor
 
       - name: Upload the exact candidate tarball
@@ -123,7 +121,7 @@ jobs:
           retention-days: 14
 
   publish:
-    name: Publish verified alpha through npm OIDC
+    name: Publish verified prerelease through npm OIDC
     needs: validate
     runs-on: ubuntu-latest
     environment:
@@ -171,6 +169,24 @@ jobs:
 
       - name: Verify npm publication before any Git metadata action
         run: node scripts/validate-alpha-registry.mjs --published
+
+      - name: Verify published npm metadata and provenance
+        env:
+          EXPECTED_VERSION: ${{ inputs.expected_version }}
+        run: |
+          set -euo pipefail
+          npm view "emblor@${EXPECTED_VERSION}" dist --json > "$RUNNER_TEMP/emblor-dist.json"
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; const dist = JSON.parse(readFileSync(process.argv[1], 'utf8')); if (!dist.integrity || !dist.tarball || !dist.attestations?.url || dist.attestations.provenance?.predicateType !== 'https://slsa.dev/provenance/v1') throw new Error('Published npm metadata is missing integrity, tarball, or SLSA provenance.');" "$RUNNER_TEMP/emblor-dist.json"
+
+      - name: Verify published React 18 and React 19 consumers
+        env:
+          EXPECTED_VERSION: ${{ inputs.expected_version }}
+        run: |
+          set -euo pipefail
+          consumer_dir="$RUNNER_TEMP/emblor-published-consumer"
+          mkdir -p "$consumer_dir"
+          npm pack "emblor@${EXPECTED_VERSION}" --pack-destination "$consumer_dir" --ignore-scripts
+          EMBLOR_TARBALL="$consumer_dir/emblor-${EXPECTED_VERSION}.tgz" node packages/emblor/tests/compat/verify-packed-consumers.mjs
 
       # Git tag and GitHub prerelease creation are separate Phase 4 actions after
       # the registry checks above have been reviewed.

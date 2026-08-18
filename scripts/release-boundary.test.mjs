@@ -24,6 +24,6 @@ test('rejects frozen package and playground source changes', () => {
 });
 
 test('workflow and release validator use shared boundary policy', () => {
-  assert.match(workflow, /node scripts\/validate-release-boundary\.mjs \"\$PHASE_2_SHA\" \"\$EXPECTED_SHA\"/);
-  assert.match(releaseValidator, /findForbiddenCandidatePaths/);
+  assert.doesNotMatch(workflow, /PHASE_2_SHA|validate-release-boundary/);
+  assert.doesNotMatch(releaseValidator, /findForbiddenCandidatePaths/);
 });
