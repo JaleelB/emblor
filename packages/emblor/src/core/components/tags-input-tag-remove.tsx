@@ -1,14 +1,14 @@
 import * as React from 'react';
 import type { EmblorTagRemoveComponent, EmblorTagRemoveProps } from '../../types';
 import { composeEventHandlers, isComposingEvent, isNativeButtonNode, mergeRefs } from '../../utils';
-import { useEmblorContext, useEmblorTagContext } from '../tags-input-context';
+import { useEmblorTagContext, useEmblorTagsContext } from '../tags-input-context';
 
 const EmblorTagRemoveImpl = React.forwardRef<HTMLElement, EmblorTagRemoveProps<any>>(
   function EmblorTagRemove(props, forwardedRef) {
     const { as, children, disabled: disabledProp, onClick, onKeyDown, 'aria-label': ariaLabel, ...rest } = props;
     const { index, value } = useEmblorTagContext('EmblorTagRemove');
     const { values, disabled, readOnly, minTags, removeTag, registerBoundaryNode } =
-      useEmblorContext('EmblorTagRemove');
+      useEmblorTagsContext('EmblorTagRemove');
     const Component = (as ?? 'button') as React.ElementType;
     const [isNativeButton, setIsNativeButton] = React.useState(Component === 'button');
     const isDisabled = Boolean(

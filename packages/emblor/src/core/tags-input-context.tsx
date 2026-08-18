@@ -65,14 +65,54 @@ export type EmblorContextValue = {
   getTagValue: (index: number) => string;
 };
 
-const EmblorContext = React.createContext<EmblorContextValue | null>(null);
+export type EmblorTagsContextValue = Pick<
+  EmblorContextValue,
+  | 'values'
+  | 'disabled'
+  | 'readOnly'
+  | 'labelIds'
+  | 'registerTagListNode'
+  | 'minTags'
+  | 'actualFocusedIndex'
+  | 'setTagFocused'
+  | 'focusInput'
+  | 'focusTag'
+  | 'removeTag'
+  | 'getMountedTagIndexes'
+  | 'getDirection'
+  | 'registerTagNode'
+  | 'registerBoundaryNode'
+>;
 
-export function EmblorProvider({ value, children }: { value: EmblorContextValue; children: React.ReactNode }) {
-  return <EmblorContext.Provider value={value}>{children}</EmblorContext.Provider>;
+const EmblorContext = React.createContext<EmblorContextValue | null>(null);
+const EmblorTagsContext = React.createContext<EmblorTagsContextValue | null>(null);
+
+export function EmblorProvider({
+  value,
+  tagsValue,
+  children,
+}: {
+  value: EmblorContextValue;
+  tagsValue: EmblorTagsContextValue;
+  children: React.ReactNode;
+}) {
+  return (
+    <EmblorContext.Provider value={value}>
+      <EmblorTagsContext.Provider value={tagsValue}>{children}</EmblorTagsContext.Provider>
+    </EmblorContext.Provider>
+  );
 }
 
 export function useEmblorContext(component: string): EmblorContextValue {
   const context = React.useContext(EmblorContext);
+  if (!context) {
+    throw new Error(`${component} must be used within <EmblorRoot>`);
+  }
+  return context;
+}
+
+export function useEmblorTagsContext(component: string): EmblorTagsContextValue {
+  const context = React.useContext(EmblorTagsContext);
   if (!context) {
     throw new Error(`${component} must be used within <EmblorRoot>`);
   }
