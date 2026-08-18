@@ -15,11 +15,12 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function run(command, args) {
+function run(command, args, { env = process.env } = {}) {
   return execFileSync(command, args, {
     cwd: repositoryRoot,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
+    env,
     shell: process.platform === 'win32' && /.(?:cmd|bat)$/i.test(command),
   });
 }
@@ -108,5 +109,7 @@ assert(
 );
 
 console.log(`[release] Validating ${manifest.name}@${manifest.version} without publishing.`);
-run(node, [join(repositoryRoot, 'scripts', 'validate-alpha-registry.mjs'), '--prepublish']);
+run(node, [join(repositoryRoot, 'scripts', 'validate-alpha-registry.mjs'), '--prepublish'], {
+  env: { ...process.env, EMBLOR_EXPECTED_VERSION: expectedVersion },
+});
 console.log('[release] Prerelease metadata and npm preflight passed; no publication occurred.');
