@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { EmblorTagComponent, EmblorTagProps } from '../../types';
 import { composeEventHandlers, isComposingEvent, mergeRefs } from '../../utils';
-import { EmblorTagProvider, useEmblorContext } from '../tags-input-context';
+import { EmblorTagProvider, useEmblorTagsContext } from '../tags-input-context';
 
 const EmblorTagImpl = React.forwardRef<HTMLElement, EmblorTagProps<any>>(function EmblorTag(props, forwardedRef) {
   const { as, index, children, onKeyDown, onClick, onFocus, onBlur, ...rest } = props;
@@ -17,7 +17,7 @@ const EmblorTagImpl = React.forwardRef<HTMLElement, EmblorTagProps<any>>(functio
     getMountedTagIndexes,
     getDirection,
     registerTagNode,
-  } = useEmblorContext('EmblorTag');
+  } = useEmblorTagsContext('EmblorTag');
 
   if (!Number.isFinite(index) || !Number.isInteger(index) || index < 0 || index >= values.length) {
     throw new Error(`EmblorTag index ${index} must be a valid position in the current EmblorRoot value.`);

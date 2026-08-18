@@ -15,7 +15,12 @@ import {
   resolveDirection,
 } from '../../utils';
 import { evaluateBatch, evaluateCandidate } from '../evaluator';
-import { EmblorProvider, type EmblorContextValue, type EmblorInputNode } from '../tags-input-context';
+import {
+  EmblorProvider,
+  type EmblorContextValue,
+  type EmblorInputNode,
+  type EmblorTagsContextValue,
+} from '../tags-input-context';
 
 const DEFAULT_DELIMITERS = [','];
 const DEFAULT_BLUR_BEHAVIOR = 'noop' as const;
@@ -253,6 +258,8 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
   });
   const values = tagsState.value;
   const draft = draftState.value;
+  const tagsControlled = tagsState.controlled;
+  const setOwnedTags = tagsState.set;
 
   const rootRef = React.useRef<HTMLElement | null>(null);
   const inputRef = React.useRef<EmblorInputNode | null>(null);
@@ -519,12 +526,12 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
 
   const setTags = React.useCallback(
     function setRootTags(next: string[], details: EmblorValueChangeDetails) {
-      if (!tagsState.controlled) {
-        tagsState.set(next);
+      if (!tagsControlled) {
+        setOwnedTags(next);
       }
       onValueChange?.(next, details);
     },
-    [onValueChange, tagsState],
+    [onValueChange, setOwnedTags, tagsControlled],
   );
 
   const commitDraft = React.useCallback(
@@ -1033,6 +1040,45 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
     ],
   );
 
+  const tagsProviderValue = React.useMemo<EmblorTagsContextValue>(
+    function createTagsProviderValue() {
+      return {
+        values,
+        disabled,
+        readOnly,
+        labelIds,
+        registerTagListNode,
+        minTags,
+        actualFocusedIndex,
+        setTagFocused,
+        focusInput,
+        focusTag,
+        removeTag,
+        getMountedTagIndexes,
+        getDirection,
+        registerTagNode,
+        registerBoundaryNode,
+      };
+    },
+    [
+      actualFocusedIndex,
+      disabled,
+      focusInput,
+      focusTag,
+      getDirection,
+      getMountedTagIndexes,
+      labelIds,
+      minTags,
+      readOnly,
+      registerBoundaryNode,
+      registerTagListNode,
+      registerTagNode,
+      removeTag,
+      setTagFocused,
+      values,
+    ],
+  );
+
   const hiddenValues =
     name === undefined
       ? null
@@ -1055,7 +1101,7 @@ const EmblorRootImpl = React.forwardRef<HTMLElement, EmblorRootProps<any>>(funct
   const rootProps = rest as Record<string, unknown>;
 
   return (
-    <EmblorProvider value={providerValue}>
+    <EmblorProvider value={providerValue} tagsValue={tagsProviderValue}>
       <Component
         {...rootProps}
         ref={rootMergedRef}

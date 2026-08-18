@@ -1,12 +1,12 @@
 import * as React from 'react';
 import type { EmblorTagListComponent, EmblorTagListProps } from '../../types';
 import { mergeRefs } from '../../utils';
-import { useEmblorContext } from '../tags-input-context';
+import { useEmblorTagsContext } from '../tags-input-context';
 
 const EmblorTagListImpl = React.forwardRef<HTMLElement, EmblorTagListProps<any>>(
   function EmblorTagList(props, forwardedRef) {
     const { as, children, 'aria-labelledby': ariaLabelledBy, ...rest } = props;
-    const { values, disabled, readOnly, labelIds, registerTagListNode } = useEmblorContext('EmblorTagList');
+    const { values, disabled, readOnly, labelIds, registerTagListNode } = useEmblorTagsContext('EmblorTagList');
     const Component = (as ?? 'div') as React.ElementType;
     const listNodeRef = React.useRef<HTMLElement | null>(null);
     const registeredCleanupRef = React.useRef<(() => void) | null>(null);
