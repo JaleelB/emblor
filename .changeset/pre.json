@@ -6,5 +6,5 @@
     "@emblor/playground": "0.1.0",
     "website": "0.1.0"
   },
-  "changesets": ["quiet-pandas-release"]
+  "changesets": ["quiet-pandas-release", "steady-tags-perform"]
 }
