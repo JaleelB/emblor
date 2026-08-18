@@ -1,5 +1,11 @@
 # emblor
 
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- Improve typing performance for large tag lists by preventing committed tag parts from rerendering on draft input changes.
+
 ## 2.0.0-alpha.0
 
 ### Major Changes

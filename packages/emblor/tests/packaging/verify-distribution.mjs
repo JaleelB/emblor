@@ -10,7 +10,8 @@ const packageRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const repositoryRoot = resolve(packageRoot, '..', '..');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const tar = process.platform === 'win32' ? 'tar.exe' : 'tar';
-const expectedVersion = '2.0.0-alpha.0';
+const expectedVersion =
+  process.env.EMBLOR_EXPECTED_VERSION ?? JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')).version;
 const expectedFiles = [
   'CHANGELOG.md',
   'LICENSE',
@@ -109,7 +110,11 @@ function assertManifest(manifest, label) {
     `${label} repository metadata drifted`,
   );
   assert.equal(manifest.homepage, 'https://github.com/JaleelB/emblor#readme', `${label} homepage drifted`);
-  assert.deepEqual(manifest.bugs, { url: 'https://github.com/JaleelB/emblor/issues' }, `${label} bugs metadata drifted`);
+  assert.deepEqual(
+    manifest.bugs,
+    { url: 'https://github.com/JaleelB/emblor/issues' },
+    `${label} bugs metadata drifted`,
+  );
   assert.deepEqual(manifest.publishConfig, { access: 'public' }, `${label} publish access drifted`);
   assert.equal(manifest.main, 'dist/index.cjs', `${label} CJS main target drifted`);
   assert.equal(manifest.module, 'dist/index.js', `${label} ESM module target drifted`);
@@ -257,7 +262,11 @@ function assertWorkflowInputs() {
   assert.match(publish, /workflow_dispatch:/, 'alpha publication must be manually dispatched');
   assert.match(publish, /expected_sha:/, 'alpha publication must accept an exact SHA');
   assert.match(publish, /expected_version:/, 'alpha publication must accept an exact version');
-  assert.match(publish, /PHASE_2_SHA:\s*3980c5d0cda5123b5c61c4df10cbf5220610a4a3/, 'Phase 2 baseline drifted');
+  assert.doesNotMatch(
+    publish,
+    /PHASE_2_SHA|validate-release-boundary/,
+    'publish workflow must not freeze alpha candidates to Phase 2',
+  );
   assert.match(publish, /workflow_id:\s*'ci\.yml'/, 'alpha publication must query the CI workflow');
   assert.match(publish, /environment:\s*\n\s+name: npm/, 'alpha publication must use the protected npm environment');
   assert.match(publish, /id-token:\s*write/, 'alpha publication must request OIDC identity');
@@ -280,7 +289,11 @@ function assertWorkflowInputs() {
     /npm publish .*--tag next .*--access public .*--provenance/,
     'publish command must be explicit',
   );
-  assert.doesNotMatch(publish, /NPM_TOKEN|changesets\/action|changeset publish/, 'alpha workflow must not use token publication');
+  assert.doesNotMatch(
+    publish,
+    /NPM_TOKEN|changesets\/action|changeset publish/,
+    'alpha workflow must not use token publication',
+  );
   assert.doesNotMatch(publish, /on:\s*\n\s+workflow_run:/, 'alpha workflow must not publish automatically after CI');
 }
 
