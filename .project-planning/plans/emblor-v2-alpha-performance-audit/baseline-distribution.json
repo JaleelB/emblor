@@ -1,0 +1,36 @@
+{
+  "package": "emblor@2.0.0-alpha.0",
+  "tarball": {
+    "files": [
+      "CHANGELOG.md",
+      "LICENSE",
+      "MIGRATION.md",
+      "README.md",
+      "dist/index.cjs",
+      "dist/index.cjs.map",
+      "dist/index.d.cts",
+      "dist/index.d.ts",
+      "dist/index.js",
+      "dist/index.js.map",
+      "package.json"
+    ],
+    "sha256": "caeb73c1b536568d034ed701aa6846d221d5265de0d35b89d42dd5b859920123",
+    "tarballBytes": 89499,
+    "unpackedBytes": 468342,
+    "esmBytes": 65122,
+    "cjsBytes": 67399,
+    "declarationsBytes": 12956
+  },
+  "consumers": [
+    {
+      "reactVersion": "18.3.1",
+      "bundleBytes": 170654,
+      "dependencyGraphSha256": "7b7022ec91fe4e783bc1e6e6f5226fe61049e5c23740fb15372db84f6f57d9e7"
+    },
+    {
+      "reactVersion": "19.1.1",
+      "bundleBytes": 214524,
+      "dependencyGraphSha256": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97"
+    }
+  ]
+}
