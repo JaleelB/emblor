@@ -4,7 +4,7 @@ Emblor is a headless tag-input primitive. It owns tag and draft state, keyboard 
 
 > [!WARNING]
 >
-> `2.0.0-alpha.0` is an early v2 prerelease. It is installable for evaluation, but it is not semver-stable. The v2 architecture is frozen for this alpha; contract-restoring fixes and explicitly approved contract changes may still land before stable v2. npm `latest` remains the v1 line (`1.4.8`).
+> `2.0.0-alpha.1` is an early v2 prerelease. It is installable for evaluation, but it is not semver-stable and may change before the stable v2 release. npm `latest` remains the v1 line (`1.4.8`).
 
 ## Install the alpha
 
@@ -18,7 +18,7 @@ npm install emblor@next
 pnpm add emblor@next
 ```
 
-The package supports React 18 and React 19. The package does not impose a Node engine; repository and release verification use Node 24 with Node 22 compatibility coverage. For v1 consumers, start with the [v1-to-v2 migration guide](./MIGRATION.md). Release context and known limitations are in the [alpha release notes](https://github.com/JaleelB/emblor/releases/tag/emblor%402.0.0-alpha.0). Please report findings through the [alpha issue forms](https://github.com/JaleelB/emblor/issues/new/choose), including the exact package version and a minimal reproduction when applicable.
+The package supports React 18 and React 19. For v1 consumers, start with the [v1-to-v2 migration guide](./MIGRATION.md). Release context and known limitations are in the [alpha release notes](https://github.com/JaleelB/emblor/releases/tag/emblor%402.0.0-alpha.1). Please report findings through the [alpha issue forms](https://github.com/JaleelB/emblor/issues/new/choose), including the exact package version and a minimal reproduction when applicable.
 
 ## Quick start
 
@@ -134,32 +134,3 @@ When `name` is present, committed tags become ordered repeated native form value
 `EmblorLabel` associates automatically with the one input. Every part forwards applicable DOM, ARIA, `data-*`, style, class, and event props. `as` is polymorphic and keeps the required roles and behavior. Use `getAnnouncement` to localize or suppress private polite live-region messages by returning an empty string.
 
 Consumers own React keys and optional tag DOM IDs. The example uses `tag` because duplicates are disabled. Consumers enabling duplicates should maintain stable occurrence IDs alongside their `string[]`; Emblor does not generate occurrence identity or tag IDs.
-
-## Scope
-
-The package is intentionally headless. It does not ship autocomplete, cmdk, popovers, sorting, drag-and-drop, Tailwind, CVA, or a styling runtime. The package playground is a temporary acceptance lab; its CSS is not part of the library contract. The existing website remains on the v1 documentation until a later v2 documentation plan.
-
-The public package is intentionally limited to the root import and `emblor/package.json` metadata. There are no supported `emblor/core`, `emblor/addons`, `emblor/sortable`, `emblor/utils`, `emblor/types`, or `emblor/testing` code subpaths. See [`CHANGELOG.md`](./CHANGELOG.md) for generated release history and [`MIGRATION.md`](./MIGRATION.md) for conversion details.
-
-## Local quality gate
-
-Run the complete local distribution gate from the repository root:
-
-```text
-pnpm distribution
-```
-
-It uses the committed frozen workspace lockfile, builds the package, runs formatting, lint, types, unit tests, and verifies one packed artifact through the React 18/19 consumer and package-sanity checks. Each isolated consumer resolves a temporary lockfile, installs from that frozen lockfile, and must match its reviewed dependency-graph fingerprint. CI runs the same named checks after its frozen install with `pnpm run distribution -- --skip-install`.
-
-The package’s non-browser gate is:
-
-```text
-pnpm prettier-check
-pnpm run build --filter "./packages/*"
-pnpm -C packages/emblor lint
-pnpm -C packages/emblor typecheck
-pnpm -C packages/emblor test
-pnpm -C packages/emblor test:compat
-```
-
-The repeatable Chromium gate is `pnpm test:browser`. Install its browser once with `pnpm -C packages/emblor exec playwright install chromium`; CI installs Chromium with system dependencies in the Node 24 lane. Browser traces and screenshots are retained only when a test fails.
