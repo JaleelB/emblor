@@ -2,9 +2,9 @@
 
 ## Status
 
-The integration PR is structurally reviewed and its current head has passed Node 22/24 CI, website typecheck/lint, and Vercel preview deployment. It is approved for the merge gate, not for Phase 4 publication.
+This is a historical Phase 3/first-alpha preparation review. Its original integration candidate and publication prohibition have been superseded by the completed alpha.1 release closure. PRs #124-#127 merged, alpha.1 was published and verified, and the current planning state is Phase 5 Alpha Iteration.
 
-Verdict: transition prerequisites are verified and the integration candidate is green. Phase 3 remains active until PR #122 merges and the exact resulting `main` SHA passes the final gate. No npm publication or dist-tag mutation occurred.
+Verdict: the original preparation work is closed as historical evidence. Use [`../emblor-v2-alpha1-release-closure/implementation-review.md`](../emblor-v2-alpha1-release-closure/implementation-review.md) for the current alpha.1 release evidence.
 
 ## Follow-up review — workflow and boundary fixes
 

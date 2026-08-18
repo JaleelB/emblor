@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-15. Phases 1 and 2 are complete; Phase 3 — `2.0.0-alpha.0` Preparation is active through the v1-preservation and v2 integration transition, with the reviewed integration PR green and awaiting merge.
+Active umbrella roadmap as of 2026-08-18. Phases 1-4 are complete, including the published and verified `2.0.0-alpha.1`. Phase 5 Alpha Iteration is active for post-alpha consumer findings and checkpoint review; Phase 6 v2 Docs Site Rebuild is the next eligible phase after its entry criteria are met.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -20,11 +20,11 @@ The current package already has:
 - packed-consumer and package-content checks;
 - no core autocomplete, suggestions, sortable/drag-and-drop, Shadcn, Tailwind, CVA, addons, or v1 compatibility layer.
 
-The completed gap analysis was authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is also complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md): the final closure commit `3980c5d0cda5123b5c61c4df10cbf5220610a4a3` passed Node 22 and Node 24 CI, including bundled Chromium on Node 24. Phase 3 — `2.0.0-alpha.0` Preparation is active under its release runbook.
+The completed gap analysis is authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md). The bounded Phase 5 performance audit is complete with PR #124 merged and its evidence retained in the [performance audit plan](../plans/emblor-v2-alpha-performance-audit/plan.md). Alpha.1 release closure is complete under the [alpha.1 closure plan](../plans/emblor-v2-alpha1-release-closure/plan.md).
 
-The package-preparation candidate is `2.0.0-alpha.0` on `feat/emblor-v2-refactor`; no v2 prerelease has been published yet. The existing `website/` still consumes and documents published v1, as required by DR-0005. DR-0042 now requires preserving current v1 `main` on maintenance-only `1.x`, installing manual trusted publication on the default branch, and integrating the verified v2 candidate into `main` before Phase 4.
+The published package is `emblor@2.0.0-alpha.1` on npm `next`, while npm `latest` remains v1 `1.4.8`. The existing `website/` still consumes and documents published v1, as required by DR-0005. Phase 5 remains active; the v2 docs site is deferred until the alpha is stable enough to consume.
 
-Release metadata, package documentation, feedback intake, and candidate automation are prepared. npm trusted publishing is configured. Remaining Phase 3 work is the repository transition defined by the [transition runbook](../plans/emblor-v2-alpha-release/transition-runbook.md); publication remains a separate Phase 4 action.
+Release metadata, package documentation, feedback intake, candidate automation, npm publication, matching GitHub metadata, and independent consumer verification are complete for alpha.1. The post-publish workflow failure was repaired in PR #126. The next planning gate is a Phase 5 checkpoint/beta-readiness review; no alpha.2 is planned.
 
 ## Stable Destination
 
@@ -108,7 +108,7 @@ The docs rebuild may overlap late alpha iteration after its entry gate is met. B
 
 | Phase                               | Release state                | Primary outcome                                                                   | Depends on          | Ends with                                   |
 | ----------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ------------------- | ------------------------------------------- |
-| Current                             | v1 `latest`; v2 unpublished  | Phases 1–2 complete; `alpha.0` preparation active                                 | Phase 2             | Alpha preparation/release runbook           |
+| Current                             | `2.0.0-alpha.1` on `next`      | Phase 5 Alpha Iteration active; alpha.1 release and audit closure complete                    | Phase 4             | Phase 5 checkpoint/beta-readiness review |
 | 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Frozen baseline     | Completed hardening commit series           |
 | 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Completed distribution-readiness series     |
 | 3. `alpha.0` Preparation            | v2 unpublished               | Exact prerelease metadata, docs, notes, and publish runbook ready                 | Phase 2             | Alpha release-candidate PR                  |

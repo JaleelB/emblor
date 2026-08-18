@@ -2,9 +2,11 @@
 
 ## Status
 
-Implementation complete; PR #124 is open, mergeable, and authoritative CI checks pass. This is a bounded Phase 5 audit of the `emblor` package only. The immutable source baseline is `origin/main` at `47fba3067a194d04c62405434ccfceeb97a0c55f`; the public artifact baseline is `emblor@2.0.0-alpha.0` with npm integrity `sha512-rF0JEuWfbLNRm+dEjtADXMKkMCsqrn3oY47GeGioR0h9nLgj4Wj0id7wLEQBVNdFwoZIGCHK6e7FEbzFgpEWaQ==`.
+Implementation and release verification complete. PR #124 merged as `e8f2a891744e3dddbc6b48b0f7b0a28bb291a35f`; the exact alpha.1 release-preparation candidate merged as `d13025f632107d460a37458a33281ca873cacea2`; and PRs #126 and #127 completed post-release workflow and documentation repairs. This remains a bounded Phase 5 audit of the `emblor` package only. The immutable source baseline is `origin/main` at `47fba3067a194d04c62405434ccfceeb97a0c55f`; the public artifact baseline is `emblor@2.0.0-alpha.0` with npm integrity `sha512-rF0JEuWfbLNRm+dEjtADXMKkMCsqrn3oY47GeGioR0h9nLgj4Wj0id7wLEQBVNdFwoZIGCHK6e7FEbzFgpEWaQ==`.
 
-No website work, redesign, publication, tag, release, dist-tag mutation, or merge is authorized by this plan.
+The published alpha.1 is `2.0.0-alpha.1` under npm `next`, with the matching Git tag and GitHub prerelease recorded in the implementation review. Phase 5 remains active for post-alpha findings; this audit does not authorize a future prerelease or change a frozen contract.
+
+The original audit authorization intentionally excluded merge, publication, tags, releases, and dist-tag mutation. Those actions were completed later under the separate alpha.1 release-closure authorization; the historical scope and boundary statements below remain the audit-time record.
 
 ## Purpose and scope
 
@@ -61,7 +63,7 @@ No decision conflict is known. The Phase 5 roadmap permits private refactors, pa
 | PA/O-09 | Pass existing browser, package, compatibility, export, tarball, and distribution gates                                        | T-07             | Command logs and CI links                                                | VT-07        | Locally verified; PR CI passed |
 | PA/O-10 | Verify Node 22/24 and React 18/19 consumers                                                                                   | T-07             | Node matrix and packed/npm consumer results                              | VT-07        | Verified                       |
 | PA/O-11 | Justify `alpha.1` only for meaningful verified consumer-facing fixes                                                          | T-08             | Implementation review recommendation                                     | VT-08        | Verified                       |
-| PA/O-12 | Open a focused PR without merge or publication                                                                                | T-09             | Branch, commits, PR, CI                                                  | VT-09        | Verified                       |
+| PA/O-12 | Open a focused PR and preserve a separate release-approval boundary                                                            | T-09             | PR #124 merge, exact-SHA CI, release-closure evidence                      | VT-09        | Verified; closure recorded    |
 
 ## Tasks
 
