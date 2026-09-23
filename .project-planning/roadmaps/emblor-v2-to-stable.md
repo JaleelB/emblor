@@ -2,7 +2,7 @@
 
 ## Status
 
-Active umbrella roadmap as of 2026-08-18. Phases 1-4 are complete, including the published and verified `2.0.0-alpha.1`. Phase 5 Alpha Iteration is active for post-alpha consumer findings and checkpoint review; Phase 6 v2 Docs Site Rebuild is the next eligible phase after its entry criteria are met.
+Active umbrella roadmap as of 2026-08-18. Phases 1-4 are complete, including the published and verified `2.0.0-alpha.1`. Phase 5 Alpha Iteration remains active for post-alpha findings. Its docs-consumption checkpoint passed, so Phase 6 v2 Docs Site Rebuild is now active under the dedicated website plan. Beta remains gated on both Phase 5 and Phase 6 closure.
 
 This roadmap sequences the remaining implementation, prerelease, documentation, stabilization, and publication work. It does not duplicate the detailed residual primitive plan. Future phases receive separate just-in-time implementation plans only when their prerequisites are satisfied.
 
@@ -22,9 +22,9 @@ The current package already has:
 
 The completed gap analysis is authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md). The bounded Phase 5 performance audit is complete with PR #124 merged and its evidence retained in the [performance audit plan](../plans/emblor-v2-alpha-performance-audit/plan.md). Alpha.1 release closure is complete under the [alpha.1 closure plan](../plans/emblor-v2-alpha1-release-closure/plan.md).
 
-The published package is `emblor@2.0.0-alpha.1` on npm `next`, while npm `latest` remains v1 `1.4.8`. The existing `website/` still consumes and documents published v1, as required by DR-0005. Phase 5 remains active; the v2 docs site is deferred until the alpha is stable enough to consume.
+The published package is `emblor@2.0.0-alpha.1` on npm `next`, while npm `latest` remains v1 `1.4.8`. The Phase 5 docs-entry checkpoint approved exact alpha.1 for website consumption. The existing `website/` still consumes and documents published v1, and Phase 6 now owns its rebuild under the [v2 docs-site plan](../plans/emblor-v2-docs-site/plan.md). Phase 5 monitoring continues in parallel.
 
-Release metadata, package documentation, feedback intake, candidate automation, npm publication, matching GitHub metadata, and independent consumer verification are complete for alpha.1. The post-publish workflow failure was repaired in PR #126. The next planning gate is a Phase 5 checkpoint/beta-readiness review; no alpha.2 is planned.
+Release metadata, package documentation, feedback intake, candidate automation, npm publication, matching GitHub metadata, and independent consumer verification are complete for alpha.1. The post-publish workflow failure was repaired in PR #126. The Phase 5 docs-entry checkpoint passed; the next gate is Phase 6 implementation and a combined alpha/docs beta-readiness review. No alpha.2 is planned.
 
 ## Stable Destination
 
@@ -63,6 +63,7 @@ These apply to every phase:
 | DR-0016                   | Preserve headless DOM prop forwarding, polymorphic refs, and consumer styling ownership.                                         |
 | DR-0041                   | Preserve the frozen architecture; require a superseding decision for contract changes.                                           |
 | DR-0042                   | Preserve v1 on maintenance-only `1.x`, use `main` for v2 prereleases, triage old work without broad fixes, and publish manually. |
+| DR-0043, DR-0044          | Build Phase 6 on Fumadocs/shadcn with the accepted docs, registry, homepage, and playground shape.                                  |
 
 All other accepted DR-0001–DR-0040 behavioral decisions remain binding release requirements through DR-0041. DR-0006 and DR-0033 remain superseded.
 
@@ -106,18 +107,18 @@ The docs rebuild may overlap late alpha iteration after its entry gate is met. B
 
 ## Complete Milestone Table
 
-| Phase                               | Release state                | Primary outcome                                                                   | Depends on          | Ends with                                   |
-| ----------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ------------------- | ------------------------------------------- |
-| Current                             | `2.0.0-alpha.1` on `next`      | Phase 5 Alpha Iteration active; alpha.1 release and audit closure complete                    | Phase 4             | Phase 5 checkpoint/beta-readiness review |
-| 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Frozen baseline     | Completed hardening commit series           |
-| 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Completed distribution-readiness series     |
-| 3. `alpha.0` Preparation            | v2 unpublished               | Exact prerelease metadata, docs, notes, and publish runbook ready                 | Phase 2             | Alpha release-candidate PR                  |
-| 4. `alpha.0` Release                | `2.0.0-alpha.0` on `next`    | First public installable v2 and verified npm artifact                             | Phase 3             | npm/GitHub alpha release                    |
-| 5. Alpha Iteration                  | `alpha.x` on `next`          | Real-consumer, accessibility, browser, type, and packaging findings resolved      | Phase 4             | Final alpha release and beta recommendation |
-| 6. v2 Docs Site Rebuild             | Published alpha              | Website becomes a genuine external v2 consumer and complete documentation surface | Stable-enough alpha | Docs-site PR/deployment candidate           |
-| 7. `beta.0` / Public API Freeze     | `2.0.0-beta.0` on `next`     | Public surface treated as release-candidate stable                                | Phases 5 and 6      | npm/GitHub beta release                     |
-| 8. Beta Stabilization               | `beta.x` on `next` as needed | Final release blockers removed across all supported environments                  | Phase 7             | Stable-release recommendation               |
-| 9. Stable `2.0.0`                   | `2.0.0` on `latest`          | Stable package, v2 docs, and migration path published together                    | Phase 8             | npm/GitHub stable release and docs cutover  |
+| Phase                               | Release state                | Primary outcome                                                                   | Depends on          | Ends with                                       |
+| ----------------------------------- | ---------------------------- | --------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------- |
+| Current                             | `2.0.0-alpha.1` on `next`    | Phase 5 monitoring and Phase 6 docs rebuild active in parallel                    | Alpha.1 closure     | Docs preview and combined beta-readiness review |
+| 1. Residual Core Hardening          | v2 unpublished               | No known primitive contract violations; residual coverage closed                  | Frozen baseline     | Completed hardening commit series               |
+| 2. Package & Distribution Readiness | v2 unpublished               | Releasable packed artifact and authoritative distribution gates                   | Phase 1             | Completed distribution-readiness series         |
+| 3. `alpha.0` Preparation            | v2 unpublished               | Exact prerelease metadata, docs, notes, and publish runbook ready                 | Phase 2             | Alpha release-candidate PR                      |
+| 4. `alpha.0` Release                | `2.0.0-alpha.0` on `next`    | First public installable v2 and verified npm artifact                             | Phase 3             | npm/GitHub alpha release                        |
+| 5. Alpha Iteration                  | `alpha.x` on `next`          | Real-consumer, accessibility, browser, type, and packaging findings resolved      | Phase 4             | Final alpha release and beta recommendation     |
+| 6. v2 Docs Site Rebuild             | Published alpha              | Website becomes a genuine external v2 consumer and complete documentation surface | Stable-enough alpha | Docs-site PR/deployment candidate               |
+| 7. `beta.0` / Public API Freeze     | `2.0.0-beta.0` on `next`     | Public surface treated as release-candidate stable                                | Phases 5 and 6      | npm/GitHub beta release                         |
+| 8. Beta Stabilization               | `beta.x` on `next` as needed | Final release blockers removed across all supported environments                  | Phase 7             | Stable-release recommendation                   |
+| 9. Stable `2.0.0`                   | `2.0.0` on `latest`          | Stable package, v2 docs, and migration path published together                    | Phase 8             | npm/GitHub stable release and docs cutover      |
 
 ## Phase 1 — Residual Core Hardening
 
@@ -360,6 +361,9 @@ Replace the v1 website with documentation and examples built against the actual 
 ### Major deliverables
 
 - `website/` installs an exact published v2 prerelease during development/CI rather than importing workspace source.
+- Website upgrades to the latest stable compatible Next.js, React, TypeScript, Tailwind CSS, Nextra, and shadcn stack under the Node 22/24 policy.
+- Original product homepage, customized Nextra `/docs/**` experience, and top-level `/playground` catalog.
+- Hosted `@emblor` shadcn registry whose items compose the public npm package and install into clean consumers.
 - Rebuilt information architecture for the v2 headless primitive.
 - Reference and examples for Root, Label, TagList, Tag, TagText, Input, TagRemove, and Clear.
 - Basic, controlled, uncontrolled, validation/rejection, paste, constraints, native forms, accessibility, keyboard/focus, RTL, styling, and polymorphic composition guides.
@@ -377,6 +381,7 @@ Replace the v1 website with documentation and examples built against the actual 
 ### Exit criteria
 
 - The site builds from a clean install against an exact npm v2 prerelease.
+- Required homepage, docs groups/routes, registry installs, and playground interactions pass acceptance.
 - Every frozen core part and major behavior has an accurate runnable example.
 - Integration examples add no dependency or export to `packages/emblor`.
 - Site accessibility, keyboard behavior, responsive layouts, typecheck, and production build pass.
@@ -385,7 +390,7 @@ Replace the v1 website with documentation and examples built against the actual 
 
 ### Plan
 
-Create a dedicated just-in-time `emblor-v2-docs-site` implementation plan once an alpha is approved for website consumption. Inventory the existing v1 site then; do not pre-plan every page now.
+Use the active [Emblor v2 Docs Site Rebuild plan](../plans/emblor-v2-docs-site/plan.md). Its entry checkpoint approved exact published alpha.1 for website consumption while Phase 5 monitoring continues.
 
 ### Milestone
 

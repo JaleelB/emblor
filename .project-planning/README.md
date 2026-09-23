@@ -21,7 +21,13 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Active Plans
 
-No implementation plan is currently open. Phase 5 Alpha Iteration remains active at the roadmap level while consumer feedback is collected and the checkpoint/beta-readiness review is prepared.
+- [`plans/emblor-v2-docs-site/plan.md`](plans/emblor-v2-docs-site/plan.md) — Phase 6 website rebuild plan. Its original Nextra implementation choice is superseded by DR-0044; the implemented site uses Fumadocs.
+  - [`decision-manifest.md`](plans/emblor-v2-docs-site/decision-manifest.md) — applicable frozen package, release, documentation, compatibility, and scope decisions.
+  - [`coverage.md`](plans/emblor-v2-docs-site/coverage.md) — Phase 6 obligations mapped to implementation and verification.
+  - [`decisions/0043-use-nextra-and-shadcn-for-the-v2-documentation-experience.md`](decisions/0043-use-nextra-and-shadcn-for-the-v2-documentation-experience.md) — original website proposal, superseded for its Nextra choice.
+  - [`decisions/0044-use-fumadocs-for-the-v2-documentation-site.md`](decisions/0044-use-fumadocs-for-the-v2-documentation-site.md) — Fumadocs foundation and retained route, registry, playground, and scope requirements.
+
+Phase 5 Alpha Iteration remains active alongside Phase 6. The [docs-entry checkpoint](sessions/2026-08-18-phase-5-docs-entry-checkpoint.md) permits alpha.1 consumption for the docs preview but does not declare beta readiness.
 
 ## Active Roadmaps
 
@@ -30,9 +36,11 @@ No implementation plan is currently open. Phase 5 Alpha Iteration remains active
 ## Completed Plans
 
 - [`plans/emblor-v2-alpha1-release-closure/plan.md`](plans/emblor-v2-alpha1-release-closure/plan.md) - alpha.1 package, npm, GitHub metadata, consumer verification, workflow repair, README disposition, and planning closure.
+
   - [`implementation-review.md`](plans/emblor-v2-alpha1-release-closure/implementation-review.md) - exact release evidence, post-publish failure disposition, and Phase 5 handoff.
 
 - [`plans/emblor-v2-alpha-performance-audit/plan.md`](plans/emblor-v2-alpha-performance-audit/plan.md) - bounded Phase 5 package performance audit with browser evidence and a verified consumer-facing fix.
+
   - [`findings.md`](plans/emblor-v2-alpha-performance-audit/findings.md) - Vercel rule matrix and classified findings.
   - [`implementation-review.md`](plans/emblor-v2-alpha-performance-audit/implementation-review.md) - before/after evidence, merged PR record, and alpha.1 closure.
 
