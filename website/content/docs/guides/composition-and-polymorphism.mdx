@@ -1,0 +1,69 @@
+---
+title: Composition & polymorphism
+description: Forward DOM props, refs, native events, custom elements, and semantics.
+---
+
+Emblor is designed to sit inside your existing component system. All parts forward applicable `className`, `style`, ARIA, `data-*`, native events, and refs.
+
+## Custom component wrapper
+
+The custom component must forward its ref and render a compatible element:
+
+```tsx title="TypeScript"
+import { forwardRef, type ComponentProps } from 'react';
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+const FieldSection = forwardRef<HTMLElement, ComponentProps<'section'>>(function FieldSection(props, ref) {
+  return <section {...props} ref={ref} data-design-system="field" />;
+});
+
+<EmblorRoot as={FieldSection}>
+  <EmblorInput />
+</EmblorRoot>;
+```
+
+Your event handler runs first and can cancel an Emblor action with `event.preventDefault()`. Emblor still protects its
+roles, generated IDs, form state, disabled and read-only behavior, and one-time button activation.
+
+## Consumer-controlled reordering
+
+Sorting is not an Emblor export. Keep your own orderable entries, derive `string[]` for Root, and update that state from a drag-and-drop library or native pointer events:
+
+```tsx title="TypeScript"
+'use client';
+
+import { useRef, useState } from 'react';
+import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+type Entry = { id: string; value: string };
+
+export function ReorderableField() {
+  const nextId = useRef(3);
+  const [entries, setEntries] = useState<Entry[]>([
+    { id: 'tag-1', value: 'react' },
+    { id: 'tag-2', value: 'typescript' },
+  ]);
+
+  function updateValues(values: string[]) {
+    setEntries((current) =>
+      values.map((value) => current.find((entry) => entry.value === value) ?? { id: `tag-${nextId.current++}`, value }),
+    );
+  }
+
+  return (
+    <EmblorRoot value={entries.map((entry) => entry.value)} onValueChange={updateValues}>
+      <EmblorTagList>
+        {(value, index) => (
+          <EmblorTag key={entries[index].id} index={index} draggable>
+            <EmblorTagText />
+            <EmblorTagRemove aria-label={`Remove ${value}`} />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput />
+    </EmblorRoot>
+  );
+}
+```
+
+The index must stay current while the list is rendered. Keep stable occurrence IDs in your application state.

@@ -1,0 +1,93 @@
+---
+title: Migration from v1
+description: Move from the all-in-one v1 TagInput to the v2 component API.
+---
+
+V2 is a deliberate hard break. Keep your v1 implementation available while evaluating the alpha; there is no v1 compatibility component inside v2.
+
+## Install and imports
+
+Install the explicit prerelease and import supported names from the package root:
+
+```bash title="Terminal"
+pnpm add emblor@2.0.0-alpha.1
+```
+
+The supported subpath is `emblor/package.json` for metadata. Old feature subpaths are not part of v2.
+
+## Data and state mapping
+
+| v1                              | v2                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| `TagInput`                      | Compose Root, Label, TagList, Tag, TagText, Input, TagRemove, and Clear. |
+| `{ id, text }[]`                | `string[]`; keep metadata and occurrence IDs in your application state.  |
+| `tags` / `setTags`              | Root `value` / `onValueChange`, or `defaultValue`.                       |
+| `activeTagIndex`                | Removed; Root owns actual DOM focus and roving navigation.               |
+| Input `value` / `onValueChange` | Root `inputValue` / `onInputValueChange`, or `defaultInputValue`.        |
+| `validateTag`                   | `transform` for canonicalization plus `validate` for the boolean check.  |
+| regex-style delimiter           | Literal single-code-point `delimiters` array.                            |
+| Tab commit switch               | `addOnTab`; Enter always attempts a commit.                              |
+| `inputBlurBehavior`             | `blurBehavior: 'commit' / 'discard' / 'noop'`, default `'noop'`.         |
+| built-in styles / CVA variants  | Consumer markup and ordinary CSS props.                                  |
+| autocomplete, sorting, popovers | Consumer composition or an external integration.                         |
+
+## Compose the former field
+
+### Before: v1 owns an all-in-one field
+
+```tsx title="TypeScript"
+import { useState } from 'react';
+import { TagInput, type Tag } from 'emblor';
+
+export function SkillsField() {
+  const [tags, setTags] = useState<Tag[]>([{ id: 'react', text: 'react' }]);
+  const [activeTagIndex, setActiveTagIndex] = useState(-1);
+
+  return (
+    <TagInput
+      tags={tags}
+      setTags={setTags}
+      activeTagIndex={activeTagIndex}
+      setActiveTagIndex={setActiveTagIndex}
+      placeholder="Add a skill"
+    />
+  );
+}
+```
+
+This is v1-only source and must be migrated before installing v2.
+
+### After: v2 composes the field
+
+```tsx title="TypeScript"
+import {
+  EmblorClear,
+  EmblorInput,
+  EmblorLabel,
+  EmblorRoot,
+  EmblorTag,
+  EmblorTagList,
+  EmblorTagRemove,
+  EmblorTagText,
+} from 'emblor';
+
+<EmblorRoot defaultValue={['react', 'typescript']} name="skills">
+  <EmblorLabel>Skills</EmblorLabel>
+  <EmblorTagList>
+    {(tag, index) => (
+      <EmblorTag key={`${tag}-${index}`} index={index}>
+        <EmblorTagText />
+        <EmblorTagRemove aria-label={`Remove ${tag}`} />
+      </EmblorTag>
+    )}
+  </EmblorTagList>
+  <EmblorInput placeholder="Add a skill" />
+  <EmblorClear>Clear</EmblorClear>
+</EmblorRoot>;
+```
+
+## Removed scope
+
+Sorting, drag-and-drop, autocomplete, popovers, Tailwind coupling, shadcn coupling, CVA variants, and addon packages are intentionally not in the v2 core. The [Integrations guide](/docs/guides/integrations) shows how to compose them in application code.
+
+The historical v1 source remains on the `1.x` line. The active v2 docs do not present its runtime as a current implementation.

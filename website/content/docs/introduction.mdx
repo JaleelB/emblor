@@ -1,63 +1,74 @@
 ---
 title: Introduction
-description: A highly customizable, accessible, and fully-featured tag input component built with shadcn/ui.
+description: Build an accessible tag input from eight composable React parts.
 ---
 
-<ComponentPreview />
+Emblor gives you the keyboard behavior, validation, focus management, form values, and screen-reader announcements a
+tag input needs. You choose the markup and styling.
 
-<br />
+## The smallest complete field
 
-<Steps>
+Install the one public package and import from its root. A `TagList` render function receives the exact current string and positional index.
 
-### Run the CLI
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
 
-Run the shadcn-ui init command and setup your project with Shadcn:
-
-<br />
-
-```bash
-npx shadcn-ui@latest init
+export function SkillsField() {
+  return (
+    <EmblorRoot defaultValue={['react']} name="skills">
+      <EmblorLabel>Skills</EmblorLabel>
+      <EmblorTagList>
+        {(tag, index) => (
+          <EmblorTag key={tag} index={index}>
+            <EmblorTagText />
+            <EmblorTagRemove aria-label={`Remove ${tag}`} />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput placeholder="Add a skill" />
+    </EmblorRoot>
+  );
+}
 ```
 
-### Installation
+<DemoFrame
+  title="A live first field"
+  description="Try committing, removing, and clearing values."
+  code={`import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
 
-To install Emblor, run the command:
+<EmblorRoot defaultValue={['react', 'headless']}>
+  <EmblorLabel>Concepts</EmblorLabel>
+  <EmblorTagList>{(tag, index) => (
+    <EmblorTag key={tag} index={index}>
+      <EmblorTagText />
+      <EmblorTagRemove aria-label={\`Remove \${tag}\`} />
+    </EmblorTag>
+  )}</EmblorTagList>
+  <EmblorInput placeholder="Add a concept" />
+</EmblorRoot>`}
+>
+  <TagField initialTags={['react', 'headless']} label="Concepts" placeholder="Add a concept" />
+</DemoFrame>
 
-<br />
+## What Root owns
 
-```bash
-# NPM
-npm install emblor
-# Or, use any package manager of your choice.
-```
+`EmblorRoot` stores the committed `string[]`, draft text, validation result, focus state, native form values, and private
+screen-reader announcements. Control both values through Root; `EmblorInput` does not have a separate value API.
 
-### Usage
+Use `defaultValue` for uncontrolled committed values. Use `value` and `onValueChange` for controlled values. Draft control is a separate Root concern with `defaultInputValue`, `inputValue`, and `onInputValueChange`.
 
-To use Emblor in your project, import the components you need and start using them in your application.
+## What you own
 
-<br />
+Your application supplies React keys, optional occurrence IDs, markup, CSS, suggestion menus, sorting, form adapters,
+and visible error messages. The integrations on this site are examples you can copy; they are not package exports.
 
-```tsx
-import { TagInput } from 'emblor';
+<DocsCallout type="note">
+  Import Emblor components from `emblor`. Keep optional libraries such as shadcn, React Hook Form, and drag-and-drop
+  utilities in your application.
+</DocsCallout>
 
-const [tags, setTags] = React.useState<Tag[]>([]);
-const [activeTagIndex, setActiveTagIndex] = React.useState<number | null>(null);
+## Next
 
-<TagInput
-  {...field}
-  placeholder="Enter a topic"
-  tags={tags}
-  setTags={(newTags) => {
-    setTags(newTags);
-    setValue('topics', newTags as [Tag, ...Tag[]]);
-  }}
-  activeTagIndex={activeTagIndex}
-  setActiveTagIndex={setActiveTagIndex}
-/>;
-```
-
-### Thats it!
-
-You have successfully integrated Emblor into your project. 🎉
-
-</Steps>
+1. [Install the exact alpha](/docs/installation).
+2. Learn the [eight public parts](/docs/anatomy).
+3. Choose [controlled or uncontrolled state](/docs/guides/state-management).

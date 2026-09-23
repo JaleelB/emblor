@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-input-controlled",
+  "type": "registry:ui",
+  "title": "Controlled state",
+  "description": "A complete field with controlled committed values and draft text.",
+  "dependencies": ["emblor@2.0.0-alpha.1"],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/emblor/tag-input-controlled.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { useState } from 'react';\nimport {\n  EmblorClear,\n  EmblorInput,\n  EmblorLabel,\n  EmblorRoot,\n  EmblorTag,\n  EmblorTagList,\n  EmblorTagRemove,\n  EmblorTagText,\n} from 'emblor';\n\nexport function EmblorControlledField() {\n  const [values, setValues] = useState<string[]>(['react']);\n  const [draft, setDraft] = useState('');\n\n  return (\n    <EmblorRoot\n      value={values}\n      onValueChange={setValues}\n      inputValue={draft}\n      onInputValueChange={setDraft}\n      className=\"flex w-full max-w-xl flex-col gap-2\"\n    >\n      <EmblorLabel className=\"text-sm font-medium\">Controlled technologies</EmblorLabel>\n      <div className=\"flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-2.5 py-2 shadow-xs\">\n        <EmblorTagList className=\"flex flex-wrap gap-1.5\">\n          {(tag, index) => (\n            <EmblorTag\n              key={tag}\n              index={index}\n              className=\"inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm font-medium\"\n            >\n              <EmblorTagText />\n              <EmblorTagRemove\n                aria-label={`Remove ${tag}`}\n                className=\"rounded-sm px-0.5 text-muted-foreground hover:bg-accent\"\n              >\n                ×\n              </EmblorTagRemove>\n            </EmblorTag>\n          )}\n        </EmblorTagList>\n        <EmblorInput className=\"min-w-28 flex-1 bg-transparent text-sm outline-none\" placeholder=\"Add a technology\" />\n        <EmblorClear className=\"rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent\">Clear</EmblorClear>\n      </div>\n      <output className=\"rounded-md bg-muted px-3 py-2 font-mono text-xs text-muted-foreground\">\n        value: {JSON.stringify(values)} · draft: {JSON.stringify(draft)}\n      </output>\n    </EmblorRoot>\n  );\n}\n"
+    }
+  ]
+}

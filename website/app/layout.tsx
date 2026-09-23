@@ -1,67 +1,63 @@
+import type { Metadata, Viewport } from 'next';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { siteConfig } from '../config/site-config';
-import { ThemeProvider } from '@/components/theme-provider';
-import { SiteHeader } from '@/components/site-header';
-import { SiteFooter } from '@/components/site-footer';
-import Script from 'next/script';
 
-const inter = Inter({ subsets: ['latin'] });
+import { FumadocsProvider } from '@/components/fumadocs-provider';
+import { ToastProvider } from '@/components/toast-provider';
+import { siteConfig } from '@/config/site-config';
 
 export const metadata: Metadata = {
-  title: siteConfig.name,
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: 'Emblor — Headless Tag Input for React',
+    template: '%s · Emblor',
+  },
   description: siteConfig.description,
   keywords: [
-    'shadcn',
-    'tag input',
-    'shadcn/ui',
+    'React tag input',
+    'headless React primitive',
+    'compound components',
+    'accessible tag input',
     'shadcn tag input',
-    'tag input component',
-    'shadcn tag input component',
-    'input',
-    'radix ui',
-    'react tag input',
   ],
-  authors: [
-    {
-      name: 'Jaleel Bennett',
-      url: 'https://jaleelbennett.com',
-    },
-  ],
-  creator: 'Jaleel Bennett',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  authors: [{ name: siteConfig.author }],
+  creator: siteConfig.author,
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
     siteName: siteConfig.name,
+    title: 'Emblor — Headless Tag Input for React',
+    description: siteConfig.description,
   },
   twitter: {
     card: 'summary_large_image',
-    title: siteConfig.name,
+    title: 'Emblor — Headless Tag Input for React',
     description: siteConfig.description,
-    creator: '@jal_eelll',
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  colorScheme: 'dark light',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+  ],
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className="smooth-scroll" lang="en">
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-        </ThemeProvider>
-        <Toaster />
-        <Script async src={process.env.UMAMI_URL} data-website-id={process.env.UMAMI_DATA_WEBSITE_ID} />
+    <html lang="en" dir="ltr" className={`dark ${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-foreground">
+        <FumadocsProvider>
+          <ToastProvider>
+            <a className="skip-link" href="#main-content">
+              Skip to content
+            </a>
+            {children}
+          </ToastProvider>
+        </FumadocsProvider>
       </body>
     </html>
   );

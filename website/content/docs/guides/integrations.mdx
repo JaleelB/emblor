@@ -1,0 +1,64 @@
+---
+title: Integrations
+description: Add suggestions, dialogs, and drag-and-drop to a tag field.
+---
+
+Emblor handles the tag field. Your application can add suggestions, dialogs, forms, or sorting without changing the
+package. The examples below show where each integration connects.
+
+## Choose an integration
+
+- **Use Command + Popover** when users choose from a known list but may still enter free-form values.
+- **Use Dialog** when the field belongs to a larger editing task that needs modal focus management.
+- **Use a form adapter** when the surrounding form already relies on its validation and submission state.
+- **Use drag-and-drop outside Emblor** when order has product meaning; keep stable occurrence IDs in application state.
+- **Avoid wrapping basic tag entry in an integration.** Start with the core composition and add one only when the workflow requires it.
+
+## shadcn Command + Popover suggestions
+
+Keep the query in Root's draft and render the suggestion menu beside the field. shadcn's `Command` wraps `cmdk`, while
+`Popover` provides positioning, dismissal, and focus management. Install those components first:
+
+```bash title="Terminal"
+pnpm dlx shadcn@latest add command popover
+```
+
+Do not add `suggestions`, `onSelect`, or autocomplete props to `EmblorRoot`.
+
+<RegistryCode name="tag-input-popover" />
+
+## Forms
+
+Start with repeated native `FormData` values. Add React Hook Form and shadcn `Field` only when the rest of the form
+already needs managed state or schema validation.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot } from 'emblor';
+
+export function FormField() {
+  return (
+    <EmblorRoot name="topics[]" required className="grid gap-2">
+      <EmblorLabel>Topics</EmblorLabel>
+      <EmblorInput />
+    </EmblorRoot>
+  );
+}
+```
+
+## shadcn Dialog
+
+Let the Dialog own the modal lifecycle and focus trap. Emblor remains an ordinary field composition inside the content.
+The shadcn Dialog needs an accessible title and description:
+
+<RegistryCode name="tag-input-dialog" />
+
+## Drag-and-drop
+
+Use a drag-and-drop library in your application, store stable occurrence IDs, and send the reordered `string[]` back through `value`. The core package does not export sortable components. The playground uses `react-easy-sort` with the same application-owned state shown below:
+
+<RegistryCode name="tag-input-reorder" />
+
+<DocsCallout type="boundary">
+  Integration dependencies in this site are website-only. The published package exports only the Emblor components and
+  its public types.
+</DocsCallout>

@@ -1,0 +1,60 @@
+---
+title: Constraints & interactions
+description: Limits, paste, delimiters, Tab, blur, and selection behavior.
+---
+
+Emblor applies limits only when a user tries to add or remove a tag. It never rewrites a controlled `value` supplied by
+your application.
+
+## Tag limits
+
+- `minTags` prevents individual removal and disables `EmblorClear` when clearing would cross the floor.
+- `maxTags` rejects new values at capacity but keeps the input editable so an existing draft can be corrected.
+- `required` is independent of `minTags`: a required field may be cleared and then become natively invalid.
+- Omitted Tag renderings still count toward `minTags`, `maxTags`, and native form values.
+
+```tsx title="TypeScript"
+import { EmblorClear, EmblorInput, EmblorRoot, EmblorTag, EmblorTagList } from 'emblor';
+
+<EmblorRoot defaultValue={['one']} minTags={1} maxTags={3}>
+  <EmblorTagList>
+    {(tag, index) => (
+      <EmblorTag key={tag} index={index}>
+        {tag}
+      </EmblorTag>
+    )}
+  </EmblorTagList>
+  <EmblorInput placeholder="Add up to three" />
+  <EmblorClear>Clear all</EmblorClear>
+</EmblorRoot>;
+```
+
+## Paste and delimiters
+
+With `addOnPaste` enabled (the default), your `onPaste` handler runs first. Calling `preventDefault()` leaves the event
+entirely to your code. Otherwise Emblor inserts clipboard text at the current selection, splits on literal
+single-code-point `delimiters`, and checks candidates from left to right.
+
+Valid candidates are retained, every rejected candidate emits one `onReject`, and one `add-many` transition reports all accepted canonical values. If every non-empty candidate rejects, the original draft and selection are preserved.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+<EmblorRoot delimiters={[',', ';']} addOnPaste>
+  <EmblorInput placeholder="Paste comma or semicolon separated values" />
+</EmblorRoot>;
+```
+
+Delimiter characters are literal; regular-expression metacharacters are not special. With `delimiters={[]}`, the entire prospective draft is one candidate.
+
+## Keyboard commits
+
+- Enter always attempts a non-empty commit.
+- Tab remains native unless `addOnTab` is `true`.
+- A literal delimiter key commits while typing.
+- `blurBehavior` defaults to `'noop'`; opt into `'commit'` or `'discard'` only when focus leaves the entire Root.
+- Input remains editable when `maxTags` is reached; a placeholder can change with `placeholderWhenFull`.
+
+Consumer cancellation runs first for keydown, paste, and blur. IME composition suppresses Emblor commands until the first ordinary command after composition.
+
+[Try limits, duplicate rejection, paste, and blur commit together in the playground →](/playground/tag-input-constraints)

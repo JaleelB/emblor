@@ -1,18 +1,13 @@
-import { type MetadataRoute } from 'next';
-import { siteConfig } from '../config/site-config';
-import { docsConfig } from '@/config/docs-config';
+import type { MetadataRoute } from 'next';
 
-const siteUrls = docsConfig.sidebarNav.reduce((acc: MetadataRoute.Sitemap, section) => {
-  section.items.forEach((item) => {
-    const href = item.href === '/' ? '/introduction' : item.href;
-    acc.push({
-      url: `${siteConfig.url}${href}`,
-      lastModified: new Date(),
-    });
-  });
-  return acc;
-}, []);
+import { siteConfig } from '@/config/site-config';
+import { source } from '@/lib/source';
+
+const routes = ['/', ...source.getPages().map((page) => page.url), '/playground'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return siteUrls;
+  return routes.map((route) => ({
+    url: `${siteConfig.url}${route}`,
+    lastModified: new Date(),
+  }));
 }

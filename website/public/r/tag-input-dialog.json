@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-input-dialog",
+  "type": "registry:ui",
+  "title": "Dialog composition",
+  "description": "Edit a complete Emblor field inside a shadcn Dialog.",
+  "dependencies": ["emblor@2.0.0-alpha.1", "class-variance-authority@0.7.1", "lucide-react@1.32.0"],
+  "registryDependencies": ["button", "dialog"],
+  "files": [
+    {
+      "path": "components/emblor/tag-input-dialog.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { Button } from '@/components/ui/button';\nimport {\n  Dialog,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from '@/components/ui/dialog';\nimport { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';\n\nexport function EmblorDialogField() {\n  return (\n    <Dialog>\n      <DialogTrigger asChild>\n        <Button type=\"button\" variant=\"outline\">\n          Edit topics\n        </Button>\n      </DialogTrigger>\n      <DialogContent>\n        <DialogHeader>\n          <DialogTitle>Edit topics</DialogTitle>\n          <DialogDescription>Choose the topics attached to this record.</DialogDescription>\n        </DialogHeader>\n        <EmblorRoot defaultValue={['react', 'shadcn']} className=\"flex flex-col gap-2\">\n          <EmblorLabel className=\"text-sm font-medium\">Topics</EmblorLabel>\n          <div className=\"flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-2.5 py-2 shadow-xs\">\n            <EmblorTagList className=\"flex flex-wrap gap-1.5\">\n              {(tag, index) => (\n                <EmblorTag\n                  key={tag}\n                  index={index}\n                  className=\"inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm font-medium\"\n                >\n                  <EmblorTagText />\n                  <EmblorTagRemove\n                    aria-label={`Remove ${tag}`}\n                    className=\"rounded-sm px-0.5 text-muted-foreground hover:bg-accent\"\n                  >\n                    ×\n                  </EmblorTagRemove>\n                </EmblorTag>\n              )}\n            </EmblorTagList>\n            <EmblorInput className=\"min-w-28 flex-1 bg-transparent text-sm outline-none\" placeholder=\"Add a topic\" />\n          </div>\n        </EmblorRoot>\n        <DialogClose asChild>\n          <Button type=\"button\">Done</Button>\n        </DialogClose>\n      </DialogContent>\n    </Dialog>\n  );\n}\n"
+    }
+  ]
+}

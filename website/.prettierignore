@@ -1,0 +1,6 @@
+.next
+.contentlayer
+legacy
+node_modules
+public/_pagefind
+test-results

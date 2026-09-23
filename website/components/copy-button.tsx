@@ -1,62 +1,78 @@
-import { useCallback, useState } from 'react';
-import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button, ButtonProps } from './ui/button';
+'use client';
+
 import { Check, Copy } from 'lucide-react';
+import { useState } from 'react';
 
-export default function CopyButton({
-  value,
-  copyable = true,
-  variant = 'ghost',
-  className,
-}: {
-  value: string;
-  copyable?: boolean;
-  variant?: ButtonProps['variant'];
-  className?: string;
-}) {
-  const [copying, setCopying] = useState<number>(0);
+import { useToast } from '@/components/toast-provider';
+import { Button } from '@/components/ui/button';
 
-  const onCopy = useCallback(async () => {
+export async function writeClipboard(value: string) {
+  if (navigator.clipboard?.writeText) {
     try {
       await navigator.clipboard.writeText(value);
-      setCopying((c) => c + 1);
-      setTimeout(() => {
-        setCopying((c) => c - 1);
-      }, 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
+      return;
+    } catch {
+      // Sandboxed previews can expose the async clipboard API while denying
+      // permission. Fall through to the selection-based browser fallback.
     }
-  }, [value]);
+  }
 
-  const variants = {
-    visible: { opacity: 1, scale: 1 },
-    hidden: { opacity: 0, scale: 0.5 },
-  };
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand('copy');
+  textarea.remove();
+
+  if (!copied) throw new Error('Clipboard is unavailable');
+}
+
+export function CopyButton({
+  value,
+  label = 'Copy',
+  copiedLabel = 'Copied',
+  className,
+  iconOnly = false,
+}: {
+  value: string;
+  label?: string;
+  copiedLabel?: string;
+  className?: string;
+  iconOnly?: boolean;
+}) {
+  const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
+
+  async function copyValue() {
+    try {
+      await writeClipboard(value);
+      setCopied(true);
+      showToast('Copied to clipboard');
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      showToast('Copy failed — select the code manually');
+    }
+  }
 
   return (
     <Button
-      onClick={onCopy}
-      aria-label="Copy code"
-      variant={variant}
-      className={cn(
-        'absolute right-3 top-[0.6rem] p-0 z-50 flex h-8 w-8 items-center justify-center rounded-md text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50',
-        className,
-      )}
+      variant="ghost"
+      size={iconOnly ? 'icon-sm' : 'sm'}
+      className={className}
+      type="button"
+      aria-label={iconOnly ? (copied ? copiedLabel : label) : undefined}
+      data-copied={copied ? 'true' : 'false'}
+      onClick={copyValue}
     >
-      <MotionConfig transition={{ duration: 0.15 }}>
-        <AnimatePresence initial={false} mode="wait">
-          {copying ? (
-            <motion.div animate="visible" exit="hidden" initial="hidden" key="check" variants={variants}>
-              <Check className="w-3 h-3" />
-            </motion.div>
-          ) : (
-            <motion.div animate="visible" exit="hidden" initial="hidden" key="copy" variants={variants}>
-              <Copy className="w-3 h-3" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </MotionConfig>
+      {copied ? (
+        <Check aria-hidden="true" data-icon="inline-start" />
+      ) : (
+        <Copy aria-hidden="true" data-icon="inline-start" />
+      )}
+      {!iconOnly && <span>{copied ? copiedLabel : label}</span>}
     </Button>
   );
 }
