@@ -38,8 +38,43 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install --frozen-lockfile
 
-      - name: Contentlayer build
+      - name: Verify external website package
+        run: pnpm -C website run verify:consumer
+
+      - name: Validate website content and registry
+        run: pnpm -C website run validate:content && pnpm -C website run validate:docs-code && pnpm -C website run validate:api-docs && pnpm -C website run validate:behavior-docs && pnpm -C website run validate:registry
+
+      - name: Build website
         run: pnpm -C website run build
+
+      - name: Start website registry server
+        run: |
+          pnpm -C website start --hostname 127.0.0.1 --port 4501 > website-registry.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4501/r/index.json > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat website-registry.log
+          exit 1
+
+      - name: Test hosted registry in a clean consumer
+        env:
+          REGISTRY_BASE_URL: http://127.0.0.1:4501
+        run: pnpm -C website run test:registry-consumer
+
+      - name: Install website browsers
+        run: pnpm -C website exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run website browser gate
+        run: pnpm -C website run test:browser
+
+      - name: Lint website
+        run: pnpm -C website run lint
+
+      - name: Check website format
+        run: pnpm -C website run format:check
 
       - name: Run typecheck in website workspace
         run: pnpm -C website run typecheck

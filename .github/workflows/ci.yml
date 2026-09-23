@@ -23,6 +23,48 @@ jobs:
       - name: Install dependencies from the frozen lockfile
         run: pnpm install --frozen-lockfile
 
+      - name: Verify website uses the exact public alpha
+        run: pnpm -C website run verify:consumer
+
+      - name: Validate website content and registry
+        run: pnpm -C website run validate:content && pnpm -C website run validate:docs-code && pnpm -C website run validate:api-docs && pnpm -C website run validate:behavior-docs && pnpm -C website run validate:registry
+
+      - name: Lint and typecheck website
+        run: pnpm -C website run lint && pnpm -C website run typecheck
+
+      - name: Check website format
+        run: pnpm -C website run format:check
+
+      - name: Build website preview
+        run: pnpm -C website run build
+
+      - name: Start website registry server
+        if: matrix.node-version == '24.x'
+        run: |
+          pnpm -C website start --hostname 127.0.0.1 --port 4501 > website-registry.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4501/r/index.json > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat website-registry.log
+          exit 1
+
+      - name: Test hosted registry in a clean consumer
+        if: matrix.node-version == '24.x'
+        env:
+          REGISTRY_BASE_URL: http://127.0.0.1:4501
+        run: pnpm -C website run test:registry-consumer
+
+      - name: Install website browsers
+        if: matrix.node-version == '24.x'
+        run: pnpm -C website exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run website browser gate
+        if: matrix.node-version == '24.x'
+        run: pnpm -C website run test:browser
+
       - name: Check prettier format
         run: pnpm run distribution:format
 
