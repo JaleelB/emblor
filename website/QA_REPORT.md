@@ -46,3 +46,11 @@ The tables and manual acceptance above are historical evidence. Current acceptan
 Current manual screen-reader evidence remains required for the changed shell, search, preview and installation surfaces. Follow [SCREEN_READER_QA.md](./SCREEN_READER_QA.md) and record tester, date, OS, browser and screen-reader versions, routes, actual spoken output and focus/reading-order results. Jaleel's 2026-09-22 acceptance remains valid historical evidence, with its missing environment details explicitly retained.
 
 The hosted preview is blocked externally: Vercel reports `Account is blocked.` Production still serves v1; no production cutover or main merge was performed. See the [beta readiness review](../.project-planning/plans/emblor-v2-beta-release/implementation-review.md) for exact artifacts, current CI and the remaining G1 requirements.
+
+## Security and CI follow-up — 2026-11-12
+
+This follow-up supersedes the earlier candidate's dependency and snippet counts. Next/eslint-config-next is now 16.4.1, Zod 4.6.6; the reviewed production audit has zero critical/high findings (one moderate and one low build-time finding remain recorded). Clean pinned-pnpm distribution and website validation/build checks pass on Node 22.23.2 and Node 24.22.3 after the update; all six artifact reports reproduce the same package checksum.
+
+Linux CI exposed a standalone snippet compiler that did not inherit website React type paths and parsed LF/CRLF fences differently. The fixed validator and two parser regressions pass on both Node lanes. It compiles **34 active v2 examples** and explicitly distinguishes the one labeled historical v1 migration-before example, which cannot compile against v2. Earlier 35-example reports are historical command results, not current evidence that v1 compiled against v2.
+
+Final production-server browser gate: **85 passed, 13 project-specific skips**, without snapshot updates. Clean package browser contracts: **8 passed**. The preceding dev-server run had two cold search-result timeouts; tests now assert the successful API response before checking visible results, and CI runs the built production server. No assertion tolerance or product search behavior was weakened. Current manual screen-reader and safe hosted-preview acceptance remain open.
