@@ -85,7 +85,11 @@ test('playground mounts distant previews only when they approach the viewport', 
 
   await reorder.evaluate((element) => element.scrollIntoView({ block: 'center' }));
   await expect(reorder).toHaveAttribute('data-rendered', 'true');
-  await expect(page.locator('#tag-input-reorder').getByRole('button', { name: 'Move react right' })).toBeVisible();
+  const example = page.locator('#tag-input-reorder');
+  await example.getByRole('button', { name: 'Move react right' }).click();
+  await expect(example.getByRole('listitem').first()).toContainText('typescript');
+  await example.getByRole('button', { name: 'Move react left' }).click();
+  await expect(example.getByRole('listitem').first()).toContainText('react');
 });
 
 test('focused preview exposes real direction, width, and component states', async ({ page }) => {
@@ -146,15 +150,27 @@ test('the table of contents follows the active heading on long pages', async ({ 
   await expect(page.locator('#nd-toc a[href="#what-you-own"]')).toHaveAttribute('data-active', 'true');
 });
 
+test('reorder buttons move tags independently of drag gestures', async ({ page }) => {
+  await page.goto('/playground/tag-input-reorder');
+  await expect(page.locator('.playground-catalog')).toHaveAttribute('data-hydrated', 'true');
+  const example = page.locator('#tag-input-reorder');
+  await example.getByRole('button', { name: 'Move react right' }).click();
+  await expect(example.getByRole('listitem').first()).toContainText('typescript');
+  await example.getByRole('button', { name: 'Move react left' }).click();
+  await expect(example.getByRole('listitem').first()).toContainText('react');
+});
+
 test('all playground examples expose their intended behavior', async ({ page }) => {
   test.setTimeout(60_000);
   await page.goto('/playground');
   await expect(page.locator('.playground-catalog')).toHaveAttribute('data-hydrated', 'true');
 
   async function activate(selector: string) {
+    await page.goto(`/playground/${selector.slice(1)}`);
+    await expect(page.locator('.playground-catalog')).toHaveAttribute('data-hydrated', 'true');
     const example = page.locator(selector);
     const lazyPreview = example.locator('.lazy-preview');
-    await lazyPreview.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+    await lazyPreview.evaluate((element) => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
     await expect(lazyPreview).toHaveAttribute('data-rendered', 'true');
     return example;
   }

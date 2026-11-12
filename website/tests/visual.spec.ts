@@ -4,6 +4,10 @@ import { resolve } from 'node:path';
 const visualStyles = resolve(process.cwd(), 'tests', 'visual.css');
 
 async function prepareScreenshot(page: Page) {
+  const catalog = page.locator('.playground-catalog');
+  if (await catalog.count()) {
+    await expect(catalog).toHaveAttribute('data-hydrated', 'true');
+  }
   await page.evaluate(() => {
     const removeDevtools = () => document.querySelectorAll('nextjs-portal').forEach((portal) => portal.remove());
     removeDevtools();
@@ -24,7 +28,8 @@ const examples = [
   'tag-input-reorder',
 ];
 
-for (const theme of ['dark', 'light'] as const) {
+// The accepted site design is dark-only; do not label duplicate dark captures as light-mode evidence.
+for (const theme of ['dark'] as const) {
   for (const slug of examples) {
     test(`@visual ${slug} ${theme}`, async ({ page }) => {
       await page.goto(`/playground/${slug}`);

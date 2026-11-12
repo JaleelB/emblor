@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import SortableList, { SortableItem } from 'react-easy-sort';
+import SortableList, { SortableItem, SortableKnob } from 'react-easy-sort';
 import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagText } from 'emblor';
 
 type Entry = { id: string; value: string };
@@ -46,15 +46,20 @@ export function EmblorReorderField() {
                   index={index}
                   className="inline-flex cursor-grab items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm font-medium active:cursor-grabbing"
                 >
-                  <span aria-hidden="true" className="text-muted-foreground">
-                    ⋮⋮
-                  </span>
+                  <SortableKnob>
+                    <span aria-hidden="true" className="text-muted-foreground">
+                      ⋮⋮
+                    </span>
+                  </SortableKnob>
                   <EmblorTagText />
                   <button
                     type="button"
                     aria-label={`Move ${entry.value} left`}
                     disabled={index === 0}
-                    onClick={() => move(index, index - 1)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      move(index, index - 1);
+                    }}
                     className="rounded-sm px-1 text-muted-foreground disabled:opacity-30"
                   >
                     ←
@@ -63,7 +68,10 @@ export function EmblorReorderField() {
                     type="button"
                     aria-label={`Move ${entry.value} right`}
                     disabled={index === entries.length - 1}
-                    onClick={() => move(index, index + 1)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      move(index, index + 1);
+                    }}
                     className="rounded-sm px-1 text-muted-foreground disabled:opacity-30"
                   >
                     →
