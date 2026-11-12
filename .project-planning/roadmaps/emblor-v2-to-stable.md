@@ -22,7 +22,7 @@ The current package already has:
 
 The completed gap analysis is authoritative. Its four primitive defects and bounded verification/documentation work are complete under the [residual tag-primitive plan](../plans/emblor-v2-tag-primitive/plan.md). Phase 2 package and distribution readiness is complete under the [distribution-readiness plan](../plans/emblor-v2-distribution-readiness/plan.md). The bounded Phase 5 performance audit is complete with PR #124 merged and its evidence retained in the [performance audit plan](../plans/emblor-v2-alpha-performance-audit/plan.md). Alpha.1 release closure is complete under the [alpha.1 closure plan](../plans/emblor-v2-alpha1-release-closure/plan.md).
 
-The published package is `emblor@2.0.0-alpha.1` on npm `next`, while npm `latest` remains v1 `1.4.8`. The Phase 5 docs-entry checkpoint approved exact alpha.1 for website consumption. The existing `website/` still consumes and documents published v1, and Phase 6 now owns its rebuild under the [v2 docs-site plan](../plans/emblor-v2-docs-site/plan.md). Phase 5 monitoring continues in parallel.
+The published package is `emblor@2.0.0-alpha.1` on npm `next`, while npm `latest` remains v1 `1.4.8`. The Phase 5 docs-entry checkpoint approved exact alpha.1 for website consumption. The docs preview branch consumes exact public alpha.1 and implements the accepted Fumadocs/dark-only experience; production still serves v1. Phase 6 owns its verification under the [v2 docs-site plan](../plans/emblor-v2-docs-site/plan.md). Phase 5 monitoring continues in parallel.
 
 Release metadata, package documentation, feedback intake, candidate automation, npm publication, matching GitHub metadata, and independent consumer verification are complete for alpha.1. The post-publish workflow failure was repaired in PR #126. The Phase 5 docs-entry checkpoint passed; the next gate is Phase 6 implementation and a combined alpha/docs beta-readiness review. No alpha.2 is planned.
 
@@ -434,7 +434,7 @@ DR-0041 already freezes the architecture. Beta adds a stricter release policy: a
 
 ### Plan
 
-Create a just-in-time `emblor-v2-beta-release` plan after alpha and docs exit gates pass.
+Use the [Beta Readiness and Release Plan](../plans/emblor-v2-beta-release/plan.md), requested on 2026-11-10. Its first stage closes the outstanding alpha/docs evidence and validation gates. Beta metadata preparation starts only after its G1 readiness gate passes; creating the plan does not close Phases 5/6 or authorize publication.
 
 ### Milestone
 
@@ -593,3 +593,7 @@ If a different maintenance promise is desired, record it as a separate release-p
 This roadmap is complete only when Phase 9 post-publish verification succeeds. Finishing implementation, publishing an alpha, or completing the docs site alone does not make Emblor v2 stable.
 
 At that point the planning index should move this roadmap to Completed and link the final stable release review, npm version, GitHub release, production docs deployment, and v1 disposition record.
+
+## Readiness execution update - 2026-11-12
+
+[Beta readiness review](../plans/emblor-v2-beta-release/implementation-review.md) records Node 22/24 distribution and website validation/build repairs, reviewed frozen consumer graphs, cross-browser behavior, and the accepted dark-only visual baseline (DR-0045). Phase 6 [implementation review](../plans/emblor-v2-docs-site/implementation-review.md) now maps every obligation. Phases 5/6 and G1 remain open pending exact-candidate CI, a successful immutable hosted preview after the Vercel account block is resolved, and current manual screen-reader evidence. No beta metadata, npm mutation, main merge, or production docs switch has occurred.

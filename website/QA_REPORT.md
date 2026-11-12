@@ -1,6 +1,6 @@
 # Documentation QA report
 
-Automated gates last verified: 2026-09-10
+Historical automated gates: 2026-09-10. Current readiness rerun: 2026-11-12 (details below).
 
 This report records the release evidence for the Emblor v2 documentation site. Re-run the commands and replace the results whenever the package version, public API, registry, or documentation shell changes.
 
@@ -29,6 +29,20 @@ The API validator currently covers 8 public components, 27 Root props, and 19 pu
 - Automated touch add/remove, paste behavior, IME composition, 200% zoom equivalent, and forced-colors checks are passing in their supported projects.
 - Screen-reader QA: passed, as reported by Jaleel on 2026-09-22. The specific screen reader, browser, and test notes were not recorded here.
 
-## Remaining release review
+## Historical release disposition
 
-No screen-reader QA blocker is currently recorded. The automated gate results above retain their 2026-09-10 verification date; rerun them after further site changes before using this report as current release evidence.
+At the time of the historical report, no screen-reader QA blocker was recorded. The automated gate results above retain their 2026-09-10 verification date; the current readiness review below supersedes that release disposition for the changed site.
+
+## Current readiness review — 2026-11-12
+
+The tables and manual acceptance above are historical evidence. Current acceptance preserves Jaleel's approved dark-only design and removed theme switch (DR-0045); it does not claim light-mode support or light-mode validation.
+
+- Windows, Node 22.23.2 and Node 24.19.0: website formatting, lint, typecheck, content/routes, 35 compiled snippets, API/behavior/registry validators, exact public alpha.1 resolution, and production builds pass. Both builds generate 37 pages; Pagefind indexes 30 pages. Pagefind notes the framework-generated global-error page has no language attribute.
+- Node 24 full website browser run: 85 passed, 13 browser-specific skips (51 behavior tests across Chromium/mobile/Firefox/WebKit plus 34 desktop/mobile dark visual checks). Project-specific IME, touch, zoom/forced-colors and layout tests run in their designated project; these skips are not waived failures.
+- Reviewed all changed visual captures against the accepted redesign. Updated framing, centered stages, spacing, palette and logo baselines; removed 20 obsolete light-named images. Subsequent visual-only run passes all 34 without updates. Screenshot tolerances are unchanged. Playground screenshots now wait for the existing hydration marker.
+- Reorder buttons work both on their dedicated route and after scrolling to the lazily mounted catalog item in all four browser projects. Drag starts at its handle, avoiding interference with keyboard buttons. Canonical registry output includes the same fix.
+- Hosted registry list/view/add/TypeScript passes on Node 24.22.3 with pinned pnpm 9.0.2 against the refreshed local production server on port 4502. Earlier Node 24.19.0 attempts exposed an upstream Windows runtime shutdown assertion and were not treated as passes. The pinned package-manager check also found and fixed mismatched website/fixture declarations; clean source checks found and fixed CRLF-sensitive registry and integrity comparisons. Full evidence is in the beta review.
+
+Current manual screen-reader evidence remains required for the changed shell, search, preview and installation surfaces. Follow [SCREEN_READER_QA.md](./SCREEN_READER_QA.md) and record tester, date, OS, browser and screen-reader versions, routes, actual spoken output and focus/reading-order results. Jaleel's 2026-09-22 acceptance remains valid historical evidence, with its missing environment details explicitly retained.
+
+The hosted preview is blocked externally: Vercel reports `Account is blocked.` Production still serves v1; no production cutover or main merge was performed. See the [beta readiness review](../.project-planning/plans/emblor-v2-beta-release/implementation-review.md) for exact artifacts, current CI and the remaining G1 requirements.

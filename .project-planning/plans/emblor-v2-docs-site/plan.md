@@ -2,7 +2,7 @@
 
 ## Status
 
-**Implementation underway.** This plan records the original Phase 6 requirements. Its Nextra-specific implementation choice was superseded by [DR-0044](../../decisions/0044-use-fumadocs-for-the-v2-documentation-site.md); the current website uses Fumadocs. Phase 5, beta readiness, and production cutover remain separate gates.
+**Implementation underway.** This plan retains Phase 6 product requirements, reconciled on 2026-11-12 against the implemented site. Its original Nextra-specific implementation choice was superseded by [DR-0044](../../decisions/0044-use-fumadocs-for-the-v2-documentation-site.md); the current website uses Fumadocs. Phase 5, beta readiness, and production cutover remain separate gates.
 
 ## Decision Traceability
 
@@ -11,11 +11,11 @@
 - [DR-0043 — Original Nextra proposal, superseded](../../decisions/0043-use-nextra-and-shadcn-for-the-v2-documentation-experience.md)
 - [DR-0044 — Use Fumadocs for the v2 Documentation Site](../../decisions/0044-use-fumadocs-for-the-v2-documentation-site.md)
 
-Status: Ready — all required obligations are covered.
+Status: Partially Covered; implementation exists, current manual assistive-technology and hosted-preview evidence remain open. See [implementation review](./implementation-review.md).
 
 ## Feature Definition
 
-Rebuild `website/` from its v1 all-in-one-component documentation into a modern Nextra documentation site, product homepage, shadcn registry, and installable example playground that consume the exact public npm prerelease as genuine external consumers. The result is a reviewed preview/deployment candidate, not the production v1-to-v2 cutover.
+Rebuild `website/` from its v1 all-in-one-component documentation into a modern Fumadocs documentation site, product homepage, shadcn registry, and installable example playground that consume the exact public npm prerelease as genuine external consumers. The result is a reviewed preview/deployment candidate, not the production v1-to-v2 cutover.
 
 ## Problem Statement
 
@@ -27,8 +27,8 @@ Users need accurate runnable v2 guidance for the frozen compound API, state, val
 
 - Consume exact public `emblor@2.0.0-alpha.1` from npm with machine-verifiable registry resolution.
 - Remove all active v1 API examples and duplicate v1 runtime components.
-- Upgrade the website to the latest stable mutually compatible Next.js, React, TypeScript, Tailwind CSS, Nextra, and shadcn releases supported by the repository's Node policy.
-- Replace Contentlayer with Nextra and Nextra's docs theme while preserving App Router and Vercel deployment.
+- Upgrade the website to the latest stable mutually compatible Next.js, React, TypeScript, Tailwind CSS, Fumadocs, and shadcn releases supported by the repository's Node policy.
+- Replace Contentlayer with Fumadocs and Fumadocs UI while preserving App Router and Vercel deployment.
 - Build `/`, `/docs/**`, and `/playground` as distinct product, learning, and exploration surfaces.
 - Publish website-owned `@emblor/*` shadcn registry items that install styled compositions around the npm package without copying core.
 - Build complete reference and runnable examples for all eight public parts and all major frozen behaviors.
@@ -69,9 +69,9 @@ Direction: **direct product thesis plus compound workbench**.
 - Homepage inspiration: follow Input OTP's useful pattern—an immediate product claim, interactive field, install command, and code above the fold—without copying its branding, layout, or prose. A working Emblor composition is the hero, not a decorative illustration.
 
 - Signature element: one live “anatomy bench” that displays the composed field beside its eight public parts and updates visible state/DOM attributes as the user interacts.
-- Layout: customize Nextra's docs shell for restrained navigation and wide demo stages. The separate playground uses a catalog pattern inspired by Coss UI particles: discoverable examples, live UI, source code, and direct installation.
+- Layout: customize Fumadocs's docs shell for restrained navigation and wide demo stages. The separate playground uses a catalog pattern inspired by Coss UI particles: discoverable examples, live UI, source code, and direct installation.
 - Typography: choose a characterful but highly legible display face for section anchors, a neutral reading face for long documentation, and a monospace face for API/state evidence. Fonts must be locally or framework managed with no layout shift.
-- Color: derive a compact named token set from the existing Emblor identity, then verify contrast in light and dark themes. Do not default to generic cream/editorial, neon-on-black, or gradient-dashboard aesthetics.
+- Color: derive a compact named token set from the existing Emblor identity, then verify contrast in the accepted dark-only design (DR-0045). Do not default to generic cream/editorial, neon-on-black, or gradient-dashboard aesthetics.
 - Motion: one deliberate anatomy/state transition system; no scattered decorative animation. Respect `prefers-reduced-motion`.
 - Structural labels encode real concepts: Root, committed value, draft, focus, rejection, and form output. Avoid decorative numbering with no sequence meaning.
 
@@ -81,7 +81,7 @@ Design and platform references:
 
 - [Input OTP](https://input-otp.rodz.dev/) — homepage communication pattern only.
 - [Coss UI particles](https://coss.com/ui/particles) — playground discovery and example interaction pattern only.
-- [Nextra docs theme](https://nextra.site/docs/docs-theme/start) — documentation foundation.
+- [Fumadocs](https://fumadocs.dev/) — documentation foundation (DR-0044 replaces the original Nextra reference).
 - [shadcn registry documentation](https://ui.shadcn.com/docs/registry/getting-started) — namespaced registry contract and CLI validation.
 
 ## Implementation Strategy
@@ -90,7 +90,7 @@ Work in one Phase 6 branch, but keep commits reviewable by concern:
 
 ```text
 docs/v2-site
-  1. external package and modern Nextra foundation
+  1. external package and modern Fumadocs foundation
   2. homepage, docs shell, and reusable demo harness
   3. core reference and behavior guides
   4. accessibility/forms/styling guides
@@ -107,10 +107,10 @@ Expected areas:
 - `website/package.json`
 - `pnpm-lock.yaml`
 - `website/next.config.*`
-- `website/theme.config.*`, `website/mdx-components.*`, and Nextra configuration
+- `website/theme.config.*`, `website/mdx-components.*`, and Fumadocs configuration
 - `website/app/**`
 - `website/components/**`
-- `website/content/**` or Nextra page-map/route-local MDX files
+- `website/content/**` or Fumadocs page-map/route-local MDX files
 - `website/config/**`
 - `website/registry/**`, `website/registry.json`, and generated public registry artifacts
 - `website/public/**`
@@ -152,19 +152,19 @@ Obligations: DS/O-02.
 
 Verification: VT-01, VT-12.
 
-### T-02 — Upgrade the website platform and establish Nextra
+### T-02 — Upgrade the website platform and establish Fumadocs
 
 Decisions: DR-0001, DR-0005, DR-0013, DR-0014, DR-0041, DR-0043.
 
 Obligations: DS/O-03, DS/O-04, DS/O-17.
 
-- Resolve the latest stable mutually compatible Next.js, React, React DOM, TypeScript, Tailwind CSS, Nextra, `nextra-theme-docs`, and shadcn versions at implementation start; record exact choices and migration notes.
+- Resolve the latest stable mutually compatible Next.js, React, React DOM, TypeScript, Tailwind CSS, Fumadocs, `fumadocs-ui`, and shadcn versions at implementation start; record exact choices and migration notes.
 - Keep Node 24 primary and Node 22 as the compatibility lane. Do not expand the repository Node policy merely to chase a newer runtime.
 - Upgrade the website application to that version set, including Tailwind's current configuration model and the current ESLint/typecheck/build commands.
 - Preserve Next App Router and current Vercel ownership for this phase.
-- Replace Contentlayer with Nextra and `nextra-theme-docs`; configure MDX components, page maps, navigation, search, table of contents, metadata, and syntax highlighting through maintained APIs.
-- Use shadcn for website-owned interface components and demos. Keep Tailwind, shadcn, Nextra, and all theme code out of `packages/emblor`.
-- Remove Contentlayer-generated imports/config/dependencies after equivalent Nextra routing/navigation metadata works.
+- Replace Contentlayer with Fumadocs and `fumadocs-ui`; configure MDX components, page maps, navigation, search, table of contents, metadata, and syntax highlighting through maintained APIs.
+- Use shadcn for website-owned interface components and demos. Keep Tailwind, shadcn, Fumadocs, and all theme code out of `packages/emblor`.
+- Remove Contentlayer-generated imports/config/dependencies after equivalent Fumadocs routing/navigation metadata works.
 - Fix `themeColor` by using the supported viewport metadata contract.
 - Delete or archive active v1-only preview/runtime code: `components/tag/*`, v1 `ComponentPreview`, and v1 form demos.
 - Keep historical source reachable through `1.x` and migration links; do not carry dead v1 runtime into the active v2 build.
@@ -205,7 +205,7 @@ Create this final route and navigation contract:
 └── /playground/[slug] (optional deep links)
 ```
 
-- Nextra navigation groups `/docs/**` into Getting Started, Guides, and Reference. `/docs` redirects to or renders the introduction without creating duplicate content.
+- Fumadocs navigation groups `/docs/**` into Getting Started, Guides, and Reference. `/docs` redirects to or renders the introduction without creating duplicate content.
 - Installation covers the exact npm prerelease, npm/pnpm/yarn/bun commands as appropriate, peer requirements, framework notes, and shadcn registry configuration and install commands.
 - Anatomy introduces all eight public parts before behavior-heavy guides.
 - Examples may be indexed in Reference while their full interactive catalog remains the top-level `/playground` experience.
@@ -221,11 +221,11 @@ Decisions: DR-0005, DR-0016, DR-0041, DR-0043.
 Obligations: DS/O-05, DS/O-14, DS/O-18.
 
 - Build an original homepage inspired by Input OTP's directness: sharp product thesis, live accessible tag-input hero, visible install command, concise code sample, and clear Docs/Playground actions above the fold.
-- Implement a customized Nextra responsive header, sidebar, page outline, previous/next navigation, search, footer, code copy, and theme handling.
+- Implement a customized Fumadocs responsive header, sidebar, page outline, previous/next navigation, search, footer, code copy, and the accepted dark-only presentation (DR-0045).
 - Build a typed v2 demo harness with preview/code tabs, reset support, visible event/form output, and isolated example state.
 - Build the live anatomy bench as the signature interaction.
 - Make examples keyboard-operable, screen-reader coherent, responsive, and reduced-motion safe.
-- Use shadcn components where they improve website interaction, but restyle them into a coherent Emblor system rather than exposing a generic Nextra/shadcn starter.
+- Use shadcn components where they improve website interaction, but restyle them into a coherent Emblor system rather than exposing a generic Fumadocs/shadcn starter.
 - Avoid generic demo chrome that obscures consumer-owned markup and CSS.
 
 Verification: VT-03, VT-04, VT-09, VT-12.
@@ -337,7 +337,7 @@ Obligations: DS/O-02, DS/O-04, DS/O-13, DS/O-14, DS/O-15, DS/O-17, DS/O-19, DS/O
 
 - Add website format, lint, typecheck, clean production build, exact-package resolution, code-sample compilation, link/content validation, registry validation, clean registry-consumer installation, and browser acceptance to CI.
 - Run Node 22 and Node 24 for deterministic tooling/build compatibility; Node 24 remains primary.
-- Test narrow/wide layouts, keyboard navigation, visible focus, reduced motion, light/dark contrast, forms, RTL, and representative integrations.
+- Test narrow/wide layouts, keyboard navigation, visible focus, reduced motion, dark-theme contrast, forced colors, forms, RTL, and representative integrations.
 - Capture bundle/page-size baselines and reject accidental large regressions rather than inventing arbitrary targets.
 - Require Vercel preview success and verify deployment consumes exact npm package.
 - Ensure production v1 deployment does not cut over merely because preview succeeds.
@@ -391,9 +391,9 @@ Run content generation, typecheck, lint, and production build on Node 22/24. No 
 
 Review navigation completeness, content findability, visual tokens, typography, signature anatomy bench, desktop/mobile wireframes, contrast, focus, and reduced motion. Reject generic template choices not grounded in Emblor's compound model.
 
-### VT-04 — Homepage, Nextra shell, and demo harness
+### VT-04 — Homepage, Fumadocs shell, and demo harness
 
-Browser-test the homepage's live hero and install/code actions, Nextra navigation/search/table of contents, light/dark themes, mobile shell, preview/code/reset behavior, and anatomy bench. Confirm the result is original, Emblor-specific, and does not ship stock theme presentation unchanged.
+Browser-test the homepage's live hero and install/code actions, Fumadocs navigation/search/table of contents, the accepted dark-only presentation, mobile shell, preview/code/reset behavior, and anatomy bench. Confirm the result is original, Emblor-specific, and does not ship stock theme presentation unchanged.
 
 ### VT-05 — API/reference accuracy
 
@@ -438,7 +438,7 @@ Require all coverage Verified, a complete preview, synchronized planning, no hid
 ## Data / State Changes
 
 - Website dependency changes from v1 `latest` to exact public v2 alpha.1.
-- Website platform moves to the selected latest stable Next.js/React/TypeScript/Tailwind/Nextra/shadcn set under the Node 22/24 policy.
+- Website platform moves to the selected latest stable Next.js/React/TypeScript/Tailwind/Fumadocs/shadcn set under the Node 22/24 policy.
 - Active content/navigation changes from v1 API to v2 compound API.
 - V1 duplicate runtime/demo code leaves active website build.
 - Website gains hosted `@emblor` shadcn registry artifacts and a top-level playground catalog.
@@ -452,7 +452,7 @@ None planned. Website examples consume the frozen contract. Any required package
 ## UI / UX Changes
 
 - Original Input OTP-inspired product homepage with immediate live usage and installation.
-- Customized Nextra documentation shell under the compound-workbench direction.
+- Customized Fumadocs documentation shell under the compound-workbench direction.
 - Responsive `/playground` catalog with runnable preview/code examples and installation Sheets.
 - Clear separation between Emblor core behavior and consumer-owned integrations.
 - Production v1 site remains the cutover fallback until Phase 9.
@@ -460,8 +460,8 @@ None planned. Website examples consume the frozen contract. Any required package
 ## Migration Steps
 
 1. Pin exact alpha.1 and prove npm registry resolution.
-2. Resolve and lock the latest compatible website stack; migrate Next, React, TypeScript, Tailwind, Nextra, and shadcn under Node 22/24.
-3. Establish Nextra content/navigation and remove Contentlayer.
+2. Resolve and lock the latest compatible website stack; migrate Next, React, TypeScript, Tailwind, Fumadocs, and shadcn under Node 22/24.
+3. Establish Fumadocs content/navigation and remove Contentlayer.
 4. Replace active v1 shell/demos/content incrementally with the homepage, docs routes, and v2 examples.
 5. Build and validate the `@emblor` shadcn registry and `/playground` catalog.
 6. Preserve migration/history links before deleting dead active v1 code.
@@ -480,8 +480,8 @@ None planned. Website examples consume the frozen contract. Any required package
 
 - Public `emblor@2.0.0-alpha.1` and npm availability.
 - Node 22 and Node 24.
-- Latest stable mutually compatible Next.js, React, React DOM, TypeScript, Tailwind CSS, Nextra, Nextra docs theme, and shadcn releases selected at implementation start.
-- Next.js App Router, Vercel preview, Nextra's supported MDX pipeline, and selected maintained syntax-highlighting plugins.
+- Latest stable mutually compatible Next.js, React, React DOM, TypeScript, Tailwind CSS, Fumadocs, Fumadocs UI, and shadcn releases selected at implementation start.
+- Next.js App Router, Vercel preview, Fumadocs's supported MDX pipeline, and selected maintained syntax-highlighting plugins.
 - Website-only integration libraries for selected examples.
 - Phase 5 issue/feedback monitoring.
 
@@ -494,7 +494,7 @@ None blocking plan execution. Exact dependency versions must be resolved and rec
 Recommended coherent commits:
 
 1. `build(website): consume exact v2 alpha and upgrade docs platform`
-2. `feat(website): establish Nextra shell and product homepage`
+2. `feat(website): establish Fumadocs shell and product homepage`
 3. `docs(website): document v2 primitives and behavior`
 4. `docs(website): add forms accessibility and composition guides`
 5. `feat(website): add shadcn registry and example playground`
@@ -508,7 +508,7 @@ Open one Phase 6 PR against `main`; preserve commits rather than squashing unrel
 
 - [ ] T-00 — Confirm Phase 5 docs-entry boundary.
 - [ ] T-01 — Make website a provable external npm consumer.
-- [ ] T-02 — Upgrade the website platform and establish Nextra.
+- [ ] T-02 — Upgrade the website platform and establish Fumadocs.
 - [ ] T-03 — Finalize information architecture and visual brief.
 - [ ] T-04 — Build homepage, documentation shell, and reusable demo harness.
 - [ ] T-05 — Document anatomy and complete public API.
@@ -524,4 +524,8 @@ Open one Phase 6 PR against `main`; preserve commits rather than squashing unrel
 
 ## Completion Gate
 
-Phase 6 completes only when every coverage row is Verified; the modernized Nextra site builds on Node 22/24 from exact public v2 prerelease; `/`, the required `/docs/**` routes, and `/playground` are complete; `@emblor` registry items install into clean consumers; all core parts and major behaviors have accurate runnable examples; integrations remain website-only; accessibility/responsive/browser/content gates pass; migration guidance is complete; production v1 remains safely available; and the closure review gives an evidence-based beta or continued-alpha recommendation.
+Phase 6 completes only when every coverage row is Verified; the modernized Fumadocs site builds on Node 22/24 from exact public v2 prerelease; `/`, the required `/docs/**` routes, and `/playground` are complete; `@emblor` registry items install into clean consumers; all core parts and major behaviors have accurate runnable examples; integrations remain website-only; accessibility/responsive/browser/content gates pass; migration guidance is complete; production v1 remains safely available; and the closure review gives an evidence-based beta or continued-alpha recommendation.
+
+## Accepted implementation reconciliation - 2026-11-12
+
+DR-0044 replaces the original Nextra foundation with Fumadocs. DR-0045 records Jaleel's accepted dark-only redesign and removal of theme switching; current acceptance requires desktop/mobile dark captures, not light-mode support. The previous 54-capture report remains historical. Current coverage has 34 relevant captures. No light-mode pass is claimed. Product approval is retained; current manual screen-reader checks and a successful immutable hosted preview still require evidence.

@@ -21,11 +21,15 @@ The historical project handoff remains at [`../project-status/HANDOFF.md`](../pr
 
 ## Active Plans
 
+- [`plans/emblor-v2-beta-release/plan.md`](plans/emblor-v2-beta-release/plan.md) — beta readiness and `2.0.0-beta.0` release sequence. Closes alpha/docs evidence and validation first; publication remains gated on an approved, CI-verified main SHA.
+
 - [`plans/emblor-v2-docs-site/plan.md`](plans/emblor-v2-docs-site/plan.md) — Phase 6 website rebuild plan. Its original Nextra implementation choice is superseded by DR-0044; the implemented site uses Fumadocs.
   - [`decision-manifest.md`](plans/emblor-v2-docs-site/decision-manifest.md) — applicable frozen package, release, documentation, compatibility, and scope decisions.
   - [`coverage.md`](plans/emblor-v2-docs-site/coverage.md) — Phase 6 obligations mapped to implementation and verification.
   - [`decisions/0043-use-nextra-and-shadcn-for-the-v2-documentation-experience.md`](decisions/0043-use-nextra-and-shadcn-for-the-v2-documentation-experience.md) — original website proposal, superseded for its Nextra choice.
   - [`decisions/0044-use-fumadocs-for-the-v2-documentation-site.md`](decisions/0044-use-fumadocs-for-the-v2-documentation-site.md) — Fumadocs foundation and retained route, registry, playground, and scope requirements.
+
+[DR-0045](decisions/0045-retain-the-accepted-dark-only-docs-design.md) records the accepted dark-only redesign. The [current docs implementation review](plans/emblor-v2-docs-site/implementation-review.md) maps every obligation and records the Vercel account block and pending manual screen-reader evidence.
 
 Phase 5 Alpha Iteration remains active alongside Phase 6. The [docs-entry checkpoint](sessions/2026-08-18-phase-5-docs-entry-checkpoint.md) permits alpha.1 consumption for the docs preview but does not declare beta readiness.
 

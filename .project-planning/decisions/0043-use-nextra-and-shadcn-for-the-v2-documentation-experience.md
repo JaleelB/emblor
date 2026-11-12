@@ -70,7 +70,7 @@ The provisional Phase 6 plan choice to preserve the existing website stack and u
 
 ## Superseded By
 
-None.
+The Nextra foundation is superseded by [DR-0044](./0044-use-fumadocs-for-the-v2-documentation-site.md). Route, homepage, registry, playground, compatibility and website-only scope requirements remain active. [DR-0045](./0045-retain-the-accepted-dark-only-docs-design.md) records the accepted dark-only presentation requirement.
 
 ## Notes
 

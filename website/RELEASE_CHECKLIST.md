@@ -11,5 +11,5 @@ Record each release run in [QA_REPORT.md](./QA_REPORT.md); the reusable checklis
 - [ ] Migration examples match `packages/emblor/MIGRATION.md` and the exported v2 surface.
 - [ ] Playground previews, displayed source, and registry source resolve from the same canonical component files.
 - [ ] Chromium desktop/mobile, Firefox, and WebKit browser checks pass.
-- [ ] Screenshot baselines have been reviewed in light and dark themes at mobile and desktop widths.
+- [ ] Screenshot baselines have been reviewed in the accepted dark-only design at mobile and desktop widths (DR-0045); no light-mode pass is claimed.
 - [ ] Keyboard, [screen-reader](./SCREEN_READER_QA.md), touch, paste, IME, 200% zoom, and forced-colors checks are recorded.
