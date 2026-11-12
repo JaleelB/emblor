@@ -46,7 +46,7 @@ export default function DocsRootLayout({ children }: Readonly<{ children: React.
           title: (
             <span className="site-brand">
               <BrandMark />
-              emblor
+              Emblor
             </span>
           ),
           url: '/',
