@@ -50,7 +50,7 @@ const definitions = [
     'tag-input-react-hook-form',
     'React Hook Form + Zod',
     'Validate and submit an Emblor field with React Hook Form, Zod, and shadcn Field.',
-    ['emblor@2.0.0-alpha.1', 'react-hook-form@7.87.0', '@hookform/resolvers@5.9.1', 'zod@4.4.3'],
+    ['emblor@2.0.0-alpha.1', 'react-hook-form@7.87.0', '@hookform/resolvers@5.9.1', 'zod@4.6.6'],
     ['button', 'field'],
   ],
   [
