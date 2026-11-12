@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const browserChannel = process.env.PLAYWRIGHT_CHANNEL;
 const chromiumOverride = browserChannel ? { channel: browserChannel } : {};
+const productionServer = Boolean(process.env.CI) || process.env.PLAYWRIGHT_PRODUCTION === '1';
 
 export default defineConfig({
   testDir: './tests',
@@ -32,9 +33,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm run dev',
+    command: productionServer ? 'pnpm run start --hostname 127.0.0.1 --port 4500' : 'pnpm run dev',
     url: 'http://127.0.0.1:4500',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !productionServer,
     timeout: 120_000,
   },
 });

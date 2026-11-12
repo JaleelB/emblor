@@ -40,7 +40,12 @@ test('docs shell exposes the exact guide hierarchy', async ({ page }, testInfo) 
   await expect(searchOverlay).toHaveCSS('backdrop-filter', /blur/);
   const searchInput = page.getByRole('textbox', { name: 'Search documentation' });
   await expect(searchInput).toHaveCSS('outline-style', 'none');
+  const searchResponse = page.waitForResponse((response) => {
+    const url = new URL(response.url());
+    return url.pathname === '/api/search' && url.searchParams.get('query') === 'styling';
+  });
   await searchInput.fill('styling');
+  expect((await searchResponse).ok()).toBe(true);
   await expect(
     page
       .getByRole('dialog')
