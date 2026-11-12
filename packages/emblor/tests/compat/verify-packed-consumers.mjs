@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve, sep } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const packageRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)));
@@ -25,7 +25,7 @@ const expectedExports = [
   'EmblorTagText',
 ];
 const consumerReports = [];
-const platformPackagePattern = /^(?:@esbuild\/(?:aix|android|darwin|freebsd|linux|netbsd|openbsd|sunos|win32)-|@rollup\/rollup-|fsevents$)/;
+const platformPackagePattern = /^(?:@esbuild\/|@rollup\/rollup-|fsevents$)/;
 
 mkdirSync(tarballDirectory);
 
@@ -73,13 +73,16 @@ function directoryBytes(directory, predicate = () => true) {
 
 function normalizeForFingerprint(value) {
   if (Array.isArray(value)) {
-    return value.filter((entry) => !(entry && typeof entry === 'object' && entry.optional === true)).map(normalizeForFingerprint);
+    return value
+      .filter((entry) => !(entry && typeof entry === 'object' && entry.optional === true))
+      .map(normalizeForFingerprint);
   }
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value)
         .filter(
           ([key, nestedValue]) =>
+            key !== 'path' &&
             !platformPackagePattern.test(key) &&
             !(nestedValue && typeof nestedValue === 'object' && nestedValue.optional === true) &&
             !(nestedValue && typeof nestedValue === 'object' && platformPackagePattern.test(nestedValue.name ?? '')),
@@ -102,6 +105,12 @@ function dependencyGraphSha256(directory) {
     run(pnpm, ['list', '--json', '--depth', 'Infinity'], directory, { capture: true }),
   );
   const normalizedGraph = normalizeForFingerprint(dependencyGraph);
+  if (process.env.EMBLOR_GRAPH_DIRECTORY) {
+    writeJson(
+      join(resolve(process.env.EMBLOR_GRAPH_DIRECTORY), `${directory.split(sep).at(-1)}.json`),
+      normalizedGraph,
+    );
+  }
   return createHash('sha256').update(JSON.stringify(normalizedGraph)).digest('hex');
 }
 
@@ -325,7 +334,16 @@ for (const specifier of ['emblor/src/index', 'emblor/dist/index.js', 'emblor/add
     writeFileSync(join(directory, `readme-example-${index}.tsx`), example);
   });
 
-  run(pnpm, ['install', '--lockfile-only', '--no-frozen-lockfile', '--ignore-scripts'], directory);
+  // Freeze third-party transitive dependencies as well as the direct fixture versions.
+  // Only the candidate tarball identity varies between verification runs.
+  const fixtureLock = readFileSync(join(packageRoot, 'tests', 'compat', `react-${major}-lock.yaml`), 'utf8')
+    .replaceAll('__TARBALL_PATH__', tarballPath.replaceAll('\\', '/'))
+    .replaceAll('__TARBALL_RELATIVE__', relative(directory, tarballPath).replaceAll('\\', '/'))
+    .replaceAll(
+      '__TARBALL_INTEGRITY__',
+      `sha512-${createHash('sha512').update(readFileSync(tarballPath)).digest('base64')}`,
+    );
+  writeFileSync(join(directory, 'pnpm-lock.yaml'), fixtureLock);
   run(pnpm, ['install', '--frozen-lockfile', '--ignore-scripts'], directory);
 
   const resolvedPackageJson = run(node, ['-p', "require.resolve('emblor/package.json')"], directory, { capture: true })

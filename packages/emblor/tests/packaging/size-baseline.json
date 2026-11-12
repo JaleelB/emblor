@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "tolerancePercent": 10,
-  "source": "Phase 3 2.0.0-alpha.0 candidate artifact after release documentation on Node 22.23.2",
+  "source": "Phase 3 2.0.0-alpha.0 candidate artifact after release documentation on Node 22.23.2; consumer graphs re-reviewed and frozen on 2026-11-12; platform paths/native optional binaries excluded, original byte limits retained",
   "measurements": {
     "tarballBytes": 89169,
     "unpackedBytes": 458496,
@@ -12,17 +12,11 @@
   "consumers": {
     "18.3.1": {
       "bundleBytes": 170654,
-      "dependencyGraphSha256ByPlatform": {
-        "win32": "7b7022ec91fe4e783bc1e6e6f5226fe61049e5c23740fb15372db84f6f57d9e7",
-        "linux": "209ffcfe46a3966d85d9afd8554803b551578b2e636d5bf0b7e3161f47c3c618"
-      }
+      "dependencyGraphSha256": "ec0a1b3058fa36a804810a040b46675816707a5bbcafb463a606e83b0ea8948a"
     },
     "19.1.1": {
       "bundleBytes": 214524,
-      "dependencyGraphSha256ByPlatform": {
-        "win32": "dc7cd14056cd05f67cba3cdfd2d81f5b06a5471e8cb7ff38fbb8ca9e0e3f3a97",
-        "linux": "6643db88bde15fe63ffac6f45c025fad06d5b1cca63a10f78b58e69a64fc202c"
-      }
+      "dependencyGraphSha256": "4ed8fd9109eaee8c70ca188001babf7f6713fac868c829360dcd65cabde074af"
     }
   }
 }
