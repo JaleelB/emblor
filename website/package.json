@@ -14,7 +14,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md,mdx,json,css}\" --cache",
     "generate:registry": "node scripts/generate-registry.ts",
     "validate:content": "node scripts/validate-content.ts",
-    "validate:docs-code": "node scripts/validate-docs-code.mjs",
+    "validate:docs-code": "node --test scripts/docs-code-snippets.test.mjs && node scripts/validate-docs-code.mjs",
     "validate:api-docs": "node scripts/validate-api-docs.mjs",
     "validate:behavior-docs": "node scripts/validate-behavior-docs.mjs",
     "validate:registry": "node scripts/validate-registry.ts",
