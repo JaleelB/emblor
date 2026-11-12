@@ -55,7 +55,7 @@ try {
     name: 'emblor-registry-consumer-fixture',
     private: true,
     type: 'module',
-    packageManager: 'pnpm@9.15.0',
+    packageManager: 'pnpm@9.0.2',
     dependencies: {
       react: '19.2.8',
       'react-dom': '19.2.8',
