@@ -80,3 +80,44 @@ Security runtime source is `8c38788e62d0f1c1186108ac8670d5ed3d58fe37`; follow-up
 [Security Node 22 artifact](evidence/distribution-security-node22.json) and [security Node 24 artifact](evidence/distribution-security-node24.json) reproduce the same SHA-256 as all four earlier reports: `8ff9d64df4c5bfe37140c18213c929c96a3ff8ec4bc850937c47565ee0dbbd14`. Core source, declarations, public manifest and size limits remain unchanged. The next authoritative CI run must verify the new pushed head; the failed earlier run is not called green. Vercel account/preview safety and current manual screen-reader evidence still block G1. Beta metadata and publication remain gated.
 
 The targeted development-server search check also passes all four browser projects after the response-readiness fix (25.6 seconds total), retaining real result and empty-state assertions. The final production build is available locally at http://127.0.0.1:4502 for the required screen-reader check.
+
+## Linux visual CI follow-up round ? 2026-11-12
+
+This is a new follow-up to requested head `29173b66481dbc73249950bdd1152b0cbbbe49cd`,
+not a declaration that the previous exact-head Linux failures passed.
+
+- F-14: both Linux lanes failed the same 20 Windows-shared screenshot baselines.
+  Neither original run retained images. Diagnostic commit `01f14dc` enabled
+  expected/actual/diff/trace artifacts; all 20 triplets were reviewed from the
+  real Ubuntu 26.04 runner. Both Geist font downloads succeeded and their bytes
+  match Windows. Reviewed native rendering/wrapping differences now have
+  platform-owned baselines, with all 34 comparisons and the 2% limit preserved.
+  All 34 Windows images remain byte-identical. Linux owns 20 reviewed actual
+  captures and 14 retained existing images that already passed Linux. Ubuntu is
+  pinned to 26.04; missing baselines fail and CI never updates them.
+- F-15: repeated mobile Axe scans exposed intermediate Fumadocs header-opacity
+  contrast values. Waiting for fonts and finite animations before scanning
+  passes 10/10 repeats, without excluding rules/elements or changing colors.
+- F-16: a Node 24 installation-sheet capture caught dynamic-code loading
+  placeholders. The visual test now requires the loading state to disappear and
+  the rendered code block to be visible. The placeholder screenshot was rejected,
+  not accepted as a baseline.
+
+[Linux visual review](evidence/linux-visual-review.md) records exact CI source,
+runner/browser/font identities, visual disposition and validation limits.
+[Baseline manifest](evidence/linux-visual-baselines.json) records all 34 Linux
+image identities and provenance. Offline replay through the pinned Playwright
+comparator accepts all 60 real Linux captures/retries against the reviewed set,
+reproduces all 20 failures against Windows images, and rejects a changed-heading
+negative control (13% changed pixels). This does not claim an exact-new-head
+Linux browser run.
+
+Node 22.23.2 full website validation/build pass. Final Node 22 production browser
+gate passes 85 with 13 project-specific skips, including all 34 platform-path
+visual assertions. Final Node 24.22.3 production browser verification also passes **85 tests with
+13 project-specific skips**, including all 34 visual comparisons after the
+installation-code readiness wait, without snapshot updates. No core/API, package dependency, version/release metadata, screenshot
+tolerance, Axe rule, npm channel or production hosting change was made. Pushed-head
+Linux checks remain pending and must pass independently. Vercel account/preview
+safety and current manual screen-reader acceptance still block G1; beta metadata
+preparation and publication remain gated.

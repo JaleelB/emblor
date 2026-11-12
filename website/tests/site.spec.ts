@@ -271,6 +271,16 @@ test('key pages have no automatically detectable accessibility violations', asyn
   ]) {
     await page.goto(path);
     await expect(page.locator('main')).toBeVisible();
+    // Audit settled colors rather than an intermediate header opacity transition.
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((animation) => animation.effect?.getComputedTiming().iterations !== Infinity)
+          .map((animation) => animation.finished.catch(() => {})),
+      );
+    });
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations, `${path}: ${results.violations.map((violation) => violation.id).join(', ')}`).toEqual(
       [],

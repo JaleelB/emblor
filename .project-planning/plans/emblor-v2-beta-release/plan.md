@@ -250,3 +250,13 @@ These do not block planning; resolve them before the corresponding gate:
 ## Execution update - 2026-11-12
 
 See [implementation-review.md](./implementation-review.md) for the current findings, commands, artifact identities, supported matrix, coverage reconciliation, and concrete remaining actions. T-01 recommends beta preparation once G1 closes; T-02 repairs are implemented with local passing results; T-03 remains partially verified. DR-0045 records the explicitly accepted dark-only design instead of claiming light-mode tests passed. Vercel account repair, safe hosting/preview evidence and current manual screen-reader acceptance remain prerequisites. G1 has not passed; T-04 version preparation and later publication remain gated.
+
+### Linux visual follow-up ? 2026-11-12
+
+The follow-up to `29173b6` diagnoses the 20 authoritative Linux visual failures
+using retained CI expected/actual/diff images and traces. Reviewed platform-owned
+baselines preserve all 34 comparisons and existing tolerances; the Windows images
+are unchanged. See [the review](evidence/linux-visual-review.md) and updated
+implementation review. Exact pushed-head CI is still required. G1, hosted-preview
+safety and current manual screen-reader acceptance remain open; this follow-up
+performs no beta metadata preparation, publication or production cutover.

@@ -1,0 +1,221 @@
+{
+  "sourceSHA": "01f14dc9a2afa39f8a1992cebe5c37d171bfb81f",
+  "run": "https://github.com/JaleelB/emblor/actions/runs/43239068658",
+  "platform": "Ubuntu 26.04 (runner image 20261101.186.1)",
+  "playwright": "1.62.1",
+  "chromium": "151.0.7922.34",
+  "reviewedActualCaptures": 20,
+  "retainedPassingSharedBaselines": 14,
+  "baselines": [
+    {
+      "file": "documentation-callout-visual-desktop.png",
+      "source": "Linux actual capture",
+      "sha256": "bd6f40647be4a5b8c12ba73832fb991464e7622e4b708f8ccd2649cde33b68c3",
+      "windowsDimensions": [662, 68],
+      "linuxDimensions": [662, 69]
+    },
+    {
+      "file": "documentation-callout-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "6ba64fa5fc80e1bc8a423f50b74e03f25288d2e70941858c9e29b0063613d2fb",
+      "windowsDimensions": [353, 128],
+      "linuxDimensions": [353, 129]
+    },
+    {
+      "file": "documentation-code-block-visual-desktop.png",
+      "source": "Linux actual capture",
+      "sha256": "11a85b9504730ac410fd83a357cd616b993c13e17acf1476372f6738c7d3202b",
+      "windowsDimensions": [662, 458],
+      "linuxDimensions": [662, 458]
+    },
+    {
+      "file": "documentation-code-block-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "b1d320f70395156bd1f41416d1eeab469288aaeb87e733ce12a9e9c03bd8d22d",
+      "windowsDimensions": [353, 458],
+      "linuxDimensions": [353, 458]
+    },
+    {
+      "file": "documentation-shell-visual-desktop.png",
+      "source": "Linux actual capture",
+      "sha256": "b113ac114aef9500f5ba3a4ff0353fe4ec4fe6d9cd770d7b3227d6d74ea73e03",
+      "windowsDimensions": [1270, 2237],
+      "linuxDimensions": [1270, 2237]
+    },
+    {
+      "file": "documentation-shell-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "0c1271b11d4edf2d99be07b3b38a4cbc9b19841e5a4ed0fd79254dd5f770c004",
+      "windowsDimensions": [393, 2517],
+      "linuxDimensions": [393, 2534]
+    },
+    {
+      "file": "documentation-table-visual-desktop.png",
+      "source": "Linux actual capture",
+      "sha256": "d09421a6174f7af9766b9c3a005ccf43a993a93c37c052d5b055fabc8ed90f06",
+      "windowsDimensions": [662, 539],
+      "linuxDimensions": [662, 539]
+    },
+    {
+      "file": "documentation-table-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "334677335e768c6200c3e1328a63f8023e1b972a97dd03169c9f105a94fd0952",
+      "windowsDimensions": [353, 1320],
+      "linuxDimensions": [353, 1320]
+    },
+    {
+      "file": "focused-preview-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "939b8b7919862840fb3b562740d6bf7e4fa190c437242c9c15c32ee3c2628f67"
+    },
+    {
+      "file": "focused-preview-visual-mobile.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "748544274e0c8d4d4c9d4a1471524312c5b4c37c228867e07a95ff142b8518d4"
+    },
+    {
+      "file": "installation-sheet-visual-desktop.png",
+      "source": "Linux actual capture",
+      "sha256": "44aead02ea2218c5214b3ab40ed5e66afbcf49b80846f9b601ed8b92fd799e34",
+      "windowsDimensions": [576, 720],
+      "linuxDimensions": [576, 720]
+    },
+    {
+      "file": "installation-sheet-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "4d0c8a0f60d2ae85bd9afe043128c0370773e23daa77cd26f156041f87d3c531",
+      "windowsDimensions": [393, 727],
+      "linuxDimensions": [393, 727]
+    },
+    {
+      "file": "search-dialog-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "80468ba5753624e2eafcd8adfda05bbf0bdee5abe2f64c2f59139ebae93c3e0a"
+    },
+    {
+      "file": "search-dialog-visual-mobile.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "33a94c0d3e74b1f51e80d96fc3d50c60c747f4b4b8c33acfadf72aeb3bdbe5d6"
+    },
+    {
+      "file": "tag-input-accessibility-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "81a1a9ae86602f6c3378903b600f08c146260a5a9937364cb045e9639430b8ec"
+    },
+    {
+      "file": "tag-input-accessibility-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "c05636337dd74e7888ccdbeeea34493e6f81856a3049974614ee360b65f718a8",
+      "windowsDimensions": [329, 606],
+      "linuxDimensions": [329, 606]
+    },
+    {
+      "file": "tag-input-basic-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "1249affe9b74f0bfe3881907c3460dfb98e40e2473d5c4fde25fa36c1a63039e"
+    },
+    {
+      "file": "tag-input-basic-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "fe5108eb1fec5a68e61e88808fd7906a4325eed28b49cc856a50871fc711b344",
+      "windowsDimensions": [329, 606],
+      "linuxDimensions": [329, 606]
+    },
+    {
+      "file": "tag-input-constraints-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "b090347ef1f83ff6cee5946024839b91fe4e2cc8cf6ea3747ac532406f7488c8"
+    },
+    {
+      "file": "tag-input-constraints-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "eddcd833d613ed7298876ee75719c3d13c562fef8322ea242df3370bce72b9c8",
+      "windowsDimensions": [329, 606],
+      "linuxDimensions": [329, 606]
+    },
+    {
+      "file": "tag-input-controlled-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "363bfb0ee6162c9a84e5fa0a94e42b76a0607830d03261aacba2719af1a7a1d2"
+    },
+    {
+      "file": "tag-input-controlled-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "33a5771640af1c7d919207c9104114f5dc87e646a188a9a8d95d97733611ad75",
+      "windowsDimensions": [329, 606],
+      "linuxDimensions": [329, 606]
+    },
+    {
+      "file": "tag-input-dialog-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "6e119efaa45a39b0e4baf7202834b83f2be438f0362f6324f7c8ac4448fa8e76"
+    },
+    {
+      "file": "tag-input-dialog-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "590a9ebb7053d597568e93b0c307ffc8e7d570525d727ce8a1f0553f3d8c0ed1",
+      "windowsDimensions": [329, 710],
+      "linuxDimensions": [329, 710]
+    },
+    {
+      "file": "tag-input-native-form-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "c80b5d3777611f9d17f7309a912ed1eb7f4f184657a550084d3fa79ee0bf3aa2"
+    },
+    {
+      "file": "tag-input-native-form-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "18647a25985d363a1c3d97b05539c830e4bdcddfe43e511f339f103ff4bb8550",
+      "windowsDimensions": [329, 606],
+      "linuxDimensions": [329, 606]
+    },
+    {
+      "file": "tag-input-popover-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "3a63c57da9e2e382a324cc79af4fcd1f14b08ef99a7771985fd107fa4bd791f8"
+    },
+    {
+      "file": "tag-input-popover-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "078cc2bf5131252e7932b7e936e4e5e8f8128e933837a5fb35ff7cca434b1542",
+      "windowsDimensions": [329, 697],
+      "linuxDimensions": [329, 697]
+    },
+    {
+      "file": "tag-input-react-hook-form-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "8ea8386cc6d3e94208b14aba4d853e73738d01376a18985a547d228b16573d42"
+    },
+    {
+      "file": "tag-input-react-hook-form-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "42fb215b9d9a35a2ccce1094d22b65b7071dbef9926533c5ebb841f6e1900d91",
+      "windowsDimensions": [329, 754],
+      "linuxDimensions": [329, 754]
+    },
+    {
+      "file": "tag-input-reorder-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "3bdeb54f91a3d84a57d5797377d7b1963c0eb0ecbecf5d754ba9b95058b2a756"
+    },
+    {
+      "file": "tag-input-reorder-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "f86b1a37c45689adb10f04d530592b07838308088cb9e1f4fc71daa2c0509994",
+      "windowsDimensions": [329, 661],
+      "linuxDimensions": [329, 635]
+    },
+    {
+      "file": "tag-input-validation-dark-visual-desktop.png",
+      "source": "Unchanged shared baseline; passed Linux comparison",
+      "sha256": "045443a1ad39aebc35ff3194e7bece993e14ef4b417639b046feff2a78f098c5"
+    },
+    {
+      "file": "tag-input-validation-dark-visual-mobile.png",
+      "source": "Linux actual capture",
+      "sha256": "3594118f8b1e7e92217cb32280368a256b0eb1c8bc9d6714b805ffc0fd933fc3",
+      "windowsDimensions": [329, 638],
+      "linuxDimensions": [329, 638]
+    }
+  ]
+}

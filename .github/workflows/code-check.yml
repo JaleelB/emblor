@@ -6,7 +6,8 @@ on:
 
 jobs:
   typecheck-lint:
-    runs-on: ubuntu-latest
+    # Native visual baselines are reviewed on Ubuntu 26.04.
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout repo

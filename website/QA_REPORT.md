@@ -54,3 +54,23 @@ This follow-up supersedes the earlier candidate's dependency and snippet counts.
 Linux CI exposed a standalone snippet compiler that did not inherit website React type paths and parsed LF/CRLF fences differently. The fixed validator and two parser regressions pass on both Node lanes. It compiles **34 active v2 examples** and explicitly distinguishes the one labeled historical v1 migration-before example, which cannot compile against v2. Earlier 35-example reports are historical command results, not current evidence that v1 compiled against v2.
 
 Final production-server browser gate: **85 passed, 13 project-specific skips**, without snapshot updates. Clean package browser contracts: **8 passed**. The preceding dev-server run had two cold search-result timeouts; tests now assert the successful API response before checking visible results, and CI runs the built production server. No assertion tolerance or product search behavior was weakened. Current manual screen-reader and safe hosted-preview acceptance remain open.
+
+## Linux visual follow-up ? 2026-11-12
+
+The earlier local passes did not establish Linux compatibility for shared Windows
+screenshots. Exact-head Linux CI failed 20 visual comparisons. A diagnostic run
+retained all expected/actual/diff PNGs and traces; the reviewed platform-specific
+baseline fix keeps all 34 comparisons and the unchanged 2% tolerance. Windows
+images are preserved byte-for-byte; Linux uses 20 reviewed actual captures and
+14 retained shared images that already passed Linux. CI pins Ubuntu 26.04 and
+never generates snapshots during the gate. Failed captures now retain rendering
+metadata and artifacts. [Detailed evidence and manifest](../.project-planning/plans/emblor-v2-beta-release/evidence/linux-visual-review.md).
+
+The follow-up also waits for finite header transitions before Axe scans (10/10
+repeated mobile checks pass without rule exclusions) and for dynamic installation
+code to load before screenshots. A loading-placeholder capture was rejected.
+Node 22 production browser verification passes 85 with 13 project-specific skips;
+exact pushed-head Linux approval remains pending. This evidence does not close
+hosted-preview safety or current manual screen-reader acceptance.
+
+Final Node 24.22.3 production browser rerun also passes **85 tests, 13 project-specific skips**, including all 34 visual checks after the installation-code readiness wait, without snapshot updates. Website lint/typecheck/format and root distribution formatting pass.
