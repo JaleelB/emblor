@@ -70,6 +70,15 @@ jobs:
       - name: Run website browser gate
         run: pnpm -C website run test:browser
 
+      - name: Preserve website browser failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-browser-evidence
+          path: website/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Lint website
         run: pnpm -C website run lint
 

@@ -65,6 +65,15 @@ jobs:
         if: matrix.node-version == '24.x'
         run: pnpm -C website run test:browser
 
+      - name: Preserve website browser failure evidence
+        if: always() && matrix.node-version == '24.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-browser-evidence
+          path: website/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Check prettier format
         run: pnpm run distribution:format
 
