@@ -325,7 +325,7 @@ function assertSizeBaseline(measurements, consumerReports) {
     );
     assert.equal(
       consumer.dependencyGraphSha256,
-      consumerBaseline.dependencyGraphSha256ByPlatform[process.platform],
+      consumerBaseline.dependencyGraphSha256,
       `React ${consumer.reactVersion} dependency graph drifted from the reviewed fixture snapshot`,
     );
   }

@@ -1,0 +1,70 @@
+---
+title: Accessibility
+description: Labels, descriptions, errors, announcements, and native semantics.
+---
+
+Emblor coordinates the structure and private announcements; your application supplies the visible label, description, error text, language, and final page context.
+
+## Labels and structure
+
+`EmblorLabel` automatically associates with the Root input and names the TagList in connected DOM order. You can repeat labels or render them through portals. Use explicit `htmlFor`, `aria-label`, or `aria-labelledby` when the automatic relationship is not the right one.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+export function SkillsField({ error }: { error?: string }) {
+  return (
+    <EmblorRoot defaultValue={['react']} invalid={Boolean(error)}>
+      <EmblorLabel id="skills-label">Skills</EmblorLabel>
+      <EmblorTagList aria-labelledby="skills-label">
+        {(tag, index) => (
+          <EmblorTag key={tag} index={index}>
+            <EmblorTagText />
+            <EmblorTagRemove aria-label={`Remove ${tag}`} />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput aria-describedby={`skills-help${error ? ' skills-error' : ''}`} />
+      <p id="skills-help">Add one skill at a time.</p>
+      {error ? <p id="skills-error">{error}</p> : null}
+    </EmblorRoot>
+  );
+}
+```
+
+The default structure uses an input-like textbox, a tag list, list item semantics, and button semantics for removal and clear actions. `as` changes the element while preserving the part's required behavior.
+
+## Announcements
+
+Emblor privately announces add, add-many, remove, clear, and rejection events. Localize or suppress the message through `getAnnouncement`:
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+<EmblorRoot
+  getAnnouncement={(announcement) => {
+    if (announcement.type === 'add') return `Added ${announcement.value}`;
+    if (announcement.type === 'reject') return '';
+    return '';
+  }}
+>
+  <EmblorInput />
+</EmblorRoot>;
+```
+
+Returning an empty string suppresses that private announcement. Do not remove the visible label or error text when suppressing announcements; your application still needs to render them.
+
+For localized interfaces, return complete sentences in the active locale. Keep remove-button labels in the same locale so the visual and announced controls agree. A suppressed rejection announcement still needs visible, associated error text.
+
+## Errors and focus
+
+Use `invalid` for persistent application state. Associate the visible error with the input using `aria-describedby`. When a required field fails native validation, Emblor routes focus to the visible input. After a successful individual removal, focus moves to the next mounted Tag, then the nearest lower Tag, then the input.
+
+## Acceptance checklist
+
+- Labels announce the field and the tag list has a meaningful name.
+- Remove buttons have understandable, localized labels.
+- Error text is visible and connected with `aria-describedby`.
+- Disabled and read-only states are distinguishable and do not mutate.
+- Focus is visible in light and dark themes.
+- Review with a screen reader; automated checks do not replace assistive-technology review.

@@ -1,0 +1,124 @@
+---
+title: Validation
+description: Canonicalize, validate, and report rejected candidates without losing the draft.
+---
+
+Validation has two visible channels: `onReject` reports a transient candidate rejection, while `invalid` is a persistent
+signal controlled by your application. They are related, but they are not interchangeable.
+
+## Choose the validation layer
+
+- **Use `transform` and `validate`** for immediate, synchronous checks on one candidate.
+- **Use `onReject`** to explain why a commit attempt failed while preserving the draft for correction.
+- **Use `invalid`** for errors owned by a form, server response, or asynchronous request.
+- **Avoid network requests in `validate`.** It must return a boolean immediately; perform remote checks after a value is accepted or when the form submits.
+
+## Candidate order
+
+For a non-empty keyboard, blur, or paste candidate, Emblor evaluates:
+
+```text title="Behavior pipeline"
+trim -> transform -> empty -> minLength / maxLength -> duplicate -> maxTags -> validate
+```
+
+`transform` receives the trimmed value and returns the canonical string. Length checks count Unicode code points in that
+canonical value, not UTF-16 units or grapheme clusters. `validate` is the final boolean application check.
+
+```tsx title="TypeScript"
+'use client';
+
+import { useState } from 'react';
+import { EmblorInput, EmblorLabel, EmblorRoot } from 'emblor';
+
+export function HashtagField() {
+  const [error, setError] = useState('');
+
+  return (
+    <EmblorRoot
+      transform={(value) => value.toLowerCase()}
+      validate={(value) => value.startsWith('#')}
+      minLength={2}
+      maxLength={32}
+      invalid={Boolean(error)}
+      onInputValueChange={() => setError('')}
+      onValueChange={() => setError('')}
+      onReject={(rejection) => setError(`“${rejection.rawValue}” must begin with #.`)}
+    >
+      <EmblorLabel>Hashtags</EmblorLabel>
+      <EmblorInput aria-describedby="tag-error" />
+      <p id="tag-error" aria-live="polite">
+        {error}
+      </p>
+    </EmblorRoot>
+  );
+}
+```
+
+## Rejections preserve the draft
+
+Rejected candidates remain in the draft and emit structured metadata:
+
+```ts title="TypeScript"
+import type { EmblorRejection } from 'emblor';
+
+function showRejection(rejection: EmblorRejection) {
+  return `${rejection.value}: ${rejection.reason} (${rejection.source})`;
+}
+```
+
+Truly empty Enter or blur drafts are silent no-ops. In a paste batch, empty delimiter segments are ignored, while
+non-empty whitespace segments follow the normal pipeline.
+
+## Invalid state and error markup
+
+`invalid` is controlled and persistent. A rejection temporarily exposes invalid state through the input's `data-invalid`
+and `aria-invalid` attributes. Your markup owns the visible error text and its description relationship:
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot } from 'emblor';
+
+<EmblorRoot invalid={Boolean(error)}>
+  <EmblorLabel>Topics</EmblorLabel>
+  <EmblorInput aria-describedby="topics-error" />
+  {error && <p id="topics-error">{error}</p>}
+</EmblorRoot>;
+```
+
+Changing the draft or successfully adding a tag clears the transient rejection. Removing a tag, synchronizing an
+external value, or changing a valid constraint does not clear an unrelated controlled `invalid` signal.
+
+## Async validation
+
+Keep the accepted values controlled while the server checks them. If the request fails, keep the tag visible, set a persistent error, and let the user remove or edit it.
+
+```tsx title="TypeScript"
+'use client';
+
+import { useState } from 'react';
+import { EmblorInput, EmblorLabel, EmblorRoot } from 'emblor';
+
+export function ReservedTopics() {
+  const [topics, setTopics] = useState<string[]>([]);
+  const [error, setError] = useState('');
+
+  async function update(next: string[]) {
+    setTopics(next);
+    setError('');
+    const response = await fetch('/api/topics/check', {
+      method: 'POST',
+      body: JSON.stringify({ topics: next }),
+    });
+    if (!response.ok) setError('One or more topics are reserved.');
+  }
+
+  return (
+    <EmblorRoot value={topics} onValueChange={update} invalid={Boolean(error)}>
+      <EmblorLabel>Topics</EmblorLabel>
+      <EmblorInput aria-describedby={error ? 'topics-error' : undefined} />
+      {error ? <p id="topics-error">{error}</p> : null}
+    </EmblorRoot>
+  );
+}
+```
+
+The tag appears immediately. A failed request leaves it in place and exposes the application error; a successful request clears the error.

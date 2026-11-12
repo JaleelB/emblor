@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-input-accessibility",
+  "type": "registry:ui",
+  "title": "Accessible error field",
+  "description": "A labeled field with associated help, errors, and built-in announcements.",
+  "dependencies": ["emblor@2.0.0-alpha.1"],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/emblor/tag-input-accessibility.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { useId, useState } from 'react';\nimport { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';\n\nexport function EmblorAccessibleField() {\n  const helpId = useId();\n  const errorId = useId();\n  const [error, setError] = useState('');\n\n  return (\n    <EmblorRoot\n      defaultValue={['design systems']}\n      minLength={3}\n      invalid={Boolean(error)}\n      onInputValueChange={() => setError('')}\n      onValueChange={() => setError('')}\n      onReject={() => setError('Enter at least three characters.')}\n      className=\"flex w-full max-w-xl flex-col gap-2\"\n    >\n      <EmblorLabel className=\"text-sm font-medium\">Topics</EmblorLabel>\n      <div className=\"flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-2.5 py-2 shadow-xs\">\n        <EmblorTagList className=\"flex flex-wrap gap-1.5\">\n          {(tag, index) => (\n            <EmblorTag\n              key={tag}\n              index={index}\n              className=\"inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm font-medium\"\n            >\n              <EmblorTagText />\n              <EmblorTagRemove\n                aria-label={`Remove ${tag}`}\n                className=\"rounded-sm px-0.5 text-muted-foreground hover:bg-accent\"\n              >\n                ×\n              </EmblorTagRemove>\n            </EmblorTag>\n          )}\n        </EmblorTagList>\n        <EmblorInput\n          aria-describedby={`${helpId}${error ? ` ${errorId}` : ''}`}\n          aria-invalid={Boolean(error) || undefined}\n          className=\"min-w-28 flex-1 bg-transparent text-sm outline-none\"\n          placeholder=\"Add a topic\"\n        />\n      </div>\n      <p id={helpId} className=\"text-sm text-muted-foreground\">\n        Add one topic at a time. Emblor announces additions and removals.\n      </p>\n      {error ? (\n        <p id={errorId} className=\"text-sm text-destructive\" role=\"alert\">\n          {error}\n        </p>\n      ) : null}\n    </EmblorRoot>\n  );\n}\n"
+    }
+  ]
+}

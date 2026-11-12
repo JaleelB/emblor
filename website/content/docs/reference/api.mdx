@@ -1,0 +1,161 @@
+---
+title: API reference
+description: Public exports, props, default elements, state, and behavior precedence.
+---
+
+The public package exports eight components and the types needed to compose them. All supported components and types are available from `emblor`.
+
+## Exports
+
+```ts title="TypeScript"
+import {
+  EmblorClear,
+  EmblorInput,
+  EmblorLabel,
+  EmblorRoot,
+  EmblorTag,
+  EmblorTagList,
+  EmblorTagRemove,
+  EmblorTagText,
+} from 'emblor';
+```
+
+| Export            | Default element | Required contract                                                  |
+| ----------------- | --------------- | ------------------------------------------------------------------ |
+| `EmblorRoot`      | `div`           | Exactly one Input; at most one TagList.                            |
+| `EmblorLabel`     | `label`         | Optional; registers labels and focuses the input on click.         |
+| `EmblorTagList`   | `div`           | Optional; static children or `(tag, index) => ReactNode`.          |
+| `EmblorTag`       | `div`           | Requires a current `index`; renders list item and focus behavior.  |
+| `EmblorTagText`   | `span`          | Reads the exact current string from its Tag.                       |
+| `EmblorInput`     | `input`         | One input-like element; Root owns `value`, `name`, and validity.   |
+| `EmblorTagRemove` | `button`        | Removes the parent Tag; native/non-button activation is protected. |
+| `EmblorClear`     | `button`        | Clears all committed values unless a guard blocks it.              |
+
+## Root props
+
+| Prop                      | Type / default                  | Meaning                                                                                                            |
+| ------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `value`                   | `string[]`                      | Controlled values. [State guide](/docs/guides/state-management)                                                    |
+| `defaultValue`            | `string[]` · `[]`               | Initial values. [State guide](/docs/guides/state-management)                                                       |
+| `onValueChange`           | `(value, details) => void`      | Accepted mutations. [Controlled example](/playground/tag-input-controlled)                                         |
+| `inputValue`              | `string`                        | Controlled draft. [Suggestions example](/playground/tag-input-popover)                                             |
+| `defaultInputValue`       | `string` · `''`                 | Uncontrolled initial draft. [State guide](/docs/guides/state-management)                                           |
+| `onInputValueChange`      | `(value) => void`               | Draft changes. [Suggestions example](/playground/tag-input-popover)                                                |
+| `transform`               | `(value) => string`             | Canonicalizes before checks. [Validation guide](/docs/guides/validation)                                           |
+| `validate`                | `(value) => boolean`            | Final synchronous check. [Validation example](/playground/tag-input-validation)                                    |
+| `invalid`                 | `boolean` · `false`             | Persistent application error. [Validation guide](/docs/guides/validation)                                          |
+| `onReject`                | `(rejection) => void`           | Candidate rejection. [Constraints example](/playground/tag-input-constraints)                                      |
+| `minTags` / `maxTags`     | `number`                        | Value floors and caps. [Constraints example](/playground/tag-input-constraints)                                    |
+| `minLength` / `maxLength` | `number`                        | Unicode limits. [Validation guide](/docs/guides/validation)                                                        |
+| `allowDuplicates`         | `boolean` · `false`             | Equal values without identity. [State guide](/docs/guides/state-management#duplicate-identity)                     |
+| `delimiters`              | `string[]`                      | Literal separators. [Interaction guide](/docs/guides/constraints-and-interactions)                                 |
+| `addOnPaste`              | `boolean`                       | Partial paste; default `true`. [Interaction guide](/docs/guides/constraints-and-interactions#paste-and-delimiters) |
+| `addOnTab`                | `boolean`                       | Tab commits; default `false`. [Keyboard guide](/docs/guides/keyboard-and-focus)                                    |
+| `blurBehavior`            | `'commit' / 'discard' / 'noop'` | Root-leaving policy. [Interaction guide](/docs/guides/constraints-and-interactions#keyboard-commits)               |
+| `placeholderWhenFull`     | `string`                        | Full-state placeholder. [Constraints example](/playground/tag-input-constraints)                                   |
+| `name` / `required`       | native form props · unset/false | Repeated values. [Forms guide](/docs/guides/forms)                                                                 |
+| `readOnly` / `disabled`   | native state props · `false`    | Block mutation. [Accessibility guide](/docs/guides/accessibility)                                                  |
+| `getAnnouncement`         | formatter                       | Announcement formatter. [Accessibility guide](/docs/guides/accessibility)                                          |
+| `dir`                     | `'ltr' / 'rtl'`                 | Physical navigation. [Keyboard guide](/docs/guides/keyboard-and-focus)                                             |
+| `as`                      | `React.ElementType`             | Changes the element. [Composition guide](/docs/guides/composition-and-polymorphism)                                |
+
+All parts also expose applicable native props and compatible refs. Part-specific props are `index` on Tag and `disabled` on TagRemove/Clear.
+
+## Mutation details
+
+```ts title="TypeScript"
+import type { EmblorValueChangeDetails } from 'emblor';
+
+function logMutation(details: EmblorValueChangeDetails) {
+  console.log(details.type, details);
+}
+```
+
+The callback is a discriminated union. Narrow on `type` before reading operation-specific fields:
+
+| Type       | Payload                                          | Source                  |
+| ---------- | ------------------------------------------------ | ----------------------- |
+| `add`      | `value`, `index`                                 | `keyboard` or `blur`    |
+| `add-many` | `values`, `startIndex`                           | `paste`                 |
+| `remove`   | `value`, `index`                                 | `keyboard` or `pointer` |
+| `clear`    | `values` containing the values that were removed | `keyboard` or `pointer` |
+
+## Rejection details
+
+`onReject` receives `rawValue`, canonical `value`, `reason`, and `source`. Reasons are `empty`, `min-length`, `max-length`, `duplicate`, `max-tags`, and `custom`; sources are `keyboard`, `paste`, and `blur`.
+
+Rejection is not a value transition. Root keeps the draft available for correction and does not call `onValueChange`.
+For paste, accepted candidates may still produce one `add-many` transition while rejected candidates are reported
+individually in source order.
+
+## Part-specific props
+
+### TagList
+
+`children` may be static React content or `(tag: string, index: number) => ReactNode`. The function runs in current
+value order. A rendered `EmblorTag` must receive the corresponding current index.
+
+### Tag
+
+`index` is required. It identifies a position for behavior and focus; it is not a persistent occurrence ID. When
+duplicates are enabled, keep separate stable IDs in application state for React keys.
+
+### Input
+
+Input accepts native input props except `value`, `defaultValue`, `name`, `required`, `disabled`, and `readOnly`, which
+belong to Root. It may render an `input`, a `textarea`, or a compatible ref-forwarding input component through `as`.
+
+### TagRemove and Clear
+
+Both accept a local `disabled` prop in addition to Root state. Their native default element is `button`, and Emblor
+protects `type="button"` so either control can safely live inside a form.
+
+## Public types
+
+```ts title="TypeScript"
+import type {
+  EmblorAnnouncement,
+  EmblorAnnouncementFormatter,
+  EmblorBlurBehavior,
+  EmblorClearProps,
+  EmblorInputElementType,
+  EmblorInputProps,
+  EmblorLabelProps,
+  EmblorRejectReason,
+  EmblorRejection,
+  EmblorRootOwnProps,
+  EmblorRootProps,
+  EmblorTagListProps,
+  EmblorTagProps,
+  EmblorTagRemoveProps,
+  EmblorTagTextProps,
+  EmblorValueChangeDetails,
+  PolymorphicProps,
+  PolymorphicRef,
+  TagValue,
+} from 'emblor';
+```
+
+## Announcements
+
+`getAnnouncement` receives an `add`, `add-many`, `remove`, `clear`, or `reject` event. Return localized text to replace
+the default private live-region message. Return an empty string when a surrounding composite already announces the
+same operation.
+
+## State attributes and precedence
+
+The input exposes `aria-invalid`, `aria-required`, `aria-disabled`, `aria-readonly`, and `data-*` state attributes. Emblor-owned roles, IDs, form state, and safety props take precedence over conflicting consumer values. Consumer handlers run first and can cancel a documented action.
+
+| Attribute           | Exposed on                 | Meaning                                                    |
+| ------------------- | -------------------------- | ---------------------------------------------------------- |
+| `data-state`        | Root                       | `active`, `disabled`, `readonly`, or `invalid`.            |
+| `data-invalid`      | Root, Input                | Controlled, rejected, or required-invalid state is active. |
+| `data-disabled`     | Root, Input, list, actions | The field or action is disabled.                           |
+| `data-readonly`     | Root, Input, list, Tag     | Values are readable but cannot be mutated.                 |
+| `data-max-reached`  | Root, Input                | `maxTags` currently blocks another addition.               |
+| `data-focus-within` | Root                       | Focus is currently inside the field.                       |
+| `data-focused`      | Tag                        | The Tag currently owns roving focus.                       |
+| `data-state`        | Tag                        | `focused` or `idle`.                                       |
+
+All eight parts forward compatible refs and native event handlers. For built-in actions, the consumer handler runs
+first; calling `event.preventDefault()` cancels that documented Emblor action without disabling unrelated behavior.

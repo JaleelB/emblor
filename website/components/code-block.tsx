@@ -1,34 +1,42 @@
-import { cn } from '@/lib/utils';
-import CopyButton from './copy-button';
+'use client';
 
-function CodeBlock({
+import dynamic from 'next/dynamic';
+
+import { CodeCopyAction } from '@/components/fumadocs-code-block';
+import { cn } from '@/lib/utils';
+
+const DynamicCodeBlock = dynamic(
+  () => import('fumadocs-ui/components/dynamic-codeblock').then((module) => module.DynamicCodeBlock),
+  {
+    ssr: false,
+    loading: () => <div className="code-loading">Formatting source…</div>,
+  },
+);
+
+export function CodeBlock({
   value,
+  label = 'Copy code',
   className,
-  copyable = true,
+  title,
+  language = 'tsx',
 }: {
   value: string;
+  label?: string;
   className?: string;
-  codeClass?: string;
-  copyable?: boolean;
-  codeWrap?: boolean;
-  noCodeFont?: boolean;
-  noMask?: boolean;
+  title?: string;
+  language?: string;
 }) {
-  value = value || '';
-
   return (
-    <pre
-      style={{ maxHeight: '500px', overflowY: 'auto' }}
-      className={cn(
-        `relative h-full w-full whitespace-pre-wrap rounded-lg py-4 px-6 text-sm border text-white/75 bg-zinc-950 dark:bg-zinc-900
-          } `,
-        className,
-      )}
-    >
-      <CopyButton value={value} copyable={copyable} />
-      {value}
-    </pre>
+    <DynamicCodeBlock
+      lang={language}
+      code={value}
+      codeblock={{
+        title: title ?? 'Code',
+        'aria-label': label,
+        allowCopy: false,
+        className: cn('code-block not-prose', className),
+        Actions: ({ className: actionsClassName }) => <CodeCopyAction className={actionsClassName} />,
+      }}
+    />
   );
 }
-
-export default CodeBlock;

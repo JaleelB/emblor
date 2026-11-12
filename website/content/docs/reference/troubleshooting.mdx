@@ -1,0 +1,59 @@
+---
+title: Troubleshooting
+description: Diagnose common state, structure, forms, and integration mistakes.
+---
+
+## Nothing commits
+
+Check that the draft is non-empty and that `onValueChange` acknowledges controlled transitions. Enter always attempts a commit, but a controlled Root stays on the external `value` until the owner renders the requested next value.
+
+## The input does not accept its own value prop
+
+That is intentional. `EmblorInput` is controlled by Root. Use Root `inputValue` and `onInputValueChange`, or `defaultInputValue` for an uncontrolled draft.
+
+## A tag key changes when the value changes
+
+Values are strings, not occurrence identities. If duplicates are enabled, store stable IDs beside values and use those IDs for React keys. The positional `index` is only for `EmblorTag`.
+
+## A form submits one value instead of many
+
+Set `name` on `EmblorRoot` and read `FormData.getAll(name)`. Bracketed names such as `skills[]` are preserved exactly. Only committed tags submit; draft text does not.
+
+## Clear does nothing
+
+Check `minTags`, `disabled`, `readOnly`, controlled state updates, and event handlers that call `preventDefault()`. Clear is all-or-nothing and cannot remove values below `minTags`.
+
+## Paste behaves differently from typing
+
+Paste inserts text at the current selection, evaluates delimiter-separated values from left to right, and emits one `add-many` transition. Your `onPaste` handler can call `preventDefault()` to handle the event itself.
+
+## The suggestion menu is not an Emblor prop
+
+Correct. Keep query state in Root's draft and use shadcn `Command` + `Popover`, cmdk, or your own menu outside the package. See [Integrations](/docs/guides/integrations).
+
+## The field resets visually but my form value does not
+
+Choose one owner for the submitted value. A native reset restores an uncontrolled Root's defaults. React Hook Form or
+another adapter must reset its controlled `string[]` value through that adapter. Do not combine two independent reset
+owners for the same field.
+
+## The label does not focus the input
+
+Render `EmblorLabel` inside the same Root as the Input. When adapting a design-system label, pass it through `as` and
+ensure the component forwards its ref and native props. Do not hard-code a conflicting `htmlFor` or input `id`.
+
+## Arrow keys move in the wrong direction
+
+Set `dir="rtl"` on Root when the field uses right-to-left physical navigation. Left and Right follow physical edges;
+Home and End continue to follow value order.
+
+## A registry install works by URL but not by @emblor name
+
+Add `"@emblor": "https://emblor.jaleelbennett.com/r/{name}.json"` to the `registries` object in `components.json`,
+then run `pnpm dlx shadcn@latest add @emblor/tag-input-basic`. Direct registry URLs do not require the namespace entry.
+
+## The code tab and preview do not match exactly
+
+Treat the code tab as the ready-to-copy example and the preview as its behavior check. If a visual wrapper is
+site-only, it should be called out rather than presented as an Emblor export. Report a mismatch when the component tree,
+imports, or behavior differ.

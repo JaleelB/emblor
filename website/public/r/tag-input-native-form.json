@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-input-native-form",
+  "type": "registry:ui",
+  "title": "Native form field",
+  "description": "A working form with repeated values, required validation, submit, and reset.",
+  "dependencies": ["emblor@2.0.0-alpha.1"],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/emblor/tag-input-native-form.tsx",
+      "type": "registry:ui",
+      "content": "'use client';\n\nimport { useState } from 'react';\nimport { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';\n\nexport function EmblorNativeFormField() {\n  const [submitted, setSubmitted] = useState<string[]>([]);\n\n  return (\n    <form\n      className=\"flex w-full max-w-xl flex-col gap-4\"\n      onSubmit={(event) => {\n        event.preventDefault();\n        setSubmitted(new FormData(event.currentTarget).getAll('skills[]') as string[]);\n      }}\n      onReset={() => setSubmitted([])}\n    >\n      <EmblorRoot defaultValue={['react']} name=\"skills[]\" required className=\"flex flex-col gap-2\">\n        <EmblorLabel className=\"text-sm font-medium\">Skills</EmblorLabel>\n        <div className=\"flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-input bg-background px-2.5 py-2 shadow-xs\">\n          <EmblorTagList className=\"flex flex-wrap gap-1.5\">\n            {(tag, index) => (\n              <EmblorTag\n                key={tag}\n                index={index}\n                className=\"inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-sm font-medium\"\n              >\n                <EmblorTagText />\n                <EmblorTagRemove\n                  aria-label={`Remove ${tag}`}\n                  className=\"rounded-sm px-0.5 text-muted-foreground hover:bg-accent\"\n                >\n                  ×\n                </EmblorTagRemove>\n              </EmblorTag>\n            )}\n          </EmblorTagList>\n          <EmblorInput className=\"min-w-28 flex-1 bg-transparent text-sm outline-none\" placeholder=\"Add a skill\" />\n        </div>\n        <p className=\"text-sm text-muted-foreground\">Submitted as repeated skills[] values.</p>\n      </EmblorRoot>\n      <div className=\"flex flex-wrap gap-2\">\n        <button type=\"submit\" className=\"rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground\">\n          Read FormData\n        </button>\n        <button type=\"reset\" className=\"rounded-md border border-input bg-background px-3 py-2 text-sm font-medium\">\n          Reset\n        </button>\n      </div>\n      <output className=\"rounded-md bg-muted px-3 py-2 font-mono text-xs text-muted-foreground\" aria-live=\"polite\">\n        {submitted.length ? JSON.stringify(submitted) : 'Submit to inspect FormData'}\n      </output>\n    </form>\n  );\n}\n"
+    }
+  ]
+}

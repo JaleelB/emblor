@@ -1,0 +1,93 @@
+---
+title: Installation
+description: Install the exact v2 alpha and compose your first field.
+---
+
+These docs use `emblor@2.0.0-alpha.1`. Pin that exact prerelease while evaluating v2 instead of installing the latest
+stable release.
+
+## Package install
+
+<div className="docs-install-grid">
+
+```bash title="Terminal"
+npm install emblor@2.0.0-alpha.1
+```
+
+```bash title="Terminal"
+pnpm add emblor@2.0.0-alpha.1
+```
+
+```bash title="Terminal"
+yarn add emblor@2.0.0-alpha.1
+```
+
+```bash title="Terminal"
+bun add emblor@2.0.0-alpha.1
+```
+
+</div>
+
+Emblor supports React 18 and React 19. Its peer range is `react >=18.0.0 <20.0.0` and the same for `react-dom`.
+Use Node.js 24 for development and CI. Node.js 22 is also supported.
+
+## Imports
+
+Import components and public types from the package root:
+
+```tsx title="TypeScript"
+import {
+  EmblorClear,
+  EmblorInput,
+  EmblorLabel,
+  EmblorRoot,
+  EmblorTag,
+  EmblorTagList,
+  EmblorTagRemove,
+  EmblorTagText,
+} from 'emblor';
+```
+
+The only supported metadata subpath is `emblor/package.json`. There are no v2 feature subpaths for core, addons, sorting, utilities, types, or testing.
+
+## shadcn registry compositions
+
+The website publishes styled examples under the `@emblor` registry namespace. Each item installs editable source that
+uses the public `emblor` package.
+
+Add the namespace template to `components.json`:
+
+```json title="JSON"
+{
+  "registries": {
+    "@emblor": "https://emblor.jaleelbennett.com/r/{name}.json"
+  }
+}
+```
+
+Then add a composition:
+
+```bash title="Terminal"
+pnpm dlx shadcn@latest add @emblor/tag-input-basic
+```
+
+To inspect the hosted catalog or an item before installing it:
+
+```bash title="Terminal"
+pnpm dlx shadcn@latest list https://emblor.jaleelbennett.com/r/registry.json
+pnpm dlx shadcn@latest view @emblor/tag-input-basic
+```
+
+The namespace resolves `@emblor/tag-input-basic` to `/r/tag-input-basic.json`. The complete catalog is available at
+`/r/registry.json`.
+
+You can also open an item from [the playground](/playground), where the Install sheet shows the equivalent npm, pnpm, yarn, and bun commands plus a manual fallback.
+
+<DocsCallout type="warning">
+  A registry item copies a styled example into your project. It does not add a new export to the `emblor` package.
+</DocsCallout>
+
+## Framework notes
+
+In a Next.js App Router project, add `'use client'` to a composition that uses state or event handlers. The package itself
+does not depend on Tailwind, shadcn, CVA, or a form library.

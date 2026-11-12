@@ -1,0 +1,89 @@
+---
+title: Anatomy
+description: Understand the eight public compound parts before adding behavior.
+---
+
+import { story as tagFieldStory } from '@/components/tag-field.story';
+
+Emblor exposes eight parts. They share state through Root, and each part forwards the native props for the element it
+renders.
+
+<AnatomyBench />
+
+## Tune a complete field
+
+Change the label, initial tags, or placeholder and watch the field update. Open the controls to inspect the exact props
+used by the preview.
+
+<tagFieldStory.WithControl />
+
+## The eight parts
+
+| Part              | Default element | Purpose                                                                      |
+| ----------------- | --------------- | ---------------------------------------------------------------------------- |
+| `EmblorRoot`      | `div`           | Owns committed values, draft, validation, focus, and form state.             |
+| `EmblorLabel`     | `label`         | Associates one or more labels with the Root's input and tag list.            |
+| `EmblorTagList`   | `div`           | Registers the visible list and renders static children or a render function. |
+| `EmblorTag`       | `div`           | Renders one mounted value with list semantics and roving focus.              |
+| `EmblorTagText`   | `span`          | Displays the exact current string from its parent Tag.                       |
+| `EmblorInput`     | `input`         | Owns the Root draft and accepts keyboard, paste, and native input props.     |
+| `EmblorTagRemove` | `button`        | Removes its parent Tag with the right keyboard and disabled guards.          |
+| `EmblorClear`     | `button`        | Requests an all-or-nothing clear subject to `minTags` and ownership.         |
+
+## Render functions and indexes
+
+`EmblorTagList` accepts either a static child tree or a function:
+
+```tsx title="TypeScript"
+import { EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+<EmblorTagList>
+  {(tag, index) => (
+    <EmblorTag key={`${tag}-${index}`} index={index}>
+      <EmblorTagText as="strong" />
+      <EmblorTagRemove aria-label={`Remove ${tag}`} />
+    </EmblorTag>
+  )}
+</EmblorTagList>;
+```
+
+The `index` is the current positional index into Root's `string[]`. It must be finite, non-negative, in range, unique among mounted Tags, and current for the value. Omitted Tags still count toward constraints and forms.
+
+If duplicates are enabled, a string is not an identity. Keep a stable occurrence ID alongside each value for React keys and your own DOM IDs:
+
+```tsx title="TypeScript"
+import type { EmblorRootProps } from 'emblor';
+
+type TagEntry = { id: string; value: string };
+
+const entries: TagEntry[] = [
+  { id: 'first-react', value: 'react' },
+  { id: 'second-react', value: 'react' },
+];
+const values = entries.map((entry) => entry.value);
+```
+
+## Polymorphism and refs
+
+Every part supports `as` and forwards compatible refs, `className`, `style`, ARIA, `data-*`, and native event props. Native semantics remain protected:
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+<EmblorRoot as="section" data-kind="skills">
+  <EmblorTagList as="ul">
+    {(tag, index) => (
+      <EmblorTag as="li" key={tag} index={index}>
+        <EmblorTagText as="strong" />
+        <EmblorTagRemove />
+      </EmblorTag>
+    )}
+  </EmblorTagList>
+  <EmblorInput />
+</EmblorRoot>;
+```
+
+<DocsCallout type="boundary">
+  `EmblorInput` requires one input-like element. `EmblorRoot` requires exactly one input and permits at most one
+  TagList. Do not invent an `asChild` or styling runtime around the package.
+</DocsCallout>

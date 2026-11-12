@@ -1,0 +1,33 @@
+{
+  "package": "emblor@2.0.0-alpha.1",
+  "source": "exact public website npm installation with lockfile integrity",
+  "declarationSha256": "0a8602be35ff2db8fe8c8952f037b932a2986faaafd4d05613ff3f738db48d4b",
+  "boundary": {
+    "exports": {
+      "./package.json": "./package.json",
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs",
+        "default": "./dist/index.js"
+      }
+    },
+    "peerDependencies": {
+      "react": ">=18.0.0 <20.0.0",
+      "react-dom": ">=18.0.0 <20.0.0"
+    },
+    "dependencies": null,
+    "files": [
+      "dist",
+      "README.md",
+      "MIGRATION.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "main": "dist/index.cjs",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "sideEffects": false
+  },
+  "comparison": "Current built declarations and manifest boundary match published alpha.1 exactly (declaration line endings normalized)."
+}

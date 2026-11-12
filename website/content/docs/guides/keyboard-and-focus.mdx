@@ -1,0 +1,49 @@
+---
+title: Keyboard & focus
+description: The complete keyboard matrix, IME safety, direction, and focus restoration.
+---
+
+Emblor manages actual DOM focus with one private focused-index state. You do not need to mirror that state or pass a
+public focus-index prop. Use the field normally; compose menus and dialogs around it when your application needs them.
+
+| Key / situation    | Behavior                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| Enter              | Attempts to commit a non-empty draft.                                                          |
+| Delimiter          | Commits while typing when the literal key is configured.                                       |
+| Tab                | Native focus movement unless `addOnTab` is true.                                               |
+| Backspace / Delete | Backspace on an empty input focuses the previous Tag. On a focused Tag, either key removes it. |
+| Arrow Left / Right | Enters the tag list at the physical edge based on `dir`.                                       |
+| Home / End         | Moves to first / last mounted value order.                                                     |
+| Escape             | Is not handled by Emblor, so a surrounding suggestion menu or dialog can use it.               |
+| IME composition    | Emblor command keys are ignored while composition is active.                                   |
+| Root-leaving blur  | `blurBehavior` may commit, discard, or no-op after the whole Root loses focus.                 |
+
+## Direction
+
+`dir="rtl"` changes physical arrow entry: in RTL, the physical Right arrow enters from the start and Left enters from
+the end. Home and End still mean first and last value order. This is physical-direction behavior, not a reversal of the
+submitted array.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagText } from 'emblor';
+
+<EmblorRoot dir="rtl" defaultValue={['אחד', 'שתיים']}>
+  <EmblorTagList>
+    {(tag, index) => (
+      <EmblorTag key={`${tag}-${index}`} index={index}>
+        <EmblorTagText />
+      </EmblorTag>
+    )}
+  </EmblorTagList>
+  <EmblorInput dir="rtl" />
+</EmblorRoot>;
+```
+
+## Selection and restoration
+
+Paste evaluates the prospective draft made by inserting clipboard text at the current selection. If every non-empty
+candidate rejects, Emblor preserves the original draft and selection. Later caret changes, pointer or keyboard intent,
+edits, focus changes, another paste, input replacement, or unmount cancel the restoration intent.
+
+Your event handler runs before Emblor's command handler. Calling `event.preventDefault()` cancels that Emblor command.
+Test important compositions with keyboard-only navigation, IME input, a screen reader, and both text directions.

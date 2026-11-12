@@ -1,0 +1,8 @@
+nextjs-portal,
+[data-next-badge-root],
+[data-nextjs-toast] {
+  display: none !important;
+}
+.skip-link {
+  display: none !important;
+}

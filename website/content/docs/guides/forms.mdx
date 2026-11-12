@@ -1,0 +1,232 @@
+---
+title: Native forms
+description: Use repeated native values, required semantics, reset, disabled, and read-only fields.
+---
+
+Emblor integrates with ordinary HTML forms. When `name` is present, Root renders one ordered hidden native control for each committed tag.
+
+## Choose a form strategy
+
+- **Use native submission** for server actions and progressively enhanced forms.
+- **Use React Hook Form** when the surrounding form already uses controlled fields, touched state, or a schema resolver.
+- **Avoid registering a second input** for the same tag array. Root's `name` controls and a form adapter are alternative submission owners.
+
+## Repeated values
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+export function ProfileForm() {
+  function saveProfile(formData: FormData) {
+    console.log(formData.getAll('skills[]'));
+  }
+
+  return (
+    <form action={saveProfile}>
+      <EmblorRoot defaultValue={['react', 'typescript']} name="skills[]">
+        <EmblorLabel>Skills</EmblorLabel>
+        <EmblorTagList>
+          {(tag, index) => (
+            <EmblorTag key={tag} index={index}>
+              <EmblorTagText />
+              <EmblorTagRemove aria-label={`Remove ${tag}`} />
+            </EmblorTag>
+          )}
+        </EmblorTagList>
+        <EmblorInput />
+      </EmblorRoot>
+      <button type="submit">Save profile</button>
+    </form>
+  );
+}
+```
+
+`FormData` receives `skills[]=react` followed by `skills[]=typescript`. The name is preserved exactly, including brackets. Use `formData.getAll('skills[]')` to read the ordered values.
+
+This works unchanged with a server action: the server reads `formData.getAll('skills[]')`; no client serialization step is required.
+
+## Required, disabled, and read-only
+
+- `required` means at least one committed tag. Draft text does not satisfy it.
+- Native invalid focus routes to the visible `EmblorInput`.
+- Disabled fields are omitted from submission and block mutation.
+- Read-only fields remain successful native values but block mutation.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+<EmblorRoot name="topics[]" required disabled={isSaving} readOnly={isPreview}>
+  <EmblorInput aria-describedby="topics-help" />
+</EmblorRoot>;
+```
+
+## Reset
+
+Native reset restores uncontrolled `defaultValue` and `defaultInputValue`. It does not overwrite controlled values; the external owner must respond to the form's reset event if it owns the state.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+<form>
+  <EmblorRoot defaultValue={['draft']} defaultInputValue="">
+    <EmblorInput />
+  </EmblorRoot>
+  <button type="reset">Reset</button>
+</form>;
+```
+
+For a controlled field, reset the owner explicitly:
+
+```tsx title="TypeScript"
+'use client';
+
+import { useState } from 'react';
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+export function ControlledReset() {
+  const initial = ['react'];
+  const [skills, setSkills] = useState(initial);
+
+  return (
+    <form onReset={() => setSkills(initial)}>
+      <EmblorRoot value={skills} onValueChange={setSkills}>
+        <EmblorInput />
+      </EmblorRoot>
+      <button type="reset">Reset</button>
+    </form>
+  );
+}
+```
+
+After reset, the controlled field contains `react`. Reset any controlled draft in the same handler if your application owns `inputValue`.
+
+Prefer native forms when you do not need a form-state library. If the rest of the form already uses an adapter, let the
+adapter store the submitted array while Emblor handles draft text, keyboard behavior, and tag validation.
+
+## React Hook Form
+
+Use `Controller` because the committed value is a `string[]`, not a native scalar input event. Pass the controller's
+value and change handler to Root; do not attempt to control `EmblorInput` directly.
+
+```tsx title="TypeScript"
+'use client';
+
+import { Controller, useForm } from 'react-hook-form';
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+type ProfileValues = {
+  skills: string[];
+};
+
+export function ProfileForm() {
+  const form = useForm<ProfileValues>({
+    defaultValues: { skills: ['react'] },
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit(console.log)}>
+      <Controller
+        control={form.control}
+        name="skills"
+        rules={{ validate: (value) => value.length > 0 || 'Add at least one skill.' }}
+        render={({ field, fieldState }) => (
+          <EmblorRoot value={field.value} onValueChange={(value) => field.onChange(value)} invalid={fieldState.invalid}>
+            <EmblorLabel>Skills</EmblorLabel>
+            <EmblorTagList>
+              {(tag, index) => (
+                <EmblorTag key={`${tag}-${index}`} index={index}>
+                  <EmblorTagText />
+                  <EmblorTagRemove aria-label={`Remove ${tag}`} />
+                </EmblorTag>
+              )}
+            </EmblorTagList>
+            <EmblorInput aria-describedby={fieldState.error ? 'skills-error' : undefined} />
+            {fieldState.error ? <p id="skills-error">{fieldState.error.message}</p> : null}
+          </EmblorRoot>
+        )}
+      />
+      <button type="submit">Save profile</button>
+    </form>
+  );
+}
+```
+
+`field.onChange` receives the accepted committed array. Rejected candidates remain draft text and therefore do not
+mark the controller value as changed. If the product needs draft persistence, control Root's `inputValue` separately.
+
+[Try the complete React Hook Form + Zod example →](/playground/tag-input-react-hook-form)
+
+## shadcn Field
+
+Current shadcn forms use React Hook Form's `Controller` with `Field`. Put `data-invalid` on `Field`, pass
+`aria-invalid` to `EmblorInput`, and associate the description and error IDs with the input.
+
+```bash title="Terminal"
+pnpm add react-hook-form @hookform/resolvers zod
+pnpm dlx shadcn@latest add field button
+```
+
+```tsx title="TypeScript"
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+const schema = z.object({
+  skills: z.array(z.string()).min(1, 'Add at least one skill.'),
+});
+
+export function SkillsForm() {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: { skills: ['react'] },
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit(console.log)}>
+      <FieldGroup>
+        <Controller
+          control={form.control}
+          name="skills"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <EmblorRoot
+                value={field.value}
+                onValueChange={(value) => field.onChange(value)}
+                invalid={fieldState.invalid}
+              >
+                <EmblorLabel as={FieldLabel}>Skills</EmblorLabel>
+                <EmblorTagList>
+                  {(tag, index) => (
+                    <EmblorTag key={tag} index={index}>
+                      <EmblorTagText />
+                      <EmblorTagRemove aria-label={`Remove ${tag}`} />
+                    </EmblorTag>
+                  )}
+                </EmblorTagList>
+                <EmblorInput
+                  aria-describedby={`skills-description${fieldState.error ? ' skills-error' : ''}`}
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Add a skill"
+                />
+              </EmblorRoot>
+              <FieldDescription id="skills-description">Choose the technologies you use regularly.</FieldDescription>
+              {fieldState.invalid ? <FieldError id="skills-error" errors={[fieldState.error]} /> : null}
+            </Field>
+          )}
+        />
+        <Button type="submit">Save profile</Button>
+      </FieldGroup>
+    </form>
+  );
+}
+```
+
+<DocsCallout type="note">
+  Do not register a second hidden input for the same field. Use either the adapter's submitted value or Root's native
+  `name` controls in the same form.
+</DocsCallout>

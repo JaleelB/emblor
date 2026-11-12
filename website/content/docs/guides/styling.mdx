@@ -1,0 +1,167 @@
+---
+title: Styling
+description: Start with CSS, then add Tailwind or shadcn conventions when they help your product.
+---
+
+Emblor ships no visual styles. Every part accepts native props, ARIA attributes, `data-*`, `className`, `style`, refs,
+and event handlers. Start with ordinary CSS when you want the smallest dependency footprint or need to fit an existing
+design system.
+
+## CSS first: a durable baseline
+
+Start with a semantic class for each public part. The example below is a complete field, including the imports that the
+browser-facing code needs:
+
+```tsx title="TypeScript"
+import {
+  EmblorClear,
+  EmblorInput,
+  EmblorLabel,
+  EmblorRoot,
+  EmblorTag,
+  EmblorTagList,
+  EmblorTagRemove,
+  EmblorTagText,
+} from 'emblor';
+
+export function SkillsField() {
+  return (
+    <EmblorRoot className="field" data-kind="skills">
+      <EmblorLabel className="field__label">Skills</EmblorLabel>
+      <EmblorTagList className="field__list">
+        {(tag, index) => (
+          <EmblorTag className="field__tag" key={`${tag}-${index}`} index={index}>
+            <EmblorTagText className="field__text" />
+            <EmblorTagRemove className="field__remove" aria-label={`Remove ${tag}`} />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput className="field__input" placeholder="Add a skill" />
+      <EmblorClear className="field__clear">Clear</EmblorClear>
+    </EmblorRoot>
+  );
+}
+```
+
+```css title="CSS"
+.field {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 32rem;
+  color: CanvasText;
+}
+
+.field__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+  padding: 0.35rem;
+  border: 1px solid color-mix(in srgb, CanvasText 24%, Canvas);
+  border-radius: 0.5rem;
+}
+
+.field__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid color-mix(in srgb, AccentColor 50%, CanvasText);
+  border-radius: 0.35rem;
+  padding: 0.25rem 0.4rem 0.25rem 0.55rem;
+  background: color-mix(in srgb, AccentColor 14%, Canvas);
+}
+
+.field__input {
+  min-width: 12rem;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.field[data-invalid='true'] .field__list,
+.field:has(.field__input[aria-invalid='true']) .field__list {
+  border-color: #ef4444;
+}
+
+.field[data-disabled='true'] {
+  opacity: 0.55;
+}
+```
+
+Use `data-invalid`, `data-disabled`, `data-readonly`, and `data-max-reached` to style field states without mirroring them
+in another React state variable.
+
+## Tailwind and shadcn
+
+If your application already uses Tailwind, apply utility classes directly to each part. The hosted
+[@emblor registry](/docs/installation) uses this approach and copies editable source into your project.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorLabel, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+export function TailwindField() {
+  return (
+    <EmblorRoot className="grid gap-2 text-sm" data-kind="skills">
+      <EmblorLabel className="font-medium">Skills</EmblorLabel>
+      <EmblorTagList className="flex min-h-10 flex-wrap gap-2 rounded-md border bg-background p-2">
+        {(tag, index) => (
+          <EmblorTag
+            className="inline-flex items-center gap-1 rounded-md border bg-muted px-2 py-1"
+            key={tag}
+            index={index}
+          >
+            <EmblorTagText />
+            <EmblorTagRemove className="text-muted-foreground hover:text-foreground" aria-label={`Remove ${tag}`} />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput className="h-10 rounded-md border bg-background px-3 outline-none focus:ring-2" />
+    </EmblorRoot>
+  );
+}
+```
+
+The registry examples follow shadcn conventions by using ordinary Tailwind classes and your local tokens. They still
+import the published package as `emblor`; installing a registry item does not create a new core export.
+
+## Forwarding props and precedence
+
+Your handler runs before Emblor's handler and can cancel an action with `event.preventDefault()`. Emblor still protects
+the roles, generated IDs, form state, and safety props needed for the field to work.
+
+| Part              | Consumer cancellation                 | Protected behavior                                     |
+| ----------------- | ------------------------------------- | ------------------------------------------------------ |
+| Input             | `onPaste` or `onKeyDown` cancellation | Root draft, input role, ID, validity, and command keys |
+| Label             | `onClick` cancellation                | association and custom focus behavior                  |
+| Tag               | `onClick` cancellation                | list item role, roving focus, and index                |
+| TagRemove / Clear | action cancellation                   | button semantics, `type="button"`, and disabled guards |
+
+## Polymorphic markup
+
+Use `as` when the semantic element needs to change. The behavior follows the element, but the element must remain
+compatible with the part's expected element:
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagRemove, EmblorTagText } from 'emblor';
+
+export function SemanticField() {
+  return (
+    <EmblorRoot as="section" className="field">
+      <EmblorTagList as="ul">
+        {(tag, index) => (
+          <EmblorTag as="li" key={`${tag}-${index}`} index={index}>
+            <EmblorTagText as="strong" />
+            <EmblorTagRemove />
+          </EmblorTag>
+        )}
+      </EmblorTagList>
+      <EmblorInput />
+    </EmblorRoot>
+  );
+}
+```
+
+Use a compatible custom component when you need a design-system wrapper. Forward its ref and native props to the element
+that Emblor expects.

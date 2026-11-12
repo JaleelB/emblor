@@ -1,0 +1,16 @@
+{
+  "title": "Guides",
+  "defaultOpen": true,
+  "pages": [
+    "styling",
+    "state-management",
+    "validation",
+    "constraints-and-interactions",
+    "forms",
+    "accessibility",
+    "keyboard-and-focus",
+    "composition-and-polymorphism",
+    "integrations",
+    "migration"
+  ]
+}

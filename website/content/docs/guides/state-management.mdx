@@ -1,0 +1,119 @@
+---
+title: State management
+description: Manage committed values and draft text through Root.
+---
+
+Emblor has two related but separate pieces of state: committed tags (`string[]`) and the input draft (`string`). Root owns both. Do not switch a given value between controlled and uncontrolled after mount.
+
+## Choose an ownership model
+
+- **Use uncontrolled state** for standalone fields and native forms when you only need the submitted values.
+- **Use controlled tags** when another store, form library, or server response owns the committed array.
+- **Control the draft too** only when you need suggestions, draft persistence, or application-level input filtering.
+- **Avoid mirroring uncontrolled values into state.** Pick one owner for each channel so reset and rejected input remain predictable.
+
+## Uncontrolled
+
+Use `defaultValue` when the field can own its committed value. Native form reset restores the original default value and draft.
+
+```tsx title="TypeScript"
+import { EmblorInput, EmblorRoot, EmblorTag, EmblorTagList, EmblorTagText } from 'emblor';
+
+<EmblorRoot defaultValue={['react']} defaultInputValue="ty" name="skills">
+  <EmblorTagList>
+    {(tag, index) => (
+      <EmblorTag key={`${tag}-${index}`} index={index}>
+        <EmblorTagText />
+      </EmblorTag>
+    )}
+  </EmblorTagList>
+  <EmblorInput />
+</EmblorRoot>;
+```
+
+## Fully controlled
+
+Use Root `value` and `inputValue` together when the owner must observe or refuse transitions:
+
+```tsx title="TypeScript"
+'use client';
+
+import { useState } from 'react';
+import { EmblorInput, EmblorLabel, EmblorRoot } from 'emblor';
+
+export function ControlledSkillsField() {
+  const [values, setValues] = useState<string[]>([]);
+  const [draft, setDraft] = useState('');
+
+  return (
+    <EmblorRoot
+      value={values}
+      onValueChange={(next, details) => {
+        setValues(next);
+        console.log(details.type, details);
+      }}
+      inputValue={draft}
+      onInputValueChange={setDraft}
+    >
+      <EmblorLabel>Skills</EmblorLabel>
+      <EmblorInput placeholder="Add a skill" />
+    </EmblorRoot>
+  );
+}
+```
+
+The callback is one metadata-rich `onValueChange` callback. It reports `add`, `add-many`, `remove`, or `clear` details. An accepted transition is requested through the callback; the controlled owner decides what value is rendered next.
+
+## Persist committed values
+
+Read browser storage after mount, then write only after the initial read. This avoids rendering server markup from browser-only state.
+
+```tsx title="TypeScript"
+'use client';
+
+import { useEffect, useState } from 'react';
+import { EmblorInput, EmblorRoot } from 'emblor';
+
+export function PersistedTopics() {
+  const [topics, setTopics] = useState<string[]>([]);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('topics');
+    if (stored) setTopics(JSON.parse(stored) as string[]);
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (ready) window.localStorage.setItem('topics', JSON.stringify(topics));
+  }, [ready, topics]);
+
+  return (
+    <EmblorRoot value={topics} onValueChange={setTopics}>
+      <EmblorInput placeholder="Add a topic" />
+    </EmblorRoot>
+  );
+}
+```
+
+After reload, the field renders the saved array. Production code should validate untrusted storage before passing it to Root.
+
+## Controlled refusal and divergence
+
+If a controlled owner does not acknowledge a requested value, the visible Root stays on the old committed value. Emblor does not silently mutate the external value, trim it, validate it, deduplicate it, or callback for it when the owner supplies a new `value`.
+
+External values are authoritative. If the owner renders `['  raw  ']`, that exact string is what `EmblorTagText` displays and what the native form submits.
+
+## Mutation details
+
+```ts title="TypeScript"
+import type { EmblorValueChangeDetails } from 'emblor';
+
+function inspectMutation(details: EmblorValueChangeDetails) {
+  console.log(details.type, details);
+}
+```
+
+## Duplicate identity
+
+`allowDuplicates` changes acceptance, not identity. Keep stable occurrence IDs in your own state, derive `string[]` for Root, and use those IDs for React keys. The positional `index` remains the Tag contract.
