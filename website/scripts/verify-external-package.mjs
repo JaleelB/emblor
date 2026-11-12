@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 
 const require = createRequire(import.meta.url);
 const websitePackage = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf8'));
-const lockfile = readFileSync(resolve(process.cwd(), '..', 'pnpm-lock.yaml'), 'utf8');
+const lockfile = readFileSync(resolve(process.cwd(), '..', 'pnpm-lock.yaml'), 'utf8').replace(/\r\n/g, '\n');
 const requested = websitePackage.dependencies?.emblor;
 const expected = '2.0.0-alpha.1';
 const failures = [];
