@@ -103,7 +103,8 @@ export const registryItems: RegistryItem[] = definitions.map(
       {
         path: `components/emblor/${name}.tsx`,
         type: 'registry:ui',
-        content: readFileSync(resolve(registryRoot, `${name}.tsx`), 'utf8'),
+        // Registry content must be identical in LF and CRLF checkouts.
+        content: readFileSync(resolve(registryRoot, `${name}.tsx`), 'utf8').replace(/\r\n/g, '\n'),
       },
     ],
   }),
