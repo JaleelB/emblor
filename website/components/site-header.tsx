@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { BrandMark } from '@/components/brand-mark';
 import { DocsSearchDialog } from '@/components/docs-search-dialog';
 import { GitHubIcon, NpmIcon, XIcon } from '@/components/social-icons';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { siteConfig } from '@/config/site-config';
@@ -13,10 +12,10 @@ export function SiteHeader({ as = 'header' }: { as?: 'header' | 'div' }) {
   const Header = as;
   return (
     <Header className="site-header" {...(as === 'div' ? { role: 'region', 'aria-label': 'Site header' } : {})}>
-      <div className="site-header-inner">
+      <div className="site-header-inner container">
         <Link className="site-brand" href="/" aria-label="Emblor home">
           <BrandMark />
-          <span>emblor</span>
+          <span>Emblor</span>
         </Link>
         <nav className="site-navigation" aria-label="Primary navigation">
           {[
@@ -60,7 +59,6 @@ export function SiteHeader({ as = 'header' }: { as?: 'header' | 'div' }) {
               </a>
             </Button>
           </nav>
-          <ThemeToggle />
         </div>
       </div>
     </Header>
